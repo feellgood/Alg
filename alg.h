@@ -24,7 +24,7 @@ inline double p_scal(const std::vector<double> & X,const std::vector<double> & Y
 produit direct de deux vecteurs : Z = X⊗Y
 */
 inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y,std::vector<double> & Z)
-	{ for(int i=0;i<Z.size();i++) Z[i]=X[i]*Y[i]; }
+	{ for(unsigned int i=0;i<Z.size();i++) Z[i]=X[i]*Y[i]; }
 
 /** Y += X       */
 inline void inc(const std::vector<double> & X, std::vector<double> & Y)
