@@ -145,11 +145,13 @@ sparse vector : it is a container for a line of a r_sparseMat
 class sparseVect
 {
 public:
-	inline sparseVect() {sorted = false;}
+	inline sparseVect() {sorted = true;}
 	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; }
 	inline void sort() {std::sort(x.begin(),x.end()); sorted = true;}
 	inline void kill(const size_t idx) {std::remove_if(x.begin(),x.end(),[this,&idx](alg::v_coeff &c) { return (c._i == idx); } );}
-	inline void kill_zero(void) {std::remove_if(x.begin(),x.end(),[this](alg::v_coeff &c) { return (c.getVal() == 0); } );}
+	inline void kill_zero(void) {x.erase(std::remove_if(x.begin(),x.end(),[this](alg::v_coeff &c) { return (c.getVal() == 0); }),x.end() );}
+	inline bool isSorted(void) const {return sorted;}
+	inline bool isEmpty(void) const {return x.empty(); } 
 
 private:
 std::vector< alg::v_coeff > x;
