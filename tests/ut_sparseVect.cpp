@@ -23,6 +23,7 @@ BOOST_CHECK(v.isSorted() == false);
 BOOST_AUTO_TEST_CASE(sparseVect_kill_zero)
 {
 alg::sparseVect v;
+std::cout << "********** test sparseVect.kill_zero " << std::endl;
 
 if(v.isEmpty()) {std::cout << "v is empty"  << std::endl;}
 else {std::cout << "v is not empty"  << std::endl;}
@@ -30,9 +31,66 @@ BOOST_CHECK(v.isEmpty());
 
 v.push_back(1,0);
 v.kill_zero();
+std::cout<<"after kill_zero"<<std::endl;
+if(v.isEmpty()) {std::cout << "v is empty"  << std::endl;}
+else {std::cout << "v is not empty"  << std::endl;}
+BOOST_CHECK(v.isEmpty());
+std::cout << "********** end test sparseVect.kill_zero " << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE(sparseVect_kill)
+{
+alg::sparseVect v;
+
+std::cout << "********** test sparseVect.kill " << std::endl;
+
+v.push_back(1,0);
+v.push_back(1,42.0);
+v.kill(1);
 std::cout<<"after kill"<<std::endl;
 if(v.isEmpty()) {std::cout << "v is empty"  << std::endl;}
 else {std::cout << "v is not empty"  << std::endl;}
 BOOST_CHECK(v.isEmpty());
+std::cout << "********** end test sparseVect.kill " << std::endl;
 }
+
+BOOST_AUTO_TEST_CASE(sparseVect_collect)
+{
+alg::sparseVect v;
+
+std::cout << "********** test sparseVect.collect " << std::endl;
+
+v.push_back(1,1);
+v.push_back(3,100);
+v.push_back(0,3.14);
+v.push_back(1,41.0);
+v.push_back(3,1.101);
+v.push_back(5,-3.14);
+
+v.collect();
+std::cout<<"after collect"<<std::endl;
+if(v.isEmpty()) {std::cout << "v is empty"  << std::endl;}
+else {std::cout << "v is not empty"  << std::endl;}
+BOOST_CHECK(!v.isEmpty());
+double val = v.getVal(1);
+std::cout << "val (should be 42)=" <<  val << std::endl;
+BOOST_CHECK (val == (double)42.0);
+
+val = v.getVal(3);
+std::cout << "val (should be 101.101)=" <<  val << std::endl;
+BOOST_CHECK (val == (double)101.101);
+
+val = v.getVal(0);
+std::cout << "val (should be 3.14)=" <<  val << std::endl;
+BOOST_CHECK (val == (double)3.14);
+
+val = v.getVal(2);
+std::cout << "val (should be 0)=" <<  val << std::endl;
+BOOST_CHECK (val == (double)0);
+
+std::cout << "********** end test sparseVect.collect " << std::endl;
+}
+
+
+
 
