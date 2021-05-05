@@ -1,4 +1,7 @@
+#include <iostream>
+#include <cmath> // sqrt,abs
 #include <algorithm>
+#include <numeric> // inner_product
 
 namespace alg
 {

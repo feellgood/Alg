@@ -16,7 +16,12 @@ MESSAGE(STATUS "CXX ${CMAKE_CXX_COMPILER_ID}")
 
 MESSAGE(STATUS "version = ${ALG_VERSION}")
 
-set( CMAKE_CXX_FLAGS "-DNDEBUG -Wall -Wextra -std=c++11 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
+#===========================================================================
+# Compiler options -DNDEBUG
+# -fsanitize=address leak  null (to debug memory leak) undefined
+#===========================================================================
+
+set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++11 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
 set(HEADERS alg.h)
 set(SOURCES )
