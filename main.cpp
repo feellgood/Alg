@@ -13,11 +13,15 @@ typedef gmm::row_matrix	<std::vector<double> >   write_matrix;
 typedef gmm::row_matrix	<std::vector<double> >    read_matrix;
 
 //void cg_dir(const read_matrix& A, write_vector& x, const read_vector& b, const vector<size_t>& ld, diagonal_precond <read_matrix> &P, iteration &iter)
-void cg_dir(const read_matrix& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, diagonal_precond <read_matrix> &P, iteration &iter) 
+void cg_dir(const read_matrix& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, iteration &iter) 
 {
 double rho, rho_1(0.0);
 std::vector<double> p(x.size()),q(x.size()),r(x.size()),z(x.size());
-    
+std::vector<double> diag_precond(x.size());    
+
+// le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A)
+for(int i=0;i<diag_precond.size();i++) { diag_precond[i] = 1.0/A(i,i); }
+
 iter.set_rhsnorm(alg::norm(b));//iter.set_rhsnorm(gmm::sqrt(gmm::abs(vect_sp(b, b))));
 
 	
@@ -28,9 +32,10 @@ std::vector<double> v_temp(x.size());
 mult(A,x,v_temp);// v_temp = A x;
 alg::dec(v_temp,r);// r -= v_temp; donc r = b - A x;
 
-std::for_each(ld.begin(),ld.end(),[&r,&P](const size_t _i){ r[_i] = 0.0; P.diag[_i] = 0.0; });
+//std::for_each(ld.begin(),ld.end(),[&r,&P](const size_t _i){ r[_i] = 0.0; P.diag[_i] = 0.0; });
+std::for_each(ld.begin(),ld.end(),[&r,&diag_precond](const size_t _i){ r[_i] = 0.0; diag_precond[_i] = 0.0; });
 
-      mult(P, r, z);
+      alg::p_direct(diag_precond,r,z);//mult(P, r, z);
       rho = alg::p_scal(z,r);//rho = vect_sp(z, r);
       p.assign(z.begin(),z.end());//copy(z, p);
 
@@ -38,7 +43,7 @@ std::for_each(ld.begin(),ld.end(),[&r,&P](const size_t _i){ r[_i] = 0.0; P.diag[
 
 	      if (!iter.first()) { 
  
-	         mult(P, r, z);
+	         alg::p_direct(diag_precond,r,z);//mult(P, r, z);
 	         rho = alg::p_scal(z,r);//rho = vect_sp(z, r);
 	         
 		//add(z, scaled(p, rho/rho_1), p);// p = z + (rho/rho_1)*p
@@ -112,10 +117,12 @@ mult(Kr, Xw, Lw);
 
 alg::scaled(Lw,-1.0,Lr);//add(scaled(Lw, -1.0), Lr);//Lr = -Lw
 
+/*
 std::cout << boost::format("%5t preconditioning %50T.") << std::flush;
 time.restart();
 gmm::diagonal_precond <read_matrix> prc(Kr);
 std::cout << "time elapsed : " << time.elapsed() << std::endl;
+*/
 
 std::cout << boost::format("%5t solving %50T.") << std::flush;
 //cout << "\t solving .......................... ";
@@ -126,8 +133,9 @@ iter.set_maxiter(MAXITER);
 iter.set_noisy(VERBOSE);
 
 gmm::clear(Xw);
-cg_dir(Kr, Xw, Lr, ld, prc, iter); // Conjugate gradient with dirichlet conditions
-std::cout << "finished " << iter.get_iteration() << std::endl; 
+//cg_dir(Kr, Xw, Lr, ld, prc, iter); // Conjugate gradient with dirichlet conditions
+cg_dir(Kr, Xw, Lr, ld, iter); // Conjugate gradient with dirichlet conditions
+std::cout << "finished " << iter.get_iteration() << std::endl;
 
 cout << "time elapsed : "<< time.elapsed() << endl;
 
