@@ -55,6 +55,7 @@ class v_coeff
 {
 public:
 	inline v_coeff(const size_t i,const double c):_i(i),_c(c) {}
+	inline double getVal(void) const {return _c;} 
 
 /**
 lexicographic order
@@ -83,7 +84,7 @@ class m_coeff
 {
 public:
 	inline m_coeff(const size_t i,const size_t j,const double c):_i(i),_j(j),_c(c) {}
-
+	inline double getVal(void) const {return _c;} 
 /**
 lexicographic order
 */
@@ -143,7 +144,10 @@ class sparseVect
 public:
 	inline sparseVect() {sorted = false;}
 	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; }
-	inline void sort() {sorted = true;}
+	inline void sort() {std::sort(x.begin(),x.end()); sorted = true;}
+	inline void kill(const size_t idx) {std::remove_if(x.begin(),x.end(),[this,&idx](alg::v_coeff &c) { return (c._i == idx); } );}
+	inline void kill_zero(void) {std::remove_if(x.begin(),x.end(),[this](alg::v_coeff &c) { return (c.getVal() == 0); } );}
+
 private:
 std::vector< alg::v_coeff > x;
 bool sorted; 
