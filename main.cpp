@@ -12,56 +12,46 @@ using namespace gmm;
 typedef gmm::row_matrix	<std::vector<double> >   write_matrix;
 typedef gmm::row_matrix	<std::vector<double> >    read_matrix;
 
-//void cg_dir(const read_matrix& A, write_vector& x, const read_vector& b, const vector<size_t>& ld, diagonal_precond <read_matrix> &P, iteration &iter)
 void cg_dir(const read_matrix& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, iteration &iter) 
 {
 double rho, rho_1(0.0);
 std::vector<double> p(x.size()),q(x.size()),r(x.size()),z(x.size());
 std::vector<double> diag_precond(x.size());    
 
-// le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A)
-for(int i=0;i<diag_precond.size();i++) { diag_precond[i] = 1.0/A(i,i); }
+// le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
+for(int i=0;i<diag_precond.size();i++)
+	{ diag_precond[i] = 1.0/A(i,i); }
 
-iter.set_rhsnorm(alg::norm(b));//iter.set_rhsnorm(gmm::sqrt(gmm::abs(vect_sp(b, b))));
-
-	
-//      mult(A, scaled(x, -1.0), b, r);// r = b - A x
+iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
 std::vector<double> v_temp(x.size()); 
 mult(A,x,v_temp);// v_temp = A x;
 alg::dec(v_temp,r);// r -= v_temp; donc r = b - A x;
 
-//std::for_each(ld.begin(),ld.end(),[&r,&P](const size_t _i){ r[_i] = 0.0; P.diag[_i] = 0.0; });
 std::for_each(ld.begin(),ld.end(),[&r,&diag_precond](const size_t _i){ r[_i] = 0.0; diag_precond[_i] = 0.0; });
 
-      alg::p_direct(diag_precond,r,z);//mult(P, r, z);
-      rho = alg::p_scal(z,r);//rho = vect_sp(z, r);
-      p.assign(z.begin(),z.end());//copy(z, p);
+alg::p_direct(diag_precond,r,z);//mult(P, r, z);
+rho = alg::p_scal(z,r);//rho = vect_sp(z, r);
+p.assign(z.begin(),z.end());//copy(z, p);
 
-      while (!iter.finished_vect(r)) {
-
-	      if (!iter.first()) { 
- 
-	         alg::p_direct(diag_precond,r,z);//mult(P, r, z);
-	         rho = alg::p_scal(z,r);//rho = vect_sp(z, r);
-	         
-		//add(z, scaled(p, rho/rho_1), p);// p = z + (rho/rho_1)*p
-		alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
-		alg::inc(z,p);// p += z	         
+while (!iter.finished_vect(r)) {
+      if (!iter.first()) { 
+ 	        alg::p_direct(diag_precond,r,z);//mult(P, r, z);
+	        rho = alg::p_scal(z,r);//rho = vect_sp(z, r);
+	        alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
+		alg::inc(z,p);// p += z	; donc  p = z + (rho/rho_1)*p        
 		}
 	      mult(A, p, q);
           
-	//for (vector<size_t>::const_iterator it=ld.begin(); it!=ld.end(); ++it){ q[*it]=0.0; }
 	std::for_each(ld.begin(),ld.end(),[&q](size_t _i){q[_i] = 0.0; } );	      
 	double a=rho/alg::p_scal(q,p); //a = rho / vect_sp(q, p);	
 	alg::scaled_inc(p, +a, x); //add(scaled(p, +a), x);
-
 	alg::scaled_inc(q, -a, r);//add(scaled(q, -a), r);
-	      rho_1 = rho;
-	      ++iter;
+      rho_1 = rho;
+      ++iter;
           }   
-  }
+}
 
 
 int main()
@@ -71,20 +61,18 @@ const int  VERBOSE = 0;
 const int MAXITER = 5000;
 
 const int NOD=101;
+
 std::vector<size_t> ld;
 std::vector<double> Vd(NOD, 0.);
-
-write_matrix Kw(NOD, NOD);
-
-std::vector<double> Lw(NOD); //write_vector Lw(NOD);
-
-std::vector<double> Xw(NOD,0.0);//write_vector Xw(NOD);
+std::vector<double> Lw(NOD);
+std::vector<double> Xw(NOD,0.0);
 
 
 std::random_device rd;  //Will be used to obtain a seed for the random number engine
 std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
 std::uniform_int_distribution<> distrib(0, 1000);
 
+write_matrix Kw(NOD, NOD);
 Kw(0,     0    )=+1.0;  Kw(0,     1    )=-1.0;
 Kw(NOD-1, NOD-2)=-1.0;  Kw(NOD-1, NOD-1)=+1.0;
 
@@ -117,15 +105,7 @@ mult(Kr, Xw, Lw);
 
 alg::scaled(Lw,-1.0,Lr);//add(scaled(Lw, -1.0), Lr);//Lr = -Lw
 
-/*
-std::cout << boost::format("%5t preconditioning %50T.") << std::flush;
-time.restart();
-gmm::diagonal_precond <read_matrix> prc(Kr);
-std::cout << "time elapsed : " << time.elapsed() << std::endl;
-*/
-
 std::cout << boost::format("%5t solving %50T.") << std::flush;
-//cout << "\t solving .......................... ";
 time.restart();
 
 gmm::iteration iter(1e-6);
@@ -133,11 +113,8 @@ iter.set_maxiter(MAXITER);
 iter.set_noisy(VERBOSE);
 
 gmm::clear(Xw);
-//cg_dir(Kr, Xw, Lr, ld, prc, iter); // Conjugate gradient with dirichlet conditions
-cg_dir(Kr, Xw, Lr, ld, iter); // Conjugate gradient with dirichlet conditions
-std::cout << "finished " << iter.get_iteration() << std::endl;
-
-cout << "time elapsed : "<< time.elapsed() << endl;
+cg_dir(Kr, Xw, Lr, ld, iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+std::cout << "finished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << endl;
 
 for (int i=0; i<NOD; i+=10) { std::cout << i << "\t" << Xw[i]+Vd[i] << "\t" << Vd[i] << std::endl; }
 
