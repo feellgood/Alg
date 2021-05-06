@@ -194,9 +194,9 @@ public:
 	double val(0);
 	if (!isCollected()) {std::cout << "warning : cannot p_scal on an uncollected sparseVect" << std::endl;exit(1);}
 	else
-		{
+		{const int X_dim = X.size();
 		for(auto it=x.begin();it!=x.end();++it)
-			{val += it->getVal()*X[it->_i]; }
+			{ if(it->_i < X_dim ) { val += it->getVal()*X[it->_i]; } }
 		}	
 	return val;
 	}
@@ -205,7 +205,7 @@ private:
 std::vector< alg::v_coeff > x;
 bool sorted; 
 bool collected;
-};
+}; // end class sparseVect
 
 inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
 	{ 
