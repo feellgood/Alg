@@ -23,6 +23,8 @@ produit scalaire de X et Y
 inline double p_scal(const std::vector<double> & X,const std::vector<double> & Y)
 	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); }
 
+
+
 /**
 produit direct de deux vecteurs : Z = X⊗Y
 */
@@ -145,11 +147,11 @@ sparse vector : it is a container for a line of a r_sparseMat
 class sparseVect
 {
 public:
-	inline sparseVect() {sorted = true;}
+	inline sparseVect() {sorted = true;collected = false;}
 
-	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; }
+	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; collected=false; }
 
-	inline void push_back(alg::v_coeff &coeff) { x.push_back(coeff); sorted = false; }
+	inline void push_back(alg::v_coeff &coeff) { x.push_back(coeff); sorted = false; collected = false; }
 
 	inline void sort() {std::sort(x.begin(),x.end()); sorted = true;}
 
@@ -172,10 +174,13 @@ public:
 			push_back(c);			
 			it = std::adjacent_find(x.begin(),x.end());			
 			}		
+		collected = true;		
 		}
 
 	inline bool isSorted(void) const {return sorted;}
-	inline bool isEmpty(void) const {return x.empty(); } 
+	inline bool isEmpty(void) const {return x.empty();} 
+	inline bool isCollected(void) const {return collected;}
+
 	inline double getVal(size_t idx) const
 		{
 		double val(0);
@@ -183,10 +188,29 @@ public:
 		if (it != x.end()) val = it->getVal();		
 		return val;		
 		}
+
+	inline double p_scal(const std::vector<double> & X) const
+	{
+	double val(0);
+	if (!isCollected()) {std::cout << "warning : cannot p_scal on an uncollected sparseVect" << std::endl;exit(1);}
+	else
+		{
+		for(auto it=x.begin();it!=x.end();++it)
+			{val += it->getVal()*X[it->_i]; }
+		}	
+	return val;
+	}
+
 private:
 std::vector< alg::v_coeff > x;
 bool sorted; 
+bool collected;
 };
+
+inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
+	{ 
+	return X.p_scal(Y);
+	}
 
 class r_sparseMat
 {
