@@ -194,7 +194,7 @@ public:
 	double val(0);
 	if (!isCollected()) {std::cout << "warning : cannot p_scal on an uncollected sparseVect" << std::endl;exit(1);}
 	else
-		{const int X_dim = X.size();
+		{const unsigned int X_dim = X.size();
 		for(auto it=x.begin();it!=x.end();++it)
 			{ if(it->_i < X_dim ) { val += it->getVal()*X[it->_i]; } }
 		}	

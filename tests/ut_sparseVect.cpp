@@ -4,6 +4,8 @@
 
 #include "alg.h" 
 
+BOOST_AUTO_TEST_SUITE(ut_alg)
+
 BOOST_AUTO_TEST_CASE(Stupid)
 {
 float x = 1.0;
@@ -91,6 +93,22 @@ BOOST_CHECK (val == (double)0);
 std::cout << "********** end test sparseVect.collect " << std::endl;
 }
 
+BOOST_AUTO_TEST_CASE(p_scal,* boost::unit_test::tolerance(1e-15))
+{
+	std::vector<double> x = {1,-2,3.14,4,5};
+	alg::sparseVect v;
 
+	v.push_back(0,1.0);
+	v.push_back(10,101);
+	v.push_back(2,0.5);
+	v.push_back(3,-0.25);
 
+v.sort();
+v.collect();// to set Collected flag to true
 
+double val = alg::p_scal(v,x);
+std::cout << "val (should be 1.57)=" << val << std::endl;
+BOOST_TEST(val == (double)1.57);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
