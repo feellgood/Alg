@@ -119,21 +119,28 @@ If some m_coeff have the same indices, they will be summed to build the real mat
 class w_sparseMat
 {
 public:
-	inline w_sparseMat(const size_t _N):N(_N) {}
+	inline w_sparseMat(const size_t _N):N(_N) { sorted = false; collected = false; }
 	inline void push_back(const m_coeff &co) { C.push_back(co); }
 	inline size_t getDim(void) const {return N;}
 
 	inline void rebuild(void) 
 		{ 
-		std::sort(C.begin(),C.end()); 
+		std::sort(C.begin(),C.end());
+	       	sorted = true;	
 		std::vector<m_coeff>::iterator it = std::adjacent_find(C.begin(),C.end() );		
-		if (it == C.end()) { std::cout << "all coeffs are unique" << std::endl; } 
-		else { std::cout << " redundant indices not supported yet. " << std::endl; exit(1);}		
+		if (it == C.end()) { collected = true; } 
+		else { collected = false; }		
 		}
+
+	inline bool isSorted(void) const {return sorted;}
+	inline bool isCollected(void) const {return collected;}
+
+
 private:
 /** dimension of the square sparse matrix */
 	size_t N;
-
+	bool sorted;
+	bool collected;
 /**
 container for the sparse matrix coefficient, C.size() is different from N, since a coefficient with indices (i,j) might be push_backed several times
 */
@@ -215,11 +222,18 @@ inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
 class r_sparseMat
 {
 public:
-	inline r_sparseMat(w_sparseMat &A):N(A.getDim()) {}
+	inline r_sparseMat(w_sparseMat &A):N(A.getDim())
+		{
+		m.resize(N);
+		if (!A.isSorted()) { A.rebuild(); }
+		}
+
+friend alg::w_sparseMat;
 
 private:
 /** dimension of the square sparse matrix */
-	size_t N;
+	const size_t N;
+	std::vector<sparseVect> m;
 }; // end class r_sparseMat
 
 
