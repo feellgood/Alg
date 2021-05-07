@@ -208,11 +208,18 @@ public:
 	return val;
 	}
 
+	inline void print(std::ostream & flux) const
+	{ std::for_each(x.begin(),x.end(), [&flux](const v_coeff &c){ flux << c._i << ":" << c.getVal() <<'\n';}); }
+
 private:
 std::vector< alg::v_coeff > x;
 bool sorted; 
 bool collected;
 }; // end class sparseVect
+
+/** operator<< for sparseVect */
+inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.print(flux); return flux;}
+
 
 inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
 	{ 
