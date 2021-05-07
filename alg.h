@@ -121,6 +121,7 @@ class w_sparseMat
 public:
 	inline w_sparseMat(const size_t _N):N(_N) { sorted = false; collected = false; }
 	inline void push_back(const m_coeff &co) { C.push_back(co); }
+	inline void push_back(const size_t i,const size_t j, const double val) {C.push_back(alg::m_coeff(i,j,val));}
 	inline size_t getDim(void) const {return N;}
 
 	inline void rebuild(void) 
@@ -134,6 +135,9 @@ public:
 
 	inline bool isSorted(void) const {return sorted;}
 	inline bool isCollected(void) const {return collected;}
+
+	inline void print(std::ostream & flux) const
+	{ flux<<'{'; std::for_each(C.begin(),C.end(), [&flux](const m_coeff &c){ flux << '{' << c._i << ','<< c._j << ':' << c.getVal() <<'}';}); flux<<"}\n"; }
 
 
 private:
@@ -209,13 +213,16 @@ public:
 	}
 
 	inline void print(std::ostream & flux) const
-	{ std::for_each(x.begin(),x.end(), [&flux](const v_coeff &c){ flux << c._i << ":" << c.getVal() <<'\n';}); }
+	{ flux<<'{'; std::for_each(x.begin(),x.end(), [&flux](const v_coeff &c){ flux << '{' << c._i << ':' << c.getVal() <<'}';}); flux<<"}\n"; }
 
 private:
 std::vector< alg::v_coeff > x;
 bool sorted; 
 bool collected;
 }; // end class sparseVect
+
+/** operator<< for w_sparseMat */
+inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.print(flux); return flux;}
 
 /** operator<< for sparseVect */
 inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.print(flux); return flux;}

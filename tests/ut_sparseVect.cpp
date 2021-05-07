@@ -113,4 +113,14 @@ std::cout << "val (should be 1.57)=" << val << std::endl;
 BOOST_TEST(val == (double)1.57);
 }
 
+BOOST_AUTO_TEST_CASE(w_sparseMat1)
+{
+	alg::w_sparseMat m(5);
+	m.push_back(1,1,3.14);
+	m.push_back(0,0,42);
+
+	std::cout << "m=" << m << std::endl;
+BOOST_CHECK(m.getDim() == (size_t)5);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
