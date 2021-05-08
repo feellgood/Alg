@@ -2,12 +2,11 @@
 #define ALG_H
 
 #include <iostream>
-#include <cmath> // sqrt,abs
+#include <cmath> // sqrt,fabs
 #include <algorithm>
 #include <numeric> // inner_product
 
-#include "gmm/gmm_iter.h"
-
+#include "alg_iter.h"
 
 namespace alg
 {
@@ -24,7 +23,7 @@ inline void scaled( const double alpha, std::vector<double> & Y)
 	{ std::for_each(Y.begin(),Y.end(),[alpha](double &_x){ _x *= alpha; }); }
 
 /**
-produit scalaire de X et Y
+returns scalar product X.Y
 */
 inline double p_scal(const std::vector<double> & X,const std::vector<double> & Y)
 	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); }
@@ -32,7 +31,7 @@ inline double p_scal(const std::vector<double> & X,const std::vector<double> & Y
 
 
 /**
-produit direct de deux vecteurs : Z = X⊗Y
+direct product : Z = X⊗Y
 */
 inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y,std::vector<double> & Z)
 	{ for(unsigned int i=0;i<Z.size();i++) Z[i]=X[i]*Y[i]; }
@@ -55,12 +54,12 @@ inline void scaled_inc(const std::vector<double> & X,const double alpha, std::ve
 norme de X
 */
 inline double norm(const std::vector<double> & X)
-	{ return sqrt(abs(p_scal(X,X))); }
+	{ return sqrt(fabs( p_scal(X,X) )); }
 
 
 /**
 \class v_coeff
-container for an indice and a double value to represent a coefficient of a sparse vector
+container for pairs of indice nd double value to represent a coefficient of a sparse vector
 */
 class v_coeff
 {
@@ -147,19 +146,19 @@ public:
 
 
 private:
-/** dimension of the square sparse matrix */
+/** dimension of sparse matrix, N is the number of lines */
 	size_t N;
 	bool sorted;
 	bool collected;
 /**
-container for the sparse matrix coefficient, C.size() is different from N, since a coefficient with indices (i,j) might be push_backed several times
+container for the sparse matrix coefficient, C.size() might be different from N, since a coefficient with indices (i,j) might be push_backed several times
 */
 	std::vector<alg::m_coeff> C;
 }; // end class w_sparseMat
 
 /**
 \class sparseVect
-sparse vector : it is a container for a line of a r_sparseMat
+sparse vector : it is a container for v_coeff
 */
 class sparseVect
 {
@@ -178,6 +177,7 @@ public:
 	inline void kill_zero(void) 
 		{x.erase(std::remove_if(x.begin(),x.end(),[this](alg::v_coeff &c) { return (c.getVal() == 0); }),x.end() );}
 
+	/** collect method is sorting all v_coeffs, eventually with redundant indices, and is summing coeffs with same indices. It removes the coeffs that have been summed. */
 	inline void collect(void)
 		{
 		if (!sorted) sort();
@@ -233,11 +233,9 @@ inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.p
 /** operator<< for sparseVect */
 inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.print(flux); return flux;}
 
-
+/** scalar product of a sparse vector and a dense vector */
 inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
-	{ 
-	return X.p_scal(Y);
-	}
+	{ return X.p_scal(Y); }
 
 class r_sparseMat
 {
@@ -275,13 +273,11 @@ inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<d
 const size_t _size = X.size();
 Y.resize(_size);
 if (A.getDim() == _size)
-	{
-	for(size_t i=0;i<_size;i++) { Y[i]= alg::p_scal(A(i),X); }
-	}
+	{ for(size_t i=0;i<_size;i++) { Y[i]= alg::p_scal(A(i),X); } }
 }
 
 /** conjugate gradient with diagonal preconditionner */
-void cg_dir(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, gmm::iteration &iter);
+void cg_dir(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter);
 }
 
 #endif //ALG_H

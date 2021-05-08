@@ -3,7 +3,7 @@
 namespace alg
 {
 
-void cg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, gmm::iteration &iter) 
+void cg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 std::vector<double> p(x.size()),q(x.size()),r(x.size()),z(x.size());
