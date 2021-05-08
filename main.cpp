@@ -115,7 +115,8 @@ alg::iteration iter(1e-6);
 iter.set_maxiter(MAXITER);
 iter.set_noisy(VERBOSE);
 
-gmm::clear(Xw);
+Xw.clear();//gmm::clear(Xw);
+Xw.resize(NOD);
 alg::cg_dir(Kr,Xw,Lr,ld,iter);//cg_dir(Kr, Xw, Lr, ld, iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
 std::cout << "finished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << std::endl;
 
