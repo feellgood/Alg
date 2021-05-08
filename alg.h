@@ -118,6 +118,8 @@ If some m_coeff have the same indices, they will be summed to build the real mat
 */
 class w_sparseMat
 {
+	friend class r_sparseMat;
+
 public:
 	inline w_sparseMat(const size_t _N):N(_N) { sorted = false; collected = false; }
 	inline void push_back(const m_coeff &co) { C.push_back(co); }
@@ -238,17 +240,40 @@ class r_sparseMat
 public:
 	inline r_sparseMat(w_sparseMat &A):N(A.getDim())
 		{
-		m.resize(N);
+		m.resize(N);// N is the number of lines
 		if (!A.isSorted()) { A.rebuild(); }
+		
+		if (!A.C.empty())
+			{
+			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
+				{ if (it->_i < N) { m[it->_i].push_back(it->_j,it->getVal());} }	
+			}
+		std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} );
 		}
 
-friend alg::w_sparseMat;
+	inline void print(void) { std::for_each(m.begin(),m.end(),[](sparseVect const& _v) {std::cout << _v;} ); }
 
+	inline size_t getDim(void) const {return N;}
+
+	inline alg::sparseVect & operator() (const size_t & i) {return m[i];}
 private:
 /** dimension of the square sparse matrix */
 	const size_t N;
 	std::vector<sparseVect> m;
 }; // end class r_sparseMat
 
+/** Y = A*X */
+void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
+{
+const size_t _size = X.size();
+Y.resize(_size);
+if (A.getDim() == _size)
+	{
+	for(size_t i=0;i<_size;i++)
+		{
+		Y[i]= alg::p_scal(A(i),X);
+		}
+	}
+}
 
 }
