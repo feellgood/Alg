@@ -1,7 +1,13 @@
+#ifndef ALG_H
+#define ALG_H
+
 #include <iostream>
 #include <cmath> // sqrt,abs
 #include <algorithm>
 #include <numeric> // inner_product
+
+#include "gmm/gmm_iter.h"
+
 
 namespace alg
 {
@@ -107,9 +113,7 @@ two coeffs are equal when their indices are equals
 
 private:	
 	double _c;
-}; //end class m_coeff
-
-inline bool same_indices(const m_coeff &a,const m_coeff &b) {return ((a._i == b._i)&&(a._j == b._j)); } 
+}; //end class m_coeff 
 
 /**
 \class w_sparseMat
@@ -247,15 +251,18 @@ public:
 			{
 			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
 				{ if (it->_i < N) { m[it->_i].push_back(it->_j,it->getVal());} }	
+			
+			std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} );
 			}
-		std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} );
 		}
-
 	inline void print(void) { std::for_each(m.begin(),m.end(),[](sparseVect const& _v) {std::cout << _v;} ); }
 
 	inline size_t getDim(void) const {return N;}
 
 	inline alg::sparseVect & operator() (const size_t & i) {return m[i];}
+
+	inline double operator() (const size_t &i, const size_t &j) { return m[i].getVal(j); }
+
 private:
 /** dimension of the square sparse matrix */
 	const size_t N;
@@ -263,17 +270,19 @@ private:
 }; // end class r_sparseMat
 
 /** Y = A*X */
-void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
+inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
 {
 const size_t _size = X.size();
 Y.resize(_size);
 if (A.getDim() == _size)
 	{
-	for(size_t i=0;i<_size;i++)
-		{
-		Y[i]= alg::p_scal(A(i),X);
-		}
+	for(size_t i=0;i<_size;i++) { Y[i]= alg::p_scal(A(i),X); }
 	}
 }
 
+/** conjugate gradient with diagonal preconditionner */
+void cg_dir(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, gmm::iteration &iter);
 }
+
+#endif //ALG_H
+

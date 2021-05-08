@@ -4,15 +4,12 @@
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 
-#include "gmm/gmm.h"
-
 #include "alg.h"
 
-using namespace gmm;
 typedef gmm::row_matrix	<std::vector<double> >   write_matrix;
 typedef gmm::row_matrix	<std::vector<double> >    read_matrix;
 
-void cg_dir(const read_matrix& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, iteration &iter) 
+void cg_dir(const read_matrix& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, gmm::iteration &iter) 
 {
 double rho, rho_1(0.0);
 std::vector<double> p(x.size()),q(x.size()),r(x.size()),z(x.size());
@@ -26,7 +23,7 @@ iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
 std::vector<double> v_temp(x.size()); 
-mult(A,x,v_temp);// v_temp = A x;
+gmm::mult(A,x,v_temp);// v_temp = A x;
 alg::dec(v_temp,r);// r -= v_temp; donc r = b - A x;
 
 std::for_each(ld.begin(),ld.end(),[&r,&diag_precond](const size_t _i){ r[_i] = 0.0; diag_precond[_i] = 0.0; });
@@ -42,7 +39,7 @@ while (!iter.finished_vect(r)) {
 	        alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
 		alg::inc(z,p);// p += z	; donc  p = z + (rho/rho_1)*p        
 		}
-	      mult(A, p, q);
+      gmm::mult(A, p, q);
           
 	std::for_each(ld.begin(),ld.end(),[&q](size_t _i){q[_i] = 0.0; } );	      
 	double a=rho/alg::p_scal(q,p); //a = rho / vect_sp(q, p);	
@@ -102,7 +99,7 @@ read_matrix  Kr(NOD, NOD);    gmm::copy(Kw, Kr);
 std::vector<double> Lr(NOD,0.0);//read_vector  Lr(NOD);         
 Lr.assign(Lw.begin(),Lw.end());//gmm::copy(Lw, Lr);
 
-mult(Kr, Xw, Lw);
+gmm::mult(Kr, Xw, Lw);
 
 alg::scaled(Lw,-1.0,Lr);//add(scaled(Lw, -1.0), Lr);//Lr = -Lw
 
@@ -115,7 +112,7 @@ iter.set_noisy(VERBOSE);
 
 gmm::clear(Xw);
 cg_dir(Kr, Xw, Lr, ld, iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
-std::cout << "finished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << endl;
+std::cout << "finished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << std::endl;
 
 for (int i=0; i<NOD; i+=10) { std::cout << i << "\t" << Xw[i]+Vd[i] << "\t" << Vd[i] << std::endl; }
 
