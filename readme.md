@@ -5,10 +5,12 @@ Very few operators implemented yet, just the minimum required to implement gradi
 
 Compile with cmake
 
-some unit tests are also implemented, not build by default
+some unit tests are also implemented, not build by default.
+
 To build them, type:
 
 cmake . -DENABLE_UTESTS=ON
+
 make test
 
 ## Dependencies : 
