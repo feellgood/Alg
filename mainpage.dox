@@ -1,4 +1,7 @@
-# alg : sparse Matrix implementation for gradient conjugate algorithm
+/**
+* \mainpage
+
+alg : sparse Matrix implementation for gradient conjugate algorithm
 
 Sparse matrix implemented using a representation of each coefficient that includes indices.
 Very few operators implemented yet, just the minimum required to implement gradient conjugate algorithm.
@@ -17,3 +20,5 @@ make test
 * C++ 11 or above, STL
 * cmake 
 * BOOST (unit tests, ..)
+
+*/
