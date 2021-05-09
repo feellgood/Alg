@@ -51,7 +51,7 @@ inline void scaled_inc(const std::vector<double> & X,const double alpha, std::ve
 
 
 /**
-norme de X
+euclidian norm of vector X
 */
 inline double norm(const std::vector<double> & X)
 	{ return sqrt(fabs( p_scal(X,X) )); }
@@ -64,8 +64,13 @@ container for pairs of indice nd double value to represent a coefficient of a sp
 class v_coeff
 {
 public:
+	/** constructor */
 	inline v_coeff(const size_t i,const double c):_i(i),_c(c) {}
+	
+	/** getter for the value of the coefficient */
 	inline double getVal(void) const {return _c;} 
+	
+	/** increment value with val */
 	inline void inc(const double val) { _c += val;}
 /**
 lexicographic order
@@ -79,9 +84,11 @@ two coeffs are equal when their indices are equals
 	inline bool operator== (const v_coeff &c) const
 	{ return (this->_i == c._i); }
 
+	/** index of the coefficient */
 	size_t _i;
 
-private:	
+private:
+/** value of the coefficient */	
 	double _c;
 }; //end class v_coeff
 
@@ -93,7 +100,10 @@ container for a couple of indices and a double value to represent a coefficient 
 class m_coeff
 {
 public:
+	/** constructor */
 	inline m_coeff(const size_t i,const size_t j,const double c):_i(i),_j(j),_c(c) {}
+	
+	/** getter for the value of the coefficient */
 	inline double getVal(void) const {return _c;} 
 /**
 lexicographic order
@@ -107,10 +117,14 @@ two coeffs are equal when their indices are equals
 	inline bool operator== (const m_coeff &c) const
 	{ return ((this->_i == c._i)&&(this->_j == c._j)); }
 
+	/** first index */
 	size_t _i;
+
+	/** second index */
 	size_t _j;
 
-private:	
+private:
+	/** value of the coefficient */	
 	double _c;
 }; //end class m_coeff 
 
@@ -124,11 +138,19 @@ class w_sparseMat
 	friend class r_sparseMat;
 
 public:
+	/** constructor */
 	inline w_sparseMat(const size_t _N):N(_N) { sorted = false; collected = false; }
+	
+	/** inserter for a coefficient */
 	inline void push_back(const m_coeff &co) { C.push_back(co); }
+	
+	/** inserter with direct values of a coefficient */
 	inline void push_back(const size_t i,const size_t j, const double val) {C.push_back(alg::m_coeff(i,j,val));}
+	
+	/** getter for the number of lines */
 	inline size_t getDim(void) const {return N;}
 
+	/** sort the coefficients in lexicographic order and refresh collected and sorted booleans */
 	inline void rebuild(void) 
 		{ 
 		std::sort(C.begin(),C.end());
@@ -138,9 +160,13 @@ public:
 		else { collected = false; }		
 		}
 
+	/** getter for sorted */
 	inline bool isSorted(void) const {return sorted;}
+	
+	/** getter for collected */
 	inline bool isCollected(void) const {return collected;}
 
+	/** printing function */
 	inline void print(std::ostream & flux) const
 	{ flux<<'{'; std::for_each(C.begin(),C.end(), [&flux](const m_coeff &c){ flux << '{' << c._i << ','<< c._j << ':' << c.getVal() <<'}';}); flux<<"}\n"; }
 
@@ -148,9 +174,14 @@ public:
 private:
 /** dimension of sparse matrix, N is the number of lines */
 	size_t N;
+
+/** if sorted == true, coeffs have been sorted in lexicographic order */
 	bool sorted;
+
+	/** if collected == true, coefficients have been regrouped in lexicographic order,and redundant coeffs summed (if any) */
 	bool collected;
-/**
+
+	/**
 container for the sparse matrix coefficient, C.size() might be different from N, since a coefficient with indices (i,j) might be push_backed several times
 */
 	std::vector<alg::m_coeff> C;
@@ -163,17 +194,23 @@ sparse vector : it is a container for v_coeff
 class sparseVect
 {
 public:
+	/** constructor */
 	inline sparseVect() {sorted = true;collected = false;}
 
+	/** inserter with value of a coefficient */
 	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; collected=false; }
 
+	/** inserter with a coefficient */
 	inline void push_back(alg::v_coeff &coeff) { x.push_back(coeff); sorted = false; collected = false; }
 
+	/** sort the coefficients with lexicographic order */
 	inline void sort() {std::sort(x.begin(),x.end()); sorted = true;}
 
+	/** erase all coefficients with index idx */
 	inline void kill(const size_t idx) 
 		{x.erase(std::remove_if(x.begin(),x.end(),[this,&idx](alg::v_coeff &c) { return (c._i == idx); } ),x.end());}
 
+	/** erase all coefficients with value zero */
 	inline void kill_zero(void) 
 		{x.erase(std::remove_if(x.begin(),x.end(),[this](alg::v_coeff &c) { return (c.getVal() == 0); }),x.end() );}
 
@@ -194,10 +231,16 @@ public:
 		collected = true;		
 		}
 
+	/** getter for sorted */
 	inline bool isSorted(void) const {return sorted;}
+	
+	/** getter for emptyness of the container of the coeffs */
 	inline bool isEmpty(void) const {return x.empty();} 
+
+	/** getter for collected */
 	inline bool isCollected(void) const {return collected;}
 
+	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it retruns the value of the first occurence */
 	inline double getVal(size_t idx) const
 		{
 		double val(0);
@@ -206,6 +249,7 @@ public:
 		return val;		
 		}
 
+	/** scalar product */
 	inline double p_scal(const std::vector<double> & X) const
 	{
 	double val(0);
@@ -218,12 +262,18 @@ public:
 	return val;
 	}
 
+	/** printing function */
 	inline void print(std::ostream & flux) const
 	{ flux<<'{'; std::for_each(x.begin(),x.end(), [&flux](const v_coeff &c){ flux << '{' << c._i << ':' << c.getVal() <<'}';}); flux<<"}\n"; }
 
 private:
+	/** coeffs container */
 std::vector< alg::v_coeff > x;
+
+	/** if true the coeffs are sorted */
 bool sorted; 
+
+/** if true the coeffs have been collected */
 bool collected;
 }; // end class sparseVect
 
@@ -237,9 +287,14 @@ inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.pr
 inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
 	{ return X.p_scal(Y); }
 
+	/** \class r_sparseMat
+read sparse matrix	 
+	The constructor is buiding from a write sparse matrix the data to access efficiently the coefficients values
+       	*/
 class r_sparseMat
 {
 public:
+	/** constructor */
 	inline r_sparseMat(w_sparseMat &A):N(A.getDim())
 		{
 		m.resize(N);// N is the number of lines
@@ -253,17 +308,23 @@ public:
 			std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} );
 			}
 		}
+	/** printing function */
 	inline void print(void) { std::for_each(m.begin(),m.end(),[](sparseVect const& _v) {std::cout << _v;} ); }
 
+	/** getter for the number of lines */
 	inline size_t getDim(void) const {return N;}
 
+	/** getter for an innner sparse vector */
 	inline alg::sparseVect & operator() (const size_t & i) {return m[i];}
 
+	/** getter for a coefficient value */
 	inline double operator() (const size_t &i, const size_t &j) { return m[i].getVal(j); }
 
 private:
-/** dimension of the square sparse matrix */
+/** dimension of the sparse matrix (nb of lines) */
 	const size_t N;
+
+	/** coefficient container */
 	std::vector<sparseVect> m;
 }; // end class r_sparseMat
 
