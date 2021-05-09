@@ -18,6 +18,10 @@
 
 #include "alg_iter.h"
 
+/** \namespace alg
+ * grab altogether sparse matrix, vector and dedicated functions
+*/
+
 namespace alg
 {
 /** 
