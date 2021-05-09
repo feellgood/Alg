@@ -1,6 +1,16 @@
 #ifndef ALG_H
 #define ALG_H
 
+/** \file alg.h 
+ * \brief set of class to handle sparse matrix operations for gradient conjugate algorithm
+ * two dedicated classes vector and matrix coefficients 
+ * a sparse vector class
+ * a write sparse matrix class
+ * a read sparse matrix class
+ * various vector operations, scalar and direct products; ...
+ * most of the member functions of the classes are using lambdas and C++11 algorithm and numeric
+ * */
+
 #include <iostream>
 #include <cmath> // sqrt,fabs
 #include <algorithm>
