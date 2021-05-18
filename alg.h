@@ -43,8 +43,6 @@ returns scalar product X.Y
 inline double p_scal(const std::vector<double> & X,const std::vector<double> & Y)
 	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); }
 
-
-
 /**
 direct product : Z = X⊗Y
 */
@@ -59,22 +57,13 @@ inline void inc(const std::vector<double> & X, std::vector<double> & Y)
 inline void dec(const std::vector<double> & X, std::vector<double> & Y)
 	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),std::minus<double>()  ); }
 
-
 /** Y += alpha*X       */
 inline void scaled_inc(const std::vector<double> & X,const double alpha, std::vector<double> & Y)
 	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),[alpha] (const double _x,double _y) { return _x+(alpha*_y); }   ); }
 
-
-/**
-euclidian norm of vector X
-*/
+/** euclidian norm of vector X */
 inline double norm(const std::vector<double> & X)
 	{ return sqrt(fabs( p_scal(X,X) )); }
-
-
-
-
-
 
 /** Y = A*X */
 inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)

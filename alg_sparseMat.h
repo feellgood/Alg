@@ -3,7 +3,7 @@
 
 /** \file alg_sparseMat.h 
  \brief read and write sparse matrix
-r_sparseMat : read sparse matrix
+r_sparseMat : read sparse matrix : it is buit calling the constructor with a w_sparseMat as argument
 w_sparseMat : write sparse matrix : a std::vector of m_coeff = triplet of two indices and a value (i,j,value)
  */
 
