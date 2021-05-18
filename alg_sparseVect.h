@@ -104,6 +104,9 @@ bool sorted;
 bool collected;
 }; // end class sparseVect
 
+/** operator<< for sparseVect */
+inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.print(flux); return flux;}
+
 } // end namespace alg
 
 #endif //ALG_SPARSEVECT_H

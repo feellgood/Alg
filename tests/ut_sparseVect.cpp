@@ -1,6 +1,8 @@
 #define BOOST_TEST_MODULE sparseVectTest
 
 #include <boost/test/unit_test.hpp>
+#include <vector>
+#include <iostream>
 
 #include "alg.h" 
 

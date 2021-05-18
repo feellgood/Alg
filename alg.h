@@ -17,7 +17,9 @@
 #include "alg_coeff.h"
 #include "alg_sparseVect.h"
 #include "alg_sparseMat.h"
+#include "alg_denseMat.h"
 #include "alg_iter.h"
+
 
 /** \namespace alg
  * grab altogether sparse matrix, vector and dedicated functions
@@ -72,6 +74,25 @@ const size_t _size = X.size();
 Y.resize(_size);
 if (A.getDim() == _size)
 	{ for(size_t i=0;i<_size;i++) { Y[i]= alg::p_scal(A(i),X); } }
+}
+
+/** C = A*B*/
+inline void mult(alg::denseMat const& A,alg::denseMat const& B,alg::denseMat & C)
+{
+const size_t nrowsA = A.nrows();
+const size_t ncolsA = A.ncols();
+const size_t ncolsB = B.ncols();
+assert(ncolsA==B.nrows());
+
+C.nrows()=nrowsA;
+C.ncols()=ncolsB;
+C.resize(nrowsA*ncolsB);
+for (size_t i=0; i<nrowsA; i++) { 
+    for (size_t j=0; j<ncolsB; j++) {
+        C(i, j) = 0.0;
+        for (size_t k=0; k<ncolsA; k++) { C(i,j) += A(i, k)*B(k, j); }
+      } 
+    }
 }
 
 /** conjugate gradient with diagonal preconditionner */

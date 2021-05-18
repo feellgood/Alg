@@ -1,4 +1,5 @@
 #include "alg.h"
+#include "alg_sparseMat.h"
 
 namespace alg
 {

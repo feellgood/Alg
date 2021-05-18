@@ -72,11 +72,6 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 }; // end class w_sparseMat
 
 
-/** operator<< for w_sparseMat */
-inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.print(flux); return flux;}
-
-/** operator<< for sparseVect */
-inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.print(flux); return flux;}
 
 /** scalar product of a sparse vector and a dense vector */
 inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
@@ -106,6 +101,10 @@ public:
 	/** printing function */
 	inline void print(void) { std::for_each(m.begin(),m.end(),[](sparseVect const& _v) {std::cout << _v;} ); }
 
+/** printing function */
+	inline void print(std::ostream & flux) const
+	{ std::for_each(m.begin(),m.end(),[&flux](sparseVect const& _v) {_v.print(flux);} ); }
+
 	/** getter for the number of lines */
 	inline size_t getDim(void) const {return N;}
 
@@ -122,6 +121,12 @@ private:
 	/** coefficient container */
 	std::vector<sparseVect> m;
 }; // end class r_sparseMat
+
+/** operator<< for r_sparseMat */
+inline std::ostream & operator<<(std::ostream & flux, r_sparseMat const& m) {m.print(flux); return flux;}
+
+/** operator<< for w_sparseMat */
+inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.print(flux); return flux;}
 
 } // end namespace alg
 
