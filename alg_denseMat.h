@@ -21,7 +21,11 @@ usual dense matrix, container for values is a std::vector. Recommended for small
 
 class denseMat : public std::vector<double> {
   protected:
-    size_t _nrows, _ncols;
+/** number of lines */
+	size_t _nrows;
+
+/** number of columns */
+	size_t _ncols;
 
   public:
 /** constructor */
@@ -33,36 +37,44 @@ inline denseMat(std::vector<double> &v, size_t l, size_t c): std::vector<double>
 /** constructor */
 inline denseMat(size_t l, size_t c): std::vector<double>(c*l), _nrows(l), _ncols(c)  { }
 
-/** constructor */
+/** constructor with an initial value for all coefficients */
 inline denseMat(size_t l, size_t c, double value): std::vector<double>(c*l, value), _nrows(l), _ncols(c)  { }
 
-/** constructor */
+/** constructor for an empty dense matrix */
 inline denseMat(void) { _nrows = _ncols = 0; }
 
-
-    inline const double& operator ()(size_t l, size_t c) const {
-      assert(l < _nrows && c < _ncols);
-      return *(this->begin() + c*_nrows+l);
-    }
-    inline double& operator ()(size_t l, size_t c) {
+/** getter for the value of the coefficient */
+inline const double& operator ()(size_t l, size_t c) const {
       assert(l < _nrows && c < _ncols);
       return *(this->begin() + c*_nrows+l);
     }
 
+/** setter for the value of the coefficient */    
+inline double& operator ()(size_t l, size_t c) {
+      assert(l < _nrows && c < _ncols);
+      return *(this->begin() + c*_nrows+l);
+    }
+
+/** convert back a denseMat to a std::vector */
     const std::vector<double> &as_vector(void) const { return *this; }
 
+/** setter for the number of lines */
     inline size_t&       nrows(void)        { return _nrows; }
 
+/** getter for the number of lines */
     inline const size_t& nrows(void) const  { return _nrows; }
 
+/** setter for the number of columns */
     inline size_t&       ncols(void)        { return _ncols; }
 
+/** getter for the number of columns */
     inline const size_t& ncols(void) const  { return _ncols; }
 
+/** swap */
     void swap(denseMat &m)
     { std::vector<double>::swap(m); std::swap(_ncols, m._ncols); std::swap(_nrows, m._nrows); }
 
-    /** clear function */
+    /** clear function, all coefficients values are set to zero */
     inline void clear()
     { std::for_each(this->begin(),this->end(), [](double& x) { x=0.0; }); }
 
