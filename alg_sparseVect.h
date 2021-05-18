@@ -2,8 +2,12 @@
 #define ALG_SPARSEVECT_H
 
 /** \file alg_sparseVect.h 
- * \brief set of class to handle sparse matrix and vector coefficients
- * two dedicated classes vector and matrix coefficients 
+ * \brief sparse vector
+a sparse vector is a collection of v_coeff, which is a couple composed of an index and a value
+to populate with coefficients the sparse vector, use push_back method
+If several v_coeff have the same index, then they are summed when calling the method collect()
+It is possible to kill v_coeffs with index idx, calling kill(idx), it will erase all v_ceffs with index idx
+It is also possible to erase v_coeffs with value zero calling kill_zero, it may be usefull to spare some memory.  
  * */
 
 #include <vector>
