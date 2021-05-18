@@ -76,7 +76,7 @@ if (A.getDim() == _size)
 	{ for(size_t i=0;i<_size;i++) { Y[i]= alg::p_scal(A(i),X); } }
 }
 
-/** C = A*B*/
+/** C = A*B */
 inline void mult(alg::denseMat const& A,alg::denseMat const& B,alg::denseMat & C)
 {
 const size_t nrowsA = A.nrows();

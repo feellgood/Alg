@@ -7,8 +7,9 @@ namespace alg
 void cg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
-std::vector<double> p(x.size()),q(x.size()),r(x.size()),z(x.size());
-std::vector<double> diag_precond(x.size());    
+const size_t DIM = x.size();
+
+std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM),diag_precond(DIM);    
 
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
 for(unsigned int i=0;i<diag_precond.size();i++)
