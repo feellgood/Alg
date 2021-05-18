@@ -1,5 +1,5 @@
 set(PROJECT_MAJOR_VERSION 0)
-set(PROJECT_MINOR_VERSION 0)
+set(PROJECT_MINOR_VERSION 1)
 set(PROJECT_PATCH_VERSION 0)
 #===========================================================================
 
@@ -23,7 +23,7 @@ MESSAGE(STATUS "version = ${ALG_VERSION}")
 
 set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++11 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
-set(HEADERS alg.h alg_iter.h)
+set(HEADERS alg.h alg_iter.h alg_coeff.h)
 set(SOURCES alg_cg_dir.cpp)
 
 ADD_EXECUTABLE(exe main.cpp ${HEADERS} ${SOURCES})

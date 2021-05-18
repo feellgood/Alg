@@ -3,7 +3,6 @@
 
 /** \file alg.h 
  * \brief set of class to handle sparse matrix operations for gradient conjugate algorithm
- * two dedicated classes vector and matrix coefficients 
  * a sparse vector class
  * a write sparse matrix class
  * a read sparse matrix class
@@ -16,6 +15,7 @@
 #include <algorithm>
 #include <numeric> // inner_product
 
+#include "alg_coeff.h"
 #include "alg_iter.h"
 
 /** \namespace alg
@@ -71,76 +71,7 @@ inline double norm(const std::vector<double> & X)
 	{ return sqrt(fabs( p_scal(X,X) )); }
 
 
-/**
-\class v_coeff
-container for pairs of indice nd double value to represent a coefficient of a sparse vector
-*/
-class v_coeff
-{
-public:
-	/** constructor */
-	inline v_coeff(const size_t i,const double c):_i(i),_c(c) {}
-	
-	/** getter for the value of the coefficient */
-	inline double getVal(void) const {return _c;} 
-	
-	/** increment value with val */
-	inline void inc(const double val) { _c += val;}
-/**
-lexicographic order
-*/
-	inline bool operator< (const v_coeff &c) const 
-	{ return (this->_i < c._i); }
 
-/**
-two coeffs are equal when their indices are equals
-*/
-	inline bool operator== (const v_coeff &c) const
-	{ return (this->_i == c._i); }
-
-	/** index of the coefficient */
-	size_t _i;
-
-private:
-/** value of the coefficient */	
-	double _c;
-}; //end class v_coeff
-
-
-/**
-\class m_coeff
-container for a couple of indices and a double value to represent a coefficient of a sparse matrix
-*/
-class m_coeff
-{
-public:
-	/** constructor */
-	inline m_coeff(const size_t i,const size_t j,const double c):_i(i),_j(j),_c(c) {}
-	
-	/** getter for the value of the coefficient */
-	inline double getVal(void) const {return _c;} 
-/**
-lexicographic order
-*/
-	inline bool operator< (const m_coeff &c) const 
-	{ return ( (this->_i < c._i)||( (this->_i == c._i)&& (this->_j < c._j) ) ); }
-
-/**
-two coeffs are equal when their indices are equals
-*/
-	inline bool operator== (const m_coeff &c) const
-	{ return ((this->_i == c._i)&&(this->_j == c._j)); }
-
-	/** first index */
-	size_t _i;
-
-	/** second index */
-	size_t _j;
-
-private:
-	/** value of the coefficient */	
-	double _c;
-}; //end class m_coeff 
 
 /**
 \class w_sparseMat
@@ -353,7 +284,7 @@ if (A.getDim() == _size)
 
 /** conjugate gradient with diagonal preconditionner */
 void cg_dir(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter);
-}
+} // end namespace alg
 
 #endif //ALG_H
 
