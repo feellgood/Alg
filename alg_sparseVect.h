@@ -77,10 +77,10 @@ public:
 		}
 
 	/** scalar product */
-	inline double p_scal(const std::vector<double> & X) const
+	inline double dot(const std::vector<double> & X) const
 	{
 	double val(0);
-	if (!isCollected()) {std::cout << "warning : cannot p_scal on an uncollected sparseVect" << std::endl;exit(1);}
+	if (!isCollected()) {std::cout << "warning : cannot dot on an uncollected sparseVect" << std::endl;exit(1);}
 	else
 		{const unsigned int X_dim = X.size();
 		for(auto it=x.begin();it!=x.end();++it)

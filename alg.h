@@ -42,7 +42,7 @@ inline void scaled( const double alpha, std::vector<double> & Y)
 /**
 returns scalar product X.Y
 */
-inline double p_scal(const std::vector<double> & X,const std::vector<double> & Y)
+inline double dot(const std::vector<double> & X,const std::vector<double> & Y)
 	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); }
 
 /**
@@ -52,20 +52,20 @@ inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y
 	{ for(unsigned int i=0;i<Z.size();i++) Z[i]=X[i]*Y[i]; }
 
 /** Y += X       */
-inline void inc(const std::vector<double> & X, std::vector<double> & Y)
+inline void add(const std::vector<double> & X, std::vector<double> & Y)
 	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),std::plus<double>()  ); }
 
 /** Y -= X       */
-inline void dec(const std::vector<double> & X, std::vector<double> & Y)
+inline void sub(const std::vector<double> & X, std::vector<double> & Y)
 	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),std::minus<double>()  ); }
 
 /** Y += alpha*X       */
-inline void scaled_inc(const std::vector<double> & X,const double alpha, std::vector<double> & Y)
+inline void scaled_add(const std::vector<double> & X,const double alpha, std::vector<double> & Y)
 	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),[alpha] (const double _x,double _y) { return _x+(alpha*_y); }   ); }
 
 /** euclidian norm of vector X */
 inline double norm(const std::vector<double> & X)
-	{ return sqrt(fabs( p_scal(X,X) )); }
+	{ return sqrt(fabs( alg::dot(X,X) )); }
 
 /** Y = A*X */
 inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
@@ -73,7 +73,7 @@ inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<d
 const size_t _size = X.size();
 Y.resize(_size);
 if (A.getDim() == _size)
-	{ for(size_t i=0;i<_size;i++) { Y[i]= alg::p_scal(A(i),X); } }
+	{ for(size_t i=0;i<_size;i++) Y[i]= A(i).dot(X); }
 }
 
 /** C = A*B */

@@ -75,7 +75,7 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 
 /** scalar product of a sparse vector and a dense vector */
 inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
-	{ return X.p_scal(Y); }
+	{ return X.dot(Y); }
 
 	/** \class r_sparseMat
 read sparse matrix	 
