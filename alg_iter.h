@@ -154,7 +154,7 @@ inline bool finished(double nr) {
     
 /** returns true if the algo has converged according the convergence criterias through a vector */
 inline bool finished_vect(const std::vector<double> &v)
-    { double norm2 =alg::norm(v); return finished(norm2); }
+    { return finished( alg::norm(v) ); }
 
   };
 }
