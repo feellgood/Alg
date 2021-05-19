@@ -23,10 +23,10 @@ MESSAGE(STATUS "version = ${ALG_VERSION}")
 
 set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++11 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
-set(HEADERS alg.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h)
-set(SOURCES alg_cg_dir.cpp)
+set(HEADERS alg.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_cg_dir.h)
+set(SOURCES main.cpp)
 
-ADD_EXECUTABLE(exe main.cpp ${HEADERS} ${SOURCES})
+ADD_EXECUTABLE(exe ${HEADERS} ${SOURCES})
 
 #===========================================================================
 # unit tests, by default it is not built. you have to switch it ON while cmaking to build the unit tests and to be able to call 'make test' afterward:

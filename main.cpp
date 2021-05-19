@@ -3,6 +3,7 @@
 #include <boost/tokenizer.hpp>
 
 #include "alg.h"
+#include "alg_cg_dir.h"
 
 int main()
 {
