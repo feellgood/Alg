@@ -76,6 +76,21 @@ if (A.getDim() == _size)
 	{ for(size_t i=0;i<_size;i++) Y[i]= A(i).dot(X); }
 }
 
+/** Y = trans(X)*A */
+inline void transposed_mult(std::vector<double> const& X,alg::denseMat const& A,std::vector<double> &Y)
+{
+const size_t ncolsA = A.ncols();
+Y.resize(ncolsA);
+const size_t _size = X.size();
+
+for (int j=0; j<ncolsA; j++) { 
+       double val(0);
+       for (size_t i=0; i<_size; i++) val += X[i]*A(i,j);
+       Y[j]=val;
+       }
+}
+
+
 /** C = A*B */
 inline void mult(alg::denseMat const& A,alg::denseMat const& B,alg::denseMat & C)
 {
@@ -96,6 +111,8 @@ for (size_t i=0; i<nrowsA; i++) {
 	}
      }
 }
+
+
 
 /** conjugate gradient with diagonal preconditionner */
 void cg_dir(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter);
