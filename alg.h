@@ -67,13 +67,29 @@ inline void scaled_add(const std::vector<double> & X,const double alpha, std::ve
 inline double norm(const std::vector<double> & X)
 	{ return sqrt(fabs( alg::dot(X,X) )); }
 
-/** Y = A*X */
+/** Y = A*X with sparseMat A */
 inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
 {
 const size_t _size = X.size();
 Y.resize(_size);
 if (A.getDim() == _size)
 	{ for(size_t i=0;i<_size;i++) Y[i]= A(i).dot(X); }
+}
+
+/** Y = A*X with denseMat A */
+inline void mult(alg::denseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
+{
+const size_t _size = X.size();
+const size_t ncolsA = A.ncols();
+const size_t nrowsA = A.nrows();
+assert(ncolsA==_size);
+
+Y.resize(_size);
+for (size_t i=0; i<nrowsA; i++) {
+       double val(0);
+       for (size_t j=0; j<_size; j++) val += A(i,j)*X[j];
+       Y[i]=val;
+       }
 }
 
 /** Y = trans(X)*A */
@@ -83,7 +99,7 @@ const size_t ncolsA = A.ncols();
 Y.resize(ncolsA);
 const size_t _size = X.size();
 
-for (int j=0; j<ncolsA; j++) { 
+for (size_t j=0; j<ncolsA; j++) { 
        double val(0);
        for (size_t i=0; i<_size; i++) val += X[i]*A(i,j);
        Y[j]=val;
