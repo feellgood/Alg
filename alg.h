@@ -88,11 +88,13 @@ C.nrows()=nrowsA;
 C.ncols()=ncolsB;
 C.resize(nrowsA*ncolsB);
 for (size_t i=0; i<nrowsA; i++) { 
-    for (size_t j=0; j<ncolsB; j++) {
-        C(i, j) = 0.0;
-        for (size_t k=0; k<ncolsA; k++) { C(i,j) += A(i, k)*B(k, j); }
-      } 
-    }
+    for (size_t j=0; j<ncolsB; j++) 
+	{
+        double val(0);
+        for (size_t k=0; k<ncolsA; k++) { val += A(i, k)*B(k, j); }
+	C(i, j) = val;      
+	}
+     }
 }
 
 /** conjugate gradient with diagonal preconditionner */
