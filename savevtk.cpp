@@ -13,8 +13,8 @@ str = ostr.str();
 
 cout << boost::format("%5t saving %50T. ") << str << endl; 
 
-ofstream fout(str.c_str(), ios::out);
-if (!fout){
+ofstream fout(str, ios::out);
+if (fout.fail()){
     cerr << "pb ouverture fichier : " << str << "en ecriture" << endl;
     exit(1);}
 
