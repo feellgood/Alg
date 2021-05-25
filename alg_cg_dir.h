@@ -4,7 +4,7 @@
 namespace alg
 {
 
-void cg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter) 
+double cg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();
@@ -44,6 +44,7 @@ while (!iter.finished_vect(r)) {
       rho_1 = rho;
       ++iter;
           }   
+return alg::norm(r)/alg::norm(b);
 }
 
 }//end namespace alg

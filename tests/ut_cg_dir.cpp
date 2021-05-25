@@ -63,8 +63,8 @@ iter.set_noisy(VERBOSE);
 
 Xw.clear();
 Xw.resize(NOD);
-alg::cg_dir(Kr,Xw,Lr,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
-std::cout << "finished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << std::endl;
+double res = alg::cg_dir(Kr,Xw,Lr,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+std::cout << "residu= " << res << "\tfinished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << std::endl;
 
 for (int i=0; i<NOD; i+=50)
 	{ 
