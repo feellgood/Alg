@@ -5,9 +5,33 @@
 #include "alg.h"
 #include "alg_cg_dir.h"
 
-int main()
+#include "fem.h"
+
+int main(int argc,char* argv[])
 {
-std::cout << "this is alg speaking: hello world!" << std::endl;
+Fem fem;
+std::string fileMsh;
+
+
+if (argc == 2)
+	{
+	fileMsh = argv[1];
+	std::cout << "mesh file = " << fileMsh << std::endl;	
+	fem.pbname = fileMsh;	
+	}
+else std::cout << "missing argument : meshFile" << std::endl;
+lecture(fem);
+
+cout << "fin de lecture " << endl;
+
+femutil(fem);
+chapeaux(fem);
+affichage(fem);
+
+solve(fem);  
+
+savesol(fem);
+savevtk(fem);
 return 0;
 }
 
