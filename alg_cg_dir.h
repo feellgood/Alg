@@ -4,7 +4,7 @@
 namespace alg
 {
 
-double cg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter) 
+double cg_dir(alg::r_sparseMat& A, std::vector<double> & x, std::vector<double> & b, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();
@@ -15,6 +15,10 @@ std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM),diag_precond(DIM);
 for(unsigned int i=0;i<diag_precond.size();i++)
 	{ diag_precond[i] = 1.0/A(i,i); }
 
+alg::mult(A, xd, z); 
+alg::sub(z, b);      // b = b - A xd
+
+std::for_each(ld.begin(),ld.end(),[&b,&diag_precond](const size_t _i){ b[_i] = 0.0; diag_precond[_i] = 0.0; });
 iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
@@ -22,7 +26,7 @@ std::vector<double> v_temp(x.size());
 alg::mult(A,x,v_temp);// v_temp = A x;
 alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
 
-std::for_each(ld.begin(),ld.end(),[&r,&diag_precond](const size_t _i){ r[_i] = 0.0; diag_precond[_i] = 0.0; });
+std::for_each(ld.begin(),ld.end(),[&r](const size_t _i){ r[_i] = 0.0; });
 
 alg::p_direct(diag_precond,r,z);//mult(P, r, z);
 rho = alg::dot(z,r);//rho = vect_sp(z, r);
@@ -44,6 +48,7 @@ while (!iter.finished_vect(r)) {
       rho_1 = rho;
       ++iter;
           }   
+alg::add(xd, x);//x += xd
 return alg::norm(r)/alg::norm(b);
 }
 

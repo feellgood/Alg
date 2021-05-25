@@ -44,7 +44,7 @@ ld.push_back(NOD-1);
 Vd[NOD-1]=1.0;
 
 // valeurs de dirichlet inserees dans le vecteur solution
-std::for_each(ld.begin(),ld.end(),[&Xw,&Vd] (size_t _i){ Xw[_i] = Vd[_i]; } );
+//std::for_each(ld.begin(),ld.end(),[&Xw,&Vd] (size_t _i){ Xw[_i] = Vd[_i]; } );
 
 alg::r_sparseMat Kr(Kw);
 
@@ -63,12 +63,12 @@ iter.set_noisy(VERBOSE);
 
 Xw.clear();
 Xw.resize(NOD);
-double res = alg::cg_dir(Kr,Xw,Lr,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
 std::cout << "residu= " << res << "\tfinished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << std::endl;
 
 for (int i=0; i<NOD; i+=50)
 	{ 
-	double val = Xw[i]+Vd[i];
+	double val = Xw[i];//Xw[i]+Vd[i];
 	double val_ref = (double) (i/((double) (NOD-1)));	
 	//std::cout << i << "\t" << val << "\t" << Vd[i] << std::endl; 	
 	std::cout << i << " : val = " << val << "\t" << "val_ref = " << val_ref << std::endl; 

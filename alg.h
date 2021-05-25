@@ -129,9 +129,12 @@ for (size_t i=0; i<nrowsA; i++) {
 }
 
 
+/** conjugate gradient with diagonal preconditioner */
+void cg_dir(alg::r_sparseMat& A, std::vector<double> & x, std::vector<double> & b, alg::iteration &iter);
 
-/** conjugate gradient with diagonal preconditionner, returns residu */
-double cg_dir(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, const std::vector<size_t>& ld, alg::iteration &iter);
+
+/** conjugate gradient with diagonal preconditionner with Dirichlet conditions, returns residu */
+double cg_dir(r_sparseMat& A, std::vector<double> & x, std::vector<double> & b, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter);
 } // end namespace alg
 
 #endif //ALG_H

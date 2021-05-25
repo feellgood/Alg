@@ -88,9 +88,6 @@ std::sort(ld.begin(), ld.end());
 auto last = std::unique(ld.begin(), ld.end());
 ld.erase(last, ld.end());
 
-// valeurs de dirichlet inserees dans le vecteur solution
-std::for_each(ld.begin(),ld.end(),[&Xw,&Vd] (size_t _i){ Xw[_i] = Vd[_i]; } );
-
 /* equilibrage des lignes */
 /*
 for (int i=0; i<NOD; i++){
@@ -121,13 +118,13 @@ time.restart();
 
 Xw.clear();
 Xw.resize(NOD);
-double res = alg::cg_dir(Kr,Xw,Lr,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
 std::cout << time.elapsed() << std::endl;
 cout << boost::format("%5t in %50T. ");
 std::cout << iter.get_iteration() << "iterations, residu = "<< res << std::endl; 
 
 for (unsigned int i=0; i<NOD; i++) {
     Node &node = fem.node[i];
-    node.sol=Xw[i]+Vd[i];
+    node.sol=Xw[i];
     }
 }
