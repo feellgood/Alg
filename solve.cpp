@@ -33,7 +33,7 @@ std::vector<double> Xw(NOD);
 
 cout << boost::format("%5t assembling %50T. ");
 time.restart();
-double surf=0;
+
 for (int t=0; t<TRI; t++){
     Tri &tri = fem.tri[t];
     const int NBN = Tri::NBN;
@@ -121,12 +121,12 @@ time.restart();
 
 Xw.clear();
 Xw.resize(NOD);
-alg::cg_dir(Kr,Xw,Lr,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+double res = alg::cg_dir(Kr,Xw,Lr,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
 std::cout << time.elapsed() << std::endl;
 cout << boost::format("%5t in %50T. ");
-std::cout << iter.get_iteration() << "iterations "<< std::endl; 
+std::cout << iter.get_iteration() << "iterations, residu = "<< res << std::endl; 
 
-for (int i=0; i<NOD; i++) {
+for (unsigned int i=0; i<NOD; i++) {
     Node &node = fem.node[i];
     node.sol=Xw[i]+Vd[i];
     }
