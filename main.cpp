@@ -5,6 +5,8 @@
 #include "alg.h"
 #include "alg_cg_dir.h"
 
+#include "alg_bicg.h"
+
 #include "fem.h"
 
 int main(int argc,char* argv[])
