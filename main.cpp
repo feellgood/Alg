@@ -3,6 +3,8 @@
 #include <boost/tokenizer.hpp>
 
 #include "alg.h"
+
+#include "alg_cg.h"
 #include "alg_cg_dir.h"
 
 #include "alg_bicg_dir.h"

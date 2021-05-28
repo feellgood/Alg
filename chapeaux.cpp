@@ -2,7 +2,7 @@
 
 void chapeaux(Fem &fem)
 {
-const int TRI = fem.TRI;
+const size_t TRI = fem.TRI;
 const int SEG = fem.SEG;
 
 /********************* SEGMENTS *******************/
@@ -51,8 +51,6 @@ for (size_t t=0; t<TRI; t++){
    double v[NPI]   = {  1/6.,  1/6.,  2/3.};
    double pds[NPI] = {  1/6.,  1/6.,  1/6.};
 
-   double detJ = tri.surf*2.;
-
    alg::denseMat nod(2, NBN);
     for (size_t ie=0; ie<NBN; ie++){
         size_t i= tri.ind[ie];
@@ -92,7 +90,7 @@ for (size_t t=0; t<TRI; t++){
 
         alg::mult(dadu, invJ, da);
 
-        for (int ie=0; ie<NBN; ie++){
+        for (size_t ie=0; ie<NBN; ie++){
             tri.a[ie][npi]   = a[ie];
             tri.dadx[ie][npi]= da(ie,0);
             tri.dady[ie][npi]= da(ie,1);

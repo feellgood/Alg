@@ -40,7 +40,7 @@ for (int t=0; t<TRI; t++){
     alg::denseMat K(NBN, NBN, 0.0);
     vector <double> L(NBN);
     integrales(fem, tri, K, L);   
-    assemblage(fem, tri, K, L, Kw, Lw);
+    assemblage(tri, K, L, Kw, Lw);
     }
 
 
@@ -49,8 +49,8 @@ for (int s=0; s<SEG; s++){
     const int NBN = Seg::NBN;
     alg::denseMat K(NBN, NBN, 0.0);
     vector <double> L(NBN);
-    integrales(fem, seg, K, L);    
-    assemblage(fem, seg, K, L, Kw, Lw);
+    integrales(fem, seg, L);    
+    assemblage(seg, K, L, Kw, Lw);
     }
 
 double ti = time.elapsed();

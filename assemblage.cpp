@@ -1,7 +1,7 @@
 #include "fem.h"
 
 void
-assemblage(Fem &fem, Tri &tri,
+assemblage(Tri &tri,
            alg::denseMat    &Ke, vector <double> &Le,
            alg::w_sparseMat &K,  vector <double> &L)
 {
@@ -19,7 +19,7 @@ for (size_t ie=0; ie<NBN; ie++){
 
 
 void
-assemblage(Fem &fem, Seg &seg,
+assemblage(Seg &seg,
            alg::denseMat    &Ke, vector <double> &Le,
            alg::w_sparseMat &K,  vector <double> &L)
 {

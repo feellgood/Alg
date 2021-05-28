@@ -88,13 +88,13 @@ void savesol(Fem &fem);
 void solve(Fem &fem);
 
 void integrales(Fem &fem, Tri &tri, alg::denseMat &AE, vector <double> &BE);
-void integrales(Fem &fem, Seg &seg, alg::denseMat &AE, vector <double> &BE);
+void integrales(Fem &fem, Seg &seg, vector <double> &BE);
 
-void assemblage(Fem &fem, Tri &tri,
+void assemblage(Tri &tri,
            alg::denseMat    &Ke, vector <double> &Le,
            alg::w_sparseMat &K,  vector <double> &L);
 
-void assemblage(Fem &fem, Seg &seg,
+void assemblage(Seg &seg,
            alg::denseMat    &Ke, vector <double> &Le,
            alg::w_sparseMat &K,  vector <double> &L);
 

@@ -36,7 +36,7 @@ for (int npi=0; npi<NPI; npi++){
     }
 }
 
-void integrales(Fem &fem, Seg &seg, alg::denseMat &AE, vector <double> &BE)
+void integrales(Fem &fem, Seg &seg, vector <double> &BE)
 {
 const int NBN = Seg::NBN;
 const int NPI = Seg::NPI;

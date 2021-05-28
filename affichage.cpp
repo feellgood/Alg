@@ -2,14 +2,6 @@
 
 void affichage(Fem &fem)
 {
-//cout << "process: " << getpid() <<"\n\n";
-
-pair <string,int> p;
-map  <pair<string,int>,double> &param = fem.param;
-
-//int REG = fem.REG;
-//cout << "\n\t regions\t\t" << REG << endl;
-
 int NOD = fem.NOD;
 cout << boost::format("%5t nodes %50T. %d\n") % NOD;
 
