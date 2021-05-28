@@ -5,7 +5,7 @@
 #include "alg.h"
 #include "alg_cg_dir.h"
 
-#include "alg_bicg.h"
+#include "alg_bicg_dir.h"
 
 #include "fem.h"
 
