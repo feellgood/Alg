@@ -67,13 +67,23 @@ public:
 	/** getter for collected */
 	inline bool isCollected(void) const {return collected;}
 
-	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it retruns the value of the first occurence */
+	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
 	inline double getVal(size_t idx) const
 		{
 		double val(0);
 		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
 		if (it != x.end()) val = it->getVal();		
 		return val;		
+		}
+
+	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, so call collect() method before */
+	inline void setVal(const size_t idx,const double val)
+		{
+		if (collected)
+			{
+			auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } );
+			if (it != x.end()) it->setVal(val);
+			}
 		}
 
 	/** scalar product */

@@ -21,6 +21,9 @@ public:
 	/** getter for the value of the coefficient */
 	inline double getVal(void) const {return _c;} 
 	
+	/** setter for the value of the coefficient */
+	inline void setVal(const double val) {_c = val;}
+
 	/** increment value with val */
 	inline void inc(const double val) { _c += val;}
 /**
