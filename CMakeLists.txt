@@ -17,14 +17,26 @@ MESSAGE(STATUS "CXX ${CMAKE_CXX_COMPILER_ID}")
 MESSAGE(STATUS "version = ${ALG_VERSION}")
 
 #===========================================================================
+# these parameters are used to build a config.h file 
+#===========================================================================
+
+execute_process(
+    COMMAND getconf _NPROCESSORS_ONLN
+    OUTPUT_VARIABLE MAX_NB_THREADS OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+MESSAGE(STATUS "MAX_NB_THREADS = ${MAX_NB_THREADS}")
+
+#===========================================================================
 # Compiler options -DNDEBUG
 # -fsanitize=address leak  null (to debug memory leak) undefined
 #===========================================================================
 
 set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++11 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
-set(HEADERS alg.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_cg.h alg_cg_dir.h alg_bicg.h alg_bicg_dir.h)
+set(HEADERS config.h alg.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_cg.h alg_cg_dir.h alg_bicg.h alg_bicg_dir.h)
 set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cpp savesol.cpp savevtk.cpp integrales.cpp assemblage.cpp fem.h)
+
+configure_file(config.h.in ./config.h)
 
 ADD_EXECUTABLE(exe ${HEADERS} ${SOURCES})
 target_link_libraries(exe ANN)
