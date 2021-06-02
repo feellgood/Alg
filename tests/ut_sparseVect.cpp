@@ -23,6 +23,22 @@ v.push_back(1,3.14);
 BOOST_CHECK(v.isSorted() == false);
 }
 
+BOOST_AUTO_TEST_CASE(sparseVect_setter)
+{
+alg::sparseVect v;
+
+std::cout << "********** test sparseVect.setVal " << std::endl;
+v.push_back(1,3.14);
+v.push_back(1,42.0);
+v.push_back(2,2.0);
+v.push_back(0,4.0);
+v.collect();
+v.setVal(2,100.0);
+BOOST_CHECK(v.getVal(2) == (double)100.0);
+}
+
+
+
 
 BOOST_AUTO_TEST_CASE(sparseVect_kill_zero)
 {
