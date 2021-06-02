@@ -76,7 +76,7 @@ public:
 		return val;		
 		}
 
-	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, so call collect() method before */
+	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, call collect() method before if needed */
 	inline void setVal(const size_t idx,const double val)
 		{
 		if (collected)
