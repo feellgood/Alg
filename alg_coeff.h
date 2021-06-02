@@ -24,6 +24,9 @@ public:
 	/** setter for the value of the coefficient */
 	inline void setVal(const double val) {_c = val;}
 
+/** ref to coeff value */
+inline double & valRef(void) {return _c;}	
+
 	/** increment value with val */
 	inline void inc(const double val) { _c += val;}
 /**

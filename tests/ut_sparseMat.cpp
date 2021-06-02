@@ -43,6 +43,10 @@ BOOST_CHECK( y[1] == (double)0.5 );
 BOOST_CHECK( y[2] == (double)0 );
 BOOST_CHECK( y[3] == (double)0 );
 BOOST_CHECK( y[4] == (double)160 );
+
+r_m(0,0) = 1.0;
+alg::mult(r_m,x,y);
+BOOST_CHECK( y[0] == (double)0.5 );
 }
 
 BOOST_AUTO_TEST_SUITE_END()

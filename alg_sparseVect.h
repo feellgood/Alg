@@ -41,6 +41,13 @@ public:
 	inline void kill_zero(void) 
 		{x.erase(std::remove_if(x.begin(),x.end(),[this](alg::v_coeff &c) { return (c.getVal() == 0); }),x.end() );}
 
+/** return true if the coefficient exists */
+	inline bool exist(const size_t &idx) const
+		{ 
+		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
+		return (it != x.end());
+		}
+
 	/** collect method is sorting all v_coeffs, eventually with redundant indices, and is summing coeffs with same indices. It removes the coeffs that have been summed. */
 	inline void collect(void)
 		{
@@ -68,12 +75,19 @@ public:
 	inline bool isCollected(void) const {return collected;}
 
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
+	
 	inline double getVal(size_t idx) const
 		{
 		double val(0);
 		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
 		if (it != x.end()) val = it->getVal();		
 		return val;		
+		}
+
+inline double & getValRef(size_t idx)
+		{
+		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
+		return it->valRef();// carefull might be out of bounds when it == x.end()	
 		}
 
 	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, call collect() method before if needed */

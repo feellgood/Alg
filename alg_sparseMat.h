@@ -108,11 +108,18 @@ public:
 	/** getter for the number of lines */
 	inline size_t getDim(void) const {return N;}
 
+/** return true if the coefficient exists */
+	inline bool exist(const size_t &i, const size_t &j) const { return ( (i<N)&&(m[i].exist(j)) ); }
+
 	/** getter for an innner sparse vector */
 	inline alg::sparseVect & operator() (const size_t & i) {return m[i];}
 
-	/** getter for a coefficient value */
-	inline double operator() (const size_t &i, const size_t &j) { return m[i].getVal(j); }
+	/** getter/setter for a coefficient value */
+	inline double & operator() (const size_t &i, const size_t &j) 
+		{
+		if(!exist(i,j)) {if(i<N) m[i].push_back(j,0);else std::cout<< "out of bounds : N= "<<N <<"; i = " << i <<std::endl; }
+		return m[i].getValRef(j); 
+		}
 
 private:
 /** dimension of the sparse matrix (nb of lines) */
