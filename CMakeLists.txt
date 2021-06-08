@@ -40,6 +40,11 @@ configure_file(config.h.in ./config.h)
 
 ADD_EXECUTABLE(exe ${HEADERS} ${SOURCES})
 target_link_libraries(exe ANN)
+
+install(FILES ${HEADERS} 
+	DESTINATION include/alg
+	COMPONENT headers)
+
 #===========================================================================
 # unit tests, by default it is not built. you have to switch it ON while cmaking to build the unit tests and to be able to call 'make test' afterward:
 #  cmake . -DENABLE_UTESTS=ON
