@@ -90,7 +90,7 @@ public:
 			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
 				{ if (it->_i < N) { m[it->_i].push_back(it->_j,it->getVal());} }	
 			
-			std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} );
+			collect();
 			}
 		}
 	/** printing function */
@@ -114,6 +114,9 @@ public:
 
 	/** setter for a coefficient value */
 	inline void setVal (const size_t &i, const size_t &j, const double val) { return m[i].setVal(j, val); }
+
+	/** call collect method for all sparse vectors  */
+	inline void collect(void) { std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} ); }
 
 private:
 /** dimension of the sparse matrix (nb of lines) */
