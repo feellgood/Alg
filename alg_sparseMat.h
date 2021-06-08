@@ -118,6 +118,9 @@ public:
 	/** call collect method for all sparse vectors  */
 	inline void collect(void) { std::for_each(m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} ); }
 
+	/** call collect method for sparse vector of index i  */
+	inline void collect(const size_t &i) { m[i].collect(); }
+
 private:
 /** dimension of the sparse matrix (nb of lines) */
 	const size_t N;
