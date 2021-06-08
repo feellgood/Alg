@@ -72,11 +72,6 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 }; // end class w_sparseMat
 
 
-
-/** scalar product of a sparse vector and a dense vector */
-inline double p_scal(sparseVect const& X,const std::vector<double> & Y)
-	{ return X.dot(Y); }
-
 	/** \class r_sparseMat
 read sparse matrix	 
 	The constructor is buiding from a write sparse matrix the data to access efficiently the coefficients values

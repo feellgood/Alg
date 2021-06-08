@@ -128,6 +128,9 @@ bool sorted;
 bool collected;
 }; // end class sparseVect
 
+/** scalar product of a sparse vector and a dense vector */
+inline double dot(sparseVect const& X,const std::vector<double> & Y) { return X.dot(Y); }
+
 /** operator<< for sparseVect */
 inline std::ostream & operator<<(std::ostream & flux, sparseVect const& v) {v.print(flux); return flux;}
 

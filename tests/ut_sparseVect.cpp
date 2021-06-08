@@ -123,7 +123,7 @@ v.collect();// to set Collected flag to true
 
 std::cout << v << std::endl;
 
-double val = alg::p_scal(v,x);
+double val = alg::dot(v,x);
 std::cout << "val (should be 1.57)=" << val << std::endl;
 BOOST_TEST(val == (double)1.57);
 }
