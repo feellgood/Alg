@@ -114,12 +114,11 @@ public:
 	/** getter for an innner sparse vector */
 	inline alg::sparseVect & operator() (const size_t & i) {return m[i];}
 
-	/** getter/setter for a coefficient value */
-	inline double & operator() (const size_t &i, const size_t &j) 
-		{
-		if(!exist(i,j)) {if(i<N) m[i].push_back(j,0);else std::cout<< "out of bounds : N= "<<N <<"; i = " << i <<std::endl; }
-		return m[i].getValRef(j); 
-		}
+	/** getter for a coefficient value */
+	inline double operator() (const size_t &i, const size_t &j) const { return m[i].getVal(j); }
+
+	/** setter for a coefficient value */
+	inline void setVal (const size_t &i, const size_t &j, const double val) { return m[i].setVal(j, val); }
 
 private:
 /** dimension of the sparse matrix (nb of lines) */
