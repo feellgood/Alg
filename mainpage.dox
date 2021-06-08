@@ -10,11 +10,21 @@ Compile with cmake
 
 some unit tests are also implemented, not build by default.
 
-To build them, type:
+To build the unit tests, type:
 
 cmake . -DENABLE_UTESTS=ON
 
 make test
+
+## installation
+type in a console: 
+
+sudo make install
+
+all headers will go to usr/local/include/alg
+
+You can uninstall all the header files typing:
+sudo xargs rm < install_manifest.txt
 
 ## Dependencies : 
 * C++ 11 or above, STL
