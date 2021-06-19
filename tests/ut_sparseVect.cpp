@@ -23,6 +23,32 @@ v.push_back(1,3.14);
 BOOST_CHECK(v.isSorted() == false);
 }
 
+BOOST_AUTO_TEST_CASE(sparseVect_implicit_affectation)
+{
+std::cout << "********** test implicit operator= " << std::endl;
+alg::sparseVect v;
+
+v.push_back(1,3.14);
+v.push_back(2,2.0);
+v.push_back(0,4.0);
+
+alg::sparseVect a = v;
+
+BOOST_CHECK(a.exist(0) == true);
+BOOST_CHECK(a.getVal(0) == (double)4.0);
+BOOST_CHECK(a.exist(1) == true);
+BOOST_CHECK(a.getVal(1) == (double)3.14);
+BOOST_CHECK(a.exist(2) == true);
+BOOST_CHECK(a.getVal(2) == (double)2.0);
+BOOST_CHECK(a.exist(3) == false);
+
+BOOST_CHECK( a.isSorted() == v.isSorted() );
+BOOST_CHECK( a.isCollected() == v.isCollected() );
+v.kill(1);
+BOOST_CHECK(a.exist(1) == true);
+BOOST_CHECK(a.getVal(1) == (double)3.14);
+}
+
 BOOST_AUTO_TEST_CASE(sparseVect_setter)
 {
 alg::sparseVect v;
@@ -36,6 +62,8 @@ v.collect();
 v.setVal(2,100.0);
 BOOST_CHECK(v.getVal(2) == (double)100.0);
 }
+
+
 
 BOOST_AUTO_TEST_CASE(sparseVect_kill_zero)
 {
