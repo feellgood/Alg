@@ -62,7 +62,11 @@ public:
 	
 	/** getter for the value of the coefficient */
 	inline double getVal(void) const {return _c;} 
-/**
+
+	/** setter for the value of the coefficient */
+	inline void setVal(const double _val) { _c = _val; }
+
+	/**
 lexicographic order
 */
 	inline bool operator< (const m_coeff &c) const 
