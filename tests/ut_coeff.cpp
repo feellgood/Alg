@@ -23,6 +23,25 @@ BOOST_CHECK( a.getVal() == (double) 25.0 );
 BOOST_CHECK( b.getVal() == (double) 3.14 );
 }
 
+BOOST_AUTO_TEST_CASE(affectation_by_ref_v_coeff)
+{
+std::cout<< "check valRef on v_coeff" <<std::endl;
+
+alg::v_coeff a(42,3.14);
+a.valRef() = 25.0;
+BOOST_CHECK( a.getVal() == (double) 25.0 );
+
+double &val = a.valRef();
+val = 4;
+BOOST_CHECK( a.getVal() == (double) 4.0 );
+alg::v_coeff b = a;
+val = 8;
+BOOST_CHECK( b.getVal() == (double) 4.0 );
+BOOST_CHECK( a.getVal() == (double) 8.0 );
+}
+
+
+
 BOOST_AUTO_TEST_CASE(equal_index_v_coeff)
 {
 std::cout<< "check overloaded operator== on v_coeff" <<std::endl;
