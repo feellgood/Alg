@@ -77,6 +77,19 @@ BOOST_CHECK( a.getVal() == (double) 25.0 );
 BOOST_CHECK( b.getVal() == (double) 3.14 );
 }
 
+BOOST_AUTO_TEST_CASE(operator_comp_m_coeff)
+{
+std::cout<< "check operator< on m_coeff" <<std::endl;
+
+alg::m_coeff a(42,666,3.14);
+alg::m_coeff b(42,667,5.0);
+alg::m_coeff c(1,667,5.0);
+
+BOOST_CHECK( (a < a) == false );
+BOOST_CHECK( a < b );
+BOOST_CHECK( c < a );
+}
+
 BOOST_AUTO_TEST_CASE(equal_index_m_coeff)
 {
 std::cout<< "check overloaded operator== on m_coeff" <<std::endl;
