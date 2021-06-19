@@ -40,7 +40,16 @@ BOOST_CHECK( b.getVal() == (double) 4.0 );
 BOOST_CHECK( a.getVal() == (double) 8.0 );
 }
 
+BOOST_AUTO_TEST_CASE(operator_comp_v_coeff)
+{
+std::cout<< "check operator< on v_coeff" <<std::endl;
 
+alg::v_coeff a(42,3.14);
+alg::v_coeff b(1,5.0);
+
+BOOST_CHECK( (a < a) == false );
+BOOST_CHECK( b < a );
+}
 
 BOOST_AUTO_TEST_CASE(equal_index_v_coeff)
 {
