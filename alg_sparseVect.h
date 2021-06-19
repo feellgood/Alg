@@ -117,6 +117,12 @@ inline double & getValRef(size_t idx)
 	inline void print(std::ostream & flux) const
 	{ flux<<'{'; std::for_each(x.begin(),x.end(), [&flux](const v_coeff &c){ flux << '{' << c._i << ':' << c.getVal() <<'}';}); flux<<"}\n"; }
 
+	/** iterator : begin */
+	inline std::vector<alg::v_coeff>::iterator begin() { return x.begin(); }
+
+	/**iterator : end */
+	inline std::vector<alg::v_coeff>::iterator end() { return x.end(); }
+
 private:
 	/** coeffs container */
 std::vector< alg::v_coeff > x;
