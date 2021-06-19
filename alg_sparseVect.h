@@ -84,7 +84,8 @@ public:
 		return val;		
 		}
 
-inline double & getValRef(size_t idx)
+	/** return a reference to the value of the coefficient idx */
+	inline double & getValRef(size_t idx)
 		{
 		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
 		return it->valRef();// carefull might be out of bounds when it == x.end()	
@@ -122,6 +123,18 @@ inline double & getValRef(size_t idx)
 
 	/**iterator : end */
 	inline std::vector<alg::v_coeff>::iterator end() { return x.end(); }
+
+	/** const_iterator : begin */
+	inline std::vector<alg::v_coeff>::const_iterator begin() const { return x.begin(); } 
+
+	/** const_iterator : end */
+	inline std::vector<alg::v_coeff>::const_iterator end() const { return x.end(); } 
+
+	/** const_iterator : cbegin */
+	inline std::vector<alg::v_coeff>::const_iterator cbegin() const { return x.cbegin(); } 
+
+	/** const_iterator : cend */
+	inline std::vector<alg::v_coeff>::const_iterator cend() const { return x.cend(); } 
 
 private:
 	/** coeffs container */
