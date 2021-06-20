@@ -3,10 +3,12 @@
 namespace alg
 {
 
-void bicg(alg::r_sparseMat& A, std::vector<double> & x, std::vector<double> & b, alg::iteration &iter) 
+double bicg(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();
+if (b.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
+
 std::vector<double> p(DIM), phat(DIM), shat(DIM), r(DIM), rt(DIM), s(DIM), t(DIM), v(DIM), diag_precond(DIM);    
 
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
@@ -20,7 +22,7 @@ alg::mult(A, x, v);         // v = A x;
 alg::sub(v, r);             // r -= v; donc r = b - A x;
 
 rt.assign(r.begin(),r.end()); // copy(r, rt);
-p .assign(r.begin(),r.end()); // copy(r, p );
+p.assign(r.begin(),r.end()); // copy(r, p );
 
 while (!iter.finished_vect(r)) {
 
@@ -60,6 +62,7 @@ while (!iter.finished_vect(r)) {
       rho_2 = rho_1;
       ++iter;
       }   
+return alg::norm(r)/alg::norm(b);
 }
 
 }//end namespace alg

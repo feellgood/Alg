@@ -3,11 +3,14 @@
 namespace alg
 {
 
-void bicg_dir(alg::r_sparseMat& A, std::vector<double> & x, std::vector<double> & b, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
+double bicg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();
-std::vector<double> p(DIM), phat(DIM), shat(DIM), r(DIM), rt(DIM), s(DIM), t(DIM), v(DIM), diag_precond(DIM);    
+if (rhs.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
+
+std::vector<double> p(DIM), phat(DIM), shat(DIM), r(DIM), rt(DIM), s(DIM), t(DIM), v(DIM), diag_precond(DIM), b(DIM);    
+b.assign(rhs.begin(),rhs.end());// b = rhs;
 
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
 for(unsigned int i=0;i<diag_precond.size();i++)
@@ -25,7 +28,7 @@ alg::sub(v, r);             // r -= v; donc r = b - A x;
 
 std::for_each(ld.begin(),ld.end(),[&r](const size_t _i){ r[_i] = 0.0; });
 rt.assign(r.begin(),r.end()); // copy(r, rt);
-p .assign(r.begin(),r.end()); // copy(r, p );
+p.assign(r.begin(),r.end()); // copy(r, p );
 
 double tol=iter.get_resmax();
 std::cout << "tol : " << tol << std::endl;
@@ -74,6 +77,7 @@ while (!iter.finished_vect(r)) {
       ++iter;
       }   
 alg::add(xd, x); // x = x + xd
+return alg::norm(r)/alg::norm(b);
 }
 
 }//end namespace alg

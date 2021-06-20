@@ -30,6 +30,8 @@ for (size_t i=N; i-- >0;) { // iterate from NOD-1 downto 0
 }
 
 void ilu(alg::r_sparseMat& A){
+A.collect();  //  coefficients are sorted in lexicographic order
+
 size_t N=A.getDim();
 for (size_t i=1; i<N; i++){ // row 0 unchanged  
     alg::sparseVect &Ai = A(i);
@@ -61,12 +63,15 @@ for (size_t i=1; i<N; i++){ // row 0 unchanged
 }
 
 
-double cg_ilu_dir(alg::r_sparseMat& A, std::vector<double> & x, std::vector<double> & b, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter) 
+double cg_ilu_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();
+if (rhs.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
 
-std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM);
+std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM),b(DIM);
+b.assign(rhs.begin(),rhs.end());// b = rhs;
+
 r_sparseMat LU = A;
 ilu(LU);  // approximated LU decomposition    
 

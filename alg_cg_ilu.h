@@ -30,6 +30,8 @@ for (size_t i=N; i-- >0;) { // iterate from NOD-1 downto 0
 }
 
 void ilu(alg::r_sparseMat& A){
+A.collect();  //  coefficients are sorted in lexicographic order
+
 size_t N=A.getDim();
 for (size_t i=1; i<N; i++){ // row 0 unchanged  
     alg::sparseVect &Ai = A(i);
