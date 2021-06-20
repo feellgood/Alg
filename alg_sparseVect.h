@@ -24,6 +24,9 @@ public:
 	/** constructor */
 	inline sparseVect() {sorted = true;collected = false;}
 
+	/** constructor by initialization list */
+	inline sparseVect(std::vector<alg::v_coeff> _v) { x.assign(_v.begin(),_v.end()); sorted = false; collected = false; } 
+
 	/** inserter with value of a coefficient */
 	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; collected=false; }
 

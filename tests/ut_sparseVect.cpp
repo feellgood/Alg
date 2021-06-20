@@ -23,6 +23,22 @@ v.push_back(1,3.14);
 BOOST_CHECK(v.isSorted() == false);
 }
 
+BOOST_AUTO_TEST_CASE(sparseVect_by_array_to_constructor)
+{
+alg::sparseVect v( {alg::v_coeff(1,3.14),alg::v_coeff(3,42.0),alg::v_coeff(0,-1.2345) } );
+
+BOOST_CHECK(v.isSorted() == false);
+
+BOOST_CHECK(v.exist(0) == true);
+BOOST_CHECK(v.getVal(0) == (double)-1.2345);
+BOOST_CHECK(v.exist(1) == true);
+BOOST_CHECK(v.getVal(1) == (double)3.14);
+BOOST_CHECK(v.exist(3) == true);
+BOOST_CHECK(v.getVal(3) == (double)42.0);
+BOOST_CHECK(v.exist(2) == false);
+}
+
+
 BOOST_AUTO_TEST_CASE(sparseVect_implicit_affectation)
 {
 std::cout << "********** test implicit operator= " << std::endl;
