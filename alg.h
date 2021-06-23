@@ -106,6 +106,42 @@ for (size_t j=0; j<ncolsA; j++) {
        }
 }
 
+/** Y = trans(A)*X with denseMat A */
+inline void transposed_mult(alg::denseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
+{
+const size_t _size = X.size();
+const size_t ncolsA = A.ncols();
+const size_t nrowsA = A.nrows();
+assert(nrowsA==_size);
+
+Y.resize(ncolsA);
+for (size_t i=0; i<ncolsA; i++) {
+       double val(0);
+       for (size_t j=0; j<nrowsA; j++) val += A(j, i)*X[j];
+       Y[i]=val;
+       }
+}
+
+/** C = trans(A)*B */
+inline void transposed_mult(alg::denseMat const& A,alg::denseMat const& B,alg::denseMat & C)
+{
+const size_t nrowsA = A.nrows();
+const size_t ncolsA = A.ncols();
+const size_t ncolsB = B.ncols();
+assert(nrowsA==B.nrows());
+
+C.nrows()=ncolsA;
+C.ncols()=ncolsB;
+C.resize(ncolsA*ncolsB);
+for (size_t i=0; i<ncolsA; i++) { 
+    for (size_t j=0; j<ncolsB; j++) 
+		{
+	        double val(0);
+	        for (size_t k=0; k<nrowsA; k++) { val += A(k, i)*B(k, j); }
+		C(i, j) = val;      
+		}
+	}
+}
 
 /** C = A*B */
 inline void mult(alg::denseMat const& A,alg::denseMat const& B,alg::denseMat & C)
@@ -145,6 +181,9 @@ double cg_ilu_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vecto
 
 /** biconjugate gradient and diagonal preconditionner */
 double bicg(r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
+
+/** biconjugate gradient with ILU preconditioner, returns residu */
+double bicg_ilu(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, alg::iteration &iter);
 
 /** biconjugate gradient with dirichlet condtions and diagonal preconditionner */
 double bicg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter);
