@@ -1,5 +1,5 @@
 set(PROJECT_MAJOR_VERSION 1)
-set(PROJECT_MINOR_VERSION 1)
+set(PROJECT_MINOR_VERSION 2)
 set(PROJECT_PATCH_VERSION 0)
 #===========================================================================
 
