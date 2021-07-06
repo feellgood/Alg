@@ -2,7 +2,7 @@
 #define ALG_CORE_H
 
 /** \namespace alg
- * grab altogether sparse matrix, vector and dedicated functions
+ * grab altogether many algebraic functions between various vectors and/or matrices
 */
 
 #include <numeric> // inner_product
