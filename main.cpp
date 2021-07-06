@@ -2,20 +2,12 @@
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 
-#include "alg.h"
-
-#include "alg_cg.h"
-#include "alg_cg_dir.h"
-
-#include "alg_bicg_dir.h"
-
 #include "fem.h"
 
 int main(int argc,char* argv[])
 {
 Fem fem;
 std::string fileMsh;
-
 
 if (argc == 2)
 	{

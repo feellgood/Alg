@@ -20,8 +20,10 @@
 
 #include "ANN.h"		// ANN declarations
 
-#include "alg.h"
-#include "alg_iter.h"
+#include "alg_core.h"
+
+//#include "alg_sparseMat.h"
+//#include "alg_denseMat.h"
 
 const double EPSILON = 1e-12;
 const double VACUUM_PERMITTIVITY = 8.854187817e-12;  /* A^2 s^4 / kg m^3 */

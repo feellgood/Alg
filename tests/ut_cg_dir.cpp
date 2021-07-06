@@ -7,7 +7,6 @@
 #include <boost/progress.hpp>
 
 #include "alg.h"
-#include "alg_cg_dir.h"
 
 BOOST_AUTO_TEST_SUITE(ut_cg_dir)
 

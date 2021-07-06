@@ -1,8 +1,14 @@
-#include "alg.h"
+#ifndef ALG_CG_H
+#define ALG_CG_H
+
+#include "alg_core.h"
+#include "alg_sparseMat.h"
 #include <iostream>
 
 namespace alg
 {
+
+/** conjugate gradient with diagonal preconditioner, returns residu */
 
 double cg(alg::r_sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter) 
 {
@@ -44,3 +50,5 @@ return alg::norm(r)/alg::norm(b);
 }
 
 }//end namespace alg
+
+#endif

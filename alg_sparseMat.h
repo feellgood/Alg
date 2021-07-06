@@ -9,6 +9,9 @@ w_sparseMat : write sparse matrix : a std::vector of m_coeff = triplet of two in
 
 #include <vector>
 
+#include "alg_coeff.h"
+#include "alg_sparseVect.h"
+
 namespace alg
 {
 

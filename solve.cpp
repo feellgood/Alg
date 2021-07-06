@@ -1,5 +1,7 @@
 #include "fem.h"
 
+#include "alg.h"
+
 inline std::ostream & operator<<(std::ostream & flux, std::vector<size_t> const& v) {
 std::for_each(v.begin(),v.end(), [&flux](const size_t& x) { flux << x << " "; });
 return flux;

@@ -1,10 +1,10 @@
-#include "alg.h"
+#ifndef ALG_LU_H
+#define ALG_LU_H
+
+#include "alg_core.h"
 #include "alg_sparseMat.h"
 
 #include <iostream>
-
-#ifndef ALG_LU_H
-#define ALG_LU_H
 
 namespace alg
 {
