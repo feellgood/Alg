@@ -1,5 +1,6 @@
-#include "fem.h"
+#include <chrono>
 
+#include "fem.h"
 #include "alg.h"
 
 inline std::ostream & operator<<(std::ostream & flux, std::vector<size_t> const& v) {
@@ -23,7 +24,6 @@ const int MAXITER=fem.NOD;
 const int VERBOSE=0;
 
 typedef map <pair<string,int>,double> mapType;
-boost::timer time;
 
 const size_t NOD = fem.NOD;
 const int TRI = fem.TRI;
@@ -34,7 +34,8 @@ std::vector<double> Lw(NOD, 0.0);
 std::vector<double> Xw(NOD);
 
 cout << boost::format("%5t assembling %50T. ");
-time.restart();
+
+auto t1 = std::chrono::high_resolution_clock::now();
 
 for (int t=0; t<TRI; t++){
     Tri &tri = fem.tri[t];
@@ -55,11 +56,14 @@ for (int s=0; s<SEG; s++){
     assemblage(seg, K, L, Kw, Lw);
     }
 
-double ti = time.elapsed();
-cout << ti << endl;
+auto t2 = std::chrono::high_resolution_clock::now();
+
+std::chrono::duration<double,std::micro> micros = t2-t1;
+std::cout << micros.count() << " microsecondes\n" << std::endl;
 
 cout << boost::format("%5t conditions %50T. ");
-time.restart();
+
+t1 = std::chrono::high_resolution_clock::now();
 
 alg::r_sparseMat Kr(Kw);
 
@@ -107,7 +111,9 @@ Lr.assign(Lw.begin(),Lw.end());
 alg::mult(Kr, Xw, Lw);
 alg::scaled(Lw, -1.0, Lr); //Lr = -Lw
 
-cout << time.elapsed() << endl;
+t2 = std::chrono::high_resolution_clock::now();
+micros = t2-t1;
+std::cout << micros.count() << " microsecondes\n" << std::endl;
 
 alg::iteration iter(1e-6);
 iter.set_maxiter(MAXITER);
@@ -116,12 +122,17 @@ iter.set_noisy(VERBOSE);
 //cout << format("%10t %011.2f %30T. %5d\n") % seconds % 100;
 cout << boost::format("%5t solving %50T. ");
 //cout << "\t solving .......................... ";
-time.restart();
+
+t1 = std::chrono::high_resolution_clock::now();
 
 Xw.clear();
 Xw.resize(NOD);
 double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
-std::cout << time.elapsed() << std::endl;
+
+t2 = std::chrono::high_resolution_clock::now();
+micros = t2-t1;
+std::cout << "cg dir achieved in " << micros.count() << " microsecondes\n" << std::endl;
+
 cout << boost::format("%5t in %50T. ");
 std::cout << iter.get_iteration() << "iterations, residu = "<< res << std::endl; 
 

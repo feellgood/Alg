@@ -1,4 +1,3 @@
-#include <boost/progress.hpp>
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -17,9 +16,6 @@ if (argc == 2)
 	}
 else std::cout << "missing argument : meshFile" << std::endl;
 lecture(fem);
-
-cout << "fin de lecture " << endl;
-
 femutil(fem);
 chapeaux(fem);
 affichage(fem);

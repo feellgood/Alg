@@ -13,7 +13,6 @@
 #include <sys/times.h>
 #include <unistd.h>
 
-#include <boost/progress.hpp>
 #include <boost/format.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
