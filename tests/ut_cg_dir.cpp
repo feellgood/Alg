@@ -3,8 +3,7 @@
 #include <boost/test/unit_test.hpp>
 #include <vector>
 #include <iostream>
-
-#include <boost/progress.hpp>
+#include <chrono>
 
 #include "alg.h"
 
@@ -12,7 +11,8 @@ BOOST_AUTO_TEST_SUITE(ut_cg_dir)
 
 BOOST_AUTO_TEST_CASE(cg_dir,* boost::unit_test::tolerance(1e-12))
 {
-boost::timer time;
+auto t1 = std::chrono::high_resolution_clock::now();
+
 const int  VERBOSE = 0;
 const int MAXITER = 5000;
 const int NOD=1001;
@@ -54,8 +54,6 @@ alg::mult(Kr,Xw,Lw);
 
 alg::scaled(Lw,-1.0,Lr);//Lr = -Lw
 
-time.restart();
-
 alg::iteration iter(1e-6);
 iter.set_maxiter(MAXITER);
 iter.set_noisy(VERBOSE);
@@ -63,7 +61,11 @@ iter.set_noisy(VERBOSE);
 Xw.clear();
 Xw.resize(NOD);
 double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
-std::cout << "residu= " << res << "\tfinished " << iter.get_iteration() << std::endl << "time elapsed : "<< time.elapsed() << std::endl;
+
+auto t2 = std::chrono::high_resolution_clock::now();
+
+std::chrono::duration<double,std::micro> micros = t2-t1;
+std::cout << "residu= " << res << "\tfinished " << iter.get_iteration() << std::endl << "time elapsed : " << micros.count() << " microsecondes\n";
 
 for (int i=0; i<NOD; i+=50)
 	{ 
