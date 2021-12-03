@@ -33,8 +33,6 @@ alg::w_sparseMat Kw(NOD);
 std::vector<double> Lw(NOD, 0.0);
 std::vector<double> Xw(NOD);
 
-cout << boost::format("%5t assembling %50T. ");
-
 auto t1 = std::chrono::high_resolution_clock::now();
 
 for (int t=0; t<TRI; t++){
@@ -59,9 +57,7 @@ for (int s=0; s<SEG; s++){
 auto t2 = std::chrono::high_resolution_clock::now();
 
 std::chrono::duration<double,std::micro> micros = t2-t1;
-std::cout << micros.count() << " microsecondes\n" << std::endl;
-
-cout << boost::format("%5t conditions %50T. ");
+std::cout << boost::format("%5t assembling %50T. ") << micros.count() << " microsecondes\n";
 
 t1 = std::chrono::high_resolution_clock::now();
 
@@ -113,15 +109,11 @@ alg::scaled(Lw, -1.0, Lr); //Lr = -Lw
 
 t2 = std::chrono::high_resolution_clock::now();
 micros = t2-t1;
-std::cout << micros.count() << " microsecondes\n" << std::endl;
+std::cout<< boost::format("%5t conditions %50T. ") << micros.count() << " microsecondes" << std::endl;
 
 alg::iteration iter(1e-6);
 iter.set_maxiter(MAXITER);
 iter.set_noisy(VERBOSE);
-
-//cout << format("%10t %011.2f %30T. %5d\n") % seconds % 100;
-cout << boost::format("%5t solving %50T. ");
-//cout << "\t solving .......................... ";
 
 t1 = std::chrono::high_resolution_clock::now();
 
@@ -131,10 +123,7 @@ double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirich
 
 t2 = std::chrono::high_resolution_clock::now();
 micros = t2-t1;
-std::cout << "cg dir achieved in " << micros.count() << " microsecondes\n" << std::endl;
-
-cout << boost::format("%5t in %50T. ");
-std::cout << iter.get_iteration() << "iterations, residu = "<< res << std::endl; 
+std::cout << boost::format("%5t solving (cg dir) %50T. ") << std::fixed << std::setprecision(1) << micros.count() << " microsecondes, in "<< iter.get_iteration() << " iterations, residu = "<< std::scientific << std::setprecision(6) << res << std::endl; 
 
 for (unsigned int i=0; i<NOD; i++) {
     Node &node = fem.node[i];

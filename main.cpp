@@ -28,11 +28,12 @@ lecture(fem);
 femutil(fem);
 chapeaux(fem);
 affichage(fem);
-
 solve(fem);  
 
+/*
 savesol(fem);
 savevtk(fem);
+*/
 return 0;
 }
 
