@@ -6,6 +6,7 @@
 */
 
 #include <numeric> // inner_product
+#include <execution>
 #include "alg_sparseMat.h"
 #include "alg_denseMat.h"
 
@@ -19,9 +20,14 @@ inline void scaled(const std::vector<double> & X, const double alpha, std::vecto
 inline void scaled( const double alpha, std::vector<double> & Y) 
 	{ std::for_each(Y.begin(),Y.end(),[alpha](double &_x){ _x *= alpha; }); }
 
-/** returns scalar product X.Y */
+/** 
+returns scalar product X.Y 
+dev note :
+forcing transform_reduce with std::execution::par or std::execution::par_unseq is slower than inner_product, so here transform reduce is used without fixing execution policy.
+*/
 inline double dot(const std::vector<double> & X,const std::vector<double> & Y)
-	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); }
+	{return std::transform_reduce(X.begin(),X.end(),Y.begin(),0.0,std::plus<>(),std::multiplies<>()); } //C++17
+//	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); } // C++11
 
 /** direct product : Z = X⊗Y */
 inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y,std::vector<double> & Z)

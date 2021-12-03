@@ -18,25 +18,29 @@ add_executable( test_ut_sparseMat ut_sparseMat.cpp )
 
 add_executable( test_ut_cg_dir ut_cg_dir.cpp )
 
-target_link_libraries(test_ut_coeff
+target_link_libraries(test_ut_coeff 
+"/usr/lib/x86_64-linux-gnu/libtbb.so"
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   )
 
 target_link_libraries(test_ut_sparseVect
+"/usr/lib/x86_64-linux-gnu/libtbb.so"
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   )
 
 target_link_libraries(test_ut_sparseMat
+"/usr/lib/x86_64-linux-gnu/libtbb.so"
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   )
 
 target_link_libraries(test_ut_cg_dir
+"/usr/lib/x86_64-linux-gnu/libtbb.so"
   ${Boost_FILESYSTEM_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}

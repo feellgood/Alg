@@ -10,6 +10,7 @@ It is possible to kill v_coeffs with index idx, calling kill(idx), it will erase
 It is also possible to erase v_coeffs with value zero calling kill_zero, it may be usefull to spare some memory.  
  * */
 
+#include <execution>
 #include <vector>
 
 namespace alg
@@ -34,7 +35,7 @@ public:
 	inline void push_back(alg::v_coeff &coeff) { x.push_back(coeff); sorted = false; collected = false; }
 
 	/** sort the coefficients with lexicographic order */
-	inline void sort() {std::sort(x.begin(),x.end()); sorted = true;}
+	inline void sort() {std::sort(std::execution::par_unseq,x.begin(),x.end()); sorted = true;}
 
 	/** erase all coefficients with index idx */
 	inline void kill(const size_t idx) 
@@ -111,8 +112,8 @@ public:
 	if (!isCollected()) {std::cout << "warning : cannot dot on an uncollected sparseVect" << std::endl;exit(1);}
 	else
 		{const unsigned int X_dim = X.size();
-		for(auto it=x.begin();it!=x.end();++it)
-			{ if(it->_i < X_dim ) { val += it->getVal()*X[it->_i]; } }
+		std::for_each(x.begin(),x.end(),[&X,X_dim,&val](alg::v_coeff coeff){ if(coeff._i < X_dim ) { val += coeff.getVal()*X.at(coeff._i); } } );
+		//for(auto it=x.begin();it!=x.end();++it) { if(it->_i < X_dim ) { val += it->getVal()*X[it->_i]; } }
 		}	
 	return val;
 	}

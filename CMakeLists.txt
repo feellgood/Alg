@@ -39,7 +39,7 @@ set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cp
 configure_file(config.h.in ./config.h)
 
 ADD_EXECUTABLE(exe ${HEADERS} ${SOURCES})
-target_link_libraries(exe ANN)
+target_link_libraries(exe ANN "/usr/lib/x86_64-linux-gnu/libtbb.so" )
 
 install(FILES ${HEADERS} 
 	DESTINATION include/alg
