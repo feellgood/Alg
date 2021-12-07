@@ -2,7 +2,7 @@ PROJECT (ALG)
 
 find_package (Boost COMPONENTS system filesystem unit_test_framework REQUIRED)
 
-include_directories (${CMAKE_SOURCE_DIR}
+include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/src
   ${Boost_INCLUDE_DIRS}
   )
 

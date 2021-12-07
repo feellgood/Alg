@@ -36,12 +36,13 @@ set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -O3 -march=native" CACHE STRING "
 set(HEADERS config.h alg.h alg_core.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_lu.h alg_cg.h alg_cg_dir.h alg_cg_ilu.h alg_cg_ilu_dir.h alg_bicg.h alg_bicg_dir.h alg_bicg_ilu.h alg_bicg_ilu_dir.h)
 set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cpp savesol.cpp savevtk.cpp integrales.cpp assemblage.cpp fem.h)
 
-configure_file(config.h.in ./config.h)
+configure_file(src/config.h.in ./config.h)
 
-ADD_EXECUTABLE(exe ${HEADERS} ${SOURCES})
-target_link_libraries(exe ANN "/usr/lib/x86_64-linux-gnu/libtbb.so" )
+ADD_EXECUTABLE(exe ${SOURCES})
+target_include_directories(exe PUBLIC src)
+target_link_libraries(exe ANN -ltbb)
 
-install(FILES ${HEADERS} 
+install(FILES src/${HEADERS} 
 	DESTINATION include/alg
 	COMPONENT headers)
 
