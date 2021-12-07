@@ -40,7 +40,7 @@ public:
 	/** sort the coefficients in lexicographic order and refresh collected and sorted booleans */
 	inline void rebuild(void) 
 		{ 
-		std::sort(C.begin(),C.end());
+		std::sort(std::execution::par_unseq,C.begin(),C.end());
 	       	sorted = true;	
 		std::vector<m_coeff>::iterator it = std::adjacent_find(C.begin(),C.end() );		
 		if (it == C.end()) { collected = true; } 

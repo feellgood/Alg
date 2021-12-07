@@ -15,6 +15,7 @@ container for pairs of indice nd double value to represent a coefficient of a sp
 class v_coeff
 {
 public:
+	/** no parameter constructor */
 	inline v_coeff(): _i(0),_c(0) {} // needed by some template functions of STL/C++ 17 : sort
 	/** constructor */
 	inline v_coeff(const size_t i,const double c):_i(i),_c(c) {}
@@ -58,6 +59,9 @@ container for a couple of indices and a double value to represent a coefficient 
 class m_coeff
 {
 public:
+	/** no parameter constructor */
+	inline m_coeff(): _i(0),_j(0),_c(0) {}
+	
 	/** constructor */
 	inline m_coeff(const size_t i,const size_t j,const double c):_i(i),_j(j),_c(c) {}
 	
