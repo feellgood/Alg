@@ -14,11 +14,11 @@ namespace alg
 {
 /**  Y = alpha*X */
 inline void scaled(const std::vector<double> & X, const double alpha, std::vector<double> & Y) 
-	{ std::transform(X.begin(),X.end(),Y.begin(),[alpha](const double _x){ return alpha*_x; }); }
+	{ std::transform(std::execution::par,X.begin(),X.end(),Y.begin(),[alpha](const double _x){ return alpha*_x; }); }
 
 /**  Y *= alpha  */
 inline void scaled( const double alpha, std::vector<double> & Y) 
-	{ std::for_each(Y.begin(),Y.end(),[alpha](double &_x){ _x *= alpha; }); }
+	{ std::for_each(std::execution::par,Y.begin(),Y.end(),[alpha](double &_x){ _x *= alpha; }); }
 
 /** 
 returns scalar product X.Y 
@@ -35,15 +35,15 @@ inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y
 
 /** Y += X       */
 inline void add(const std::vector<double> & X, std::vector<double> & Y)
-	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),std::plus<double>()  ); }
+	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),std::plus<double>()  ); }
 
 /** Y -= X       */
 inline void sub(const std::vector<double> & X, std::vector<double> & Y)
-	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),std::minus<double>()  ); }
+	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),std::minus<double>()  ); }
 
 /** Y += alpha*X       */
 inline void scaled_add(const std::vector<double> & X,const double alpha, std::vector<double> & Y)
-	{ std::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),[alpha] (const double _x,double _y) { return _x+(alpha*_y); }   ); }
+	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),[alpha] (const double _x,double _y) { return _x+(alpha*_y); }   ); }
 
 /** euclidian norm of vector X */
 inline double norm(const std::vector<double> & X)

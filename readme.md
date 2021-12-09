@@ -8,4 +8,6 @@ LU
 All cg and related algorithms are using diagonal pre-conditioner.
 
 ### Dependencies :
-C++ 11 and STL
+C++ 17 and STL
+
+The package libtbb-dev has to be installed, STL depends on it.
