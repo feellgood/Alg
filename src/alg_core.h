@@ -31,7 +31,7 @@ inline double dot(const std::vector<double> & X,const std::vector<double> & Y)
 
 /** direct product : Z = X⊗Y */
 inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y,std::vector<double> & Z)
-	{ for(unsigned int i=0;i<Z.size();i++) Z[i]=X[i]*Y[i]; }
+	{ std::transform(std::execution::par_unseq,X.begin(),X.end(),Y.begin(),Z.begin(),std::multiplies<>()); }
 
 /** Y += X       */
 inline void add(const std::vector<double> & X, std::vector<double> & Y)
