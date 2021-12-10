@@ -55,7 +55,10 @@ inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<d
 const size_t _size = X.size();
 Y.resize(_size);
 if (A.getDim() == _size)
-	{ for(size_t i=0;i<_size;i++) Y[i]= A(i).dot(X); }
+	{size_t i(0); 
+	std::for_each(Y.begin(),Y.end(),[&i,&A,&X](double &y){y = A(i).dot(X);i++;} );
+	//for(size_t i=0;i<_size;i++) Y[i]= A(i).dot(X); 
+	}
 }
 
 /** Y = A*X with denseMat A */

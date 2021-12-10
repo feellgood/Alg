@@ -56,7 +56,7 @@ public:
 	inline void collect(void)
 		{
 		if (!sorted) sort();
-		std::vector<v_coeff>::iterator it = std::adjacent_find(x.begin(),x.end());
+		std::vector<v_coeff>::iterator it = std::adjacent_find(std::execution::par,x.begin(),x.end());
 		while (it != x.end())
 			{
 			alg::v_coeff c(it->_i,0);			
@@ -72,11 +72,17 @@ public:
 	/** getter for sorted */
 	inline bool isSorted(void) const {return sorted;}
 	
+	/** setter for sorted */
+	inline void setSorted(bool s) {sorted = s;}
+	
 	/** getter for emptyness of the container of the coeffs */
 	inline bool isEmpty(void) const {return x.empty();} 
 
 	/** getter for collected */
 	inline bool isCollected(void) const {return collected;}
+
+	/** setter for collected */
+	inline void setCollected(bool c) {collected = c;}
 
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
 	
