@@ -172,4 +172,19 @@ std::cout << "val (should be 1.57)=" << val << std::endl;
 BOOST_TEST(val == (double)1.57);
 }
 
+BOOST_AUTO_TEST_CASE(p_direct,* boost::unit_test::tolerance(1e-15))
+{
+	std::vector<double> x = {1,-2,3.14,4,5};
+	std::vector<double> y = {1.0,0.0,0.5,-0.25,0};
+	std::vector<double> result;
+
+alg::p_direct(x,y,result);
+BOOST_TEST(result[0] == (double)1.0);
+BOOST_TEST(result[1] == (double)0.0);
+BOOST_TEST(result[2] == (double)1.57);
+BOOST_TEST(result[3] == (double)-1.0);
+BOOST_TEST(result[4] == (double)0.0);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

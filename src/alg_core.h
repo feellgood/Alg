@@ -31,8 +31,15 @@ inline double dot(const std::vector<double> & X,const std::vector<double> & Y)
 
 /** direct product : Z = X⊗Y */
 inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y,std::vector<double> & Z)
-	{ std::transform(std::execution::par_unseq,X.begin(),X.end(),Y.begin(),Z.begin(),std::multiplies<>()); }
-
+	{
+	if (X.size() == Y.size())
+		{
+		Z.resize(X.size()); 
+		std::transform(std::execution::par_unseq,X.begin(),X.end(),Y.begin(),Z.begin(),std::multiplies<>()); 
+		}
+	else
+		{ std::cout<<"vector size mismatch in p_direct.\n"; exit(1);}
+	}
 /** Y += X       */
 inline void add(const std::vector<double> & X, std::vector<double> & Y)
 	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),std::plus<double>()  ); }
