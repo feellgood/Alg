@@ -16,7 +16,7 @@ BOOST_CHECK(x != 0.0f);
 
 BOOST_AUTO_TEST_CASE(sparseVect)
 {
-alg::sparseVect v;
+alg::sparseVect v(0);
 
 v.push_back(1,3.14);
 
@@ -25,7 +25,7 @@ BOOST_CHECK(v.isSorted() == false);
 
 BOOST_AUTO_TEST_CASE(sparseVect_by_array_to_constructor)
 {
-alg::sparseVect v( {alg::v_coeff(1,3.14),alg::v_coeff(3,42.0),alg::v_coeff(0,-1.2345) } );
+alg::sparseVect v(0, {alg::v_coeff(1,3.14),alg::v_coeff(3,42.0),alg::v_coeff(0,-1.2345) } );
 
 BOOST_CHECK(v.isSorted() == false);
 
@@ -42,13 +42,15 @@ BOOST_CHECK(v.exist(2) == false);
 BOOST_AUTO_TEST_CASE(sparseVect_implicit_affectation)
 {
 std::cout << "********** test implicit operator= " << std::endl;
-alg::sparseVect v;
+alg::sparseVect v(42);
 
 v.push_back(1,3.14);
 v.push_back(2,2.0);
 v.push_back(0,4.0);
 
 alg::sparseVect a = v;
+
+BOOST_CHECK(a.getIdx() == (size_t)42);
 
 BOOST_CHECK(a.exist(0) == true);
 BOOST_CHECK(a.getVal(0) == (double)4.0);
@@ -67,7 +69,7 @@ BOOST_CHECK(a.getVal(1) == (double)3.14);
 
 BOOST_AUTO_TEST_CASE(sparseVect_setter)
 {
-alg::sparseVect v;
+alg::sparseVect v(0);
 
 std::cout << "********** test sparseVect.setVal " << std::endl;
 v.push_back(1,3.14);
@@ -83,7 +85,7 @@ BOOST_CHECK(v.getVal(2) == (double)100.0);
 
 BOOST_AUTO_TEST_CASE(sparseVect_kill_zero)
 {
-alg::sparseVect v;
+alg::sparseVect v(0);
 std::cout << "********** test sparseVect.kill_zero " << std::endl;
 
 if(v.isEmpty()) {std::cout << "v is empty"  << std::endl;}
@@ -101,7 +103,7 @@ std::cout << "********** end test sparseVect.kill_zero " << std::endl;
 
 BOOST_AUTO_TEST_CASE(sparseVect_kill)
 {
-alg::sparseVect v;
+alg::sparseVect v(0);
 
 std::cout << "********** test sparseVect.kill " << std::endl;
 
@@ -117,7 +119,7 @@ std::cout << "********** end test sparseVect.kill " << std::endl;
 
 BOOST_AUTO_TEST_CASE(sparseVect_collect)
 {
-alg::sparseVect v;
+alg::sparseVect v(0);
 
 std::cout << "********** test sparseVect.collect " << std::endl;
 
@@ -155,7 +157,7 @@ std::cout << "********** end test sparseVect.collect " << std::endl;
 BOOST_AUTO_TEST_CASE(p_scal,* boost::unit_test::tolerance(1e-15))
 {
 	std::vector<double> x = {1,-2,3.14,4,5};
-	alg::sparseVect v;
+	alg::sparseVect v(0);
 
 	v.push_back(0,1.0);
 	v.push_back(10,101);

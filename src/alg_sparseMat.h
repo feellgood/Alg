@@ -90,8 +90,10 @@ public:
 		if (!A.C.empty())
 			{
 			if (!A.isSorted()) { A.rebuild(); }
+			
 			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
 				{ if (it->_i < N) m[it->_i].push_back(it->_j,it->getVal()); }
+			
 			collect();
 			}
 		}
