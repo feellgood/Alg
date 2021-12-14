@@ -18,7 +18,7 @@ namespace alg
 /**
 \class w_sparseMat
 write sparse Matrix, it is a container for objects m_coeff. 
-If some m_coeff have the same indices, they will be summed to build the real matrix coefficient using rebuild member function.(not implemented yet) 
+If some m_coeff have the same indices, they will be summed to build the real matrix coefficient using rebuild member function.
 */
 class w_sparseMat
 {
@@ -84,36 +84,16 @@ class sparseMat
 public:
 	/** constructor */
 	inline sparseMat(const size_t dim):N(dim)
-		{
-		m.resize(N);// N is the number of lines
-		size_t k(0);
-		std::for_each(m.begin(),m.end(),[&k](sparseVect & _v){ _v.setIdx(k);k++; } );
-		}
+		{ m.resize(N); }// N is the number of lines
 
 	/** constructor from write sparse matrix */
 	inline sparseMat(w_sparseMat &A):N(A.getDim())
 		{
 		m.resize(N);// N is the number of lines
-		size_t k(0);
-		std::for_each(m.begin(),m.end(),[&k](sparseVect & _v){ _v.setIdx(k);k++; } );
 		
 		if (!A.C.empty())
 			{
 			if (!A.isSorted()) { A.rebuild(); }
-			/*
-			std::for_each(std::execution::par_unseq,m.begin(),m.end(),[&A](sparseVect & _v)
-				{
-				size_t idx = _v.getIdx();
-				auto it_first = std::find_if( A.C.begin(),A.C.end(), [idx](alg::m_coeff &c){ return (c._i == idx);  } );
-				auto it_last = it_first;
-				if (it_first != A.C.end())
-					it_last = std::find_if( it_first,A.C.end(), [idx](alg::m_coeff &c){ return (c._i != idx);  } );
-				else { std::cout <<"empty line\n";exit(1);}
-				
-				for(std::vector<m_coeff>::iterator it = it_first; it != it_last ; ++it) 
-					{if (it->_i == idx) _v.push_back(it->_j,it->getVal());  }
-				} );
-			*/
 			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
 				{ if (it->_i < N) m[it->_i].push_back(it->_j,it->getVal()); }
 			

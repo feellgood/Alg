@@ -23,16 +23,11 @@ class sparseVect
 {
 public:
 	/** dummy constructor */
-	inline sparseVect() : k(0)
-		{sorted = true;collected = false;}
-
-	/** constructor */
-	inline sparseVect(const size_t idx) : k(idx)
-		{sorted = true;collected = false;}
+	inline sparseVect() : sorted(true),collected(false) {}
 
 	/** constructor by initialization list */
-	inline sparseVect(const size_t idx, std::vector<alg::v_coeff> _v): k(idx)
-		{ x.assign(_v.begin(),_v.end()); sorted = false; collected = false; } 
+	inline sparseVect(std::vector<alg::v_coeff> _v) : sorted(false),collected(false)
+		{ x.assign(_v.begin(),_v.end()); } 
 
 	/** inserter with value of a vector coefficient */
 	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; collected=false; }
@@ -90,14 +85,7 @@ public:
 	/** setter for collected */
 	inline void setCollected(bool c) {collected = c;}
 
-	/** getter for k */
-	inline size_t getIdx(void) const {return k;}
-	
-	/** setter for k */
-	inline void setIdx(const size_t idx) {k=idx;}
-	
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
-	
 	inline double getVal(size_t idx) const
 		{
 		double val(0);
@@ -159,9 +147,6 @@ public:
 	inline std::vector<alg::v_coeff>::const_iterator cend() const { return x.cend(); } 
 
 private:
-
-/** line number */
-size_t k;
 
 	/** coeffs container */
 std::vector< alg::v_coeff > x;
