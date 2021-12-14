@@ -29,7 +29,7 @@ const size_t NOD = fem.NOD;
 const int TRI = fem.TRI;
 const int SEG = fem.SEG;
 
-alg::w_sparseMat Kw(NOD);
+alg::sparseMat K(NOD);
 std::vector<double> Lw(NOD, 0.0);
 std::vector<double> Xw(NOD);
 
@@ -41,7 +41,7 @@ for (int t=0; t<TRI; t++){
     alg::denseMat K_tri(NBN, NBN, 0.0);
     vector <double> L(NBN);
     integrales(fem, tri, K_tri, L);   
-    assemblage<Tri>(tri, K_tri, L, Kw, Lw);
+    assemblage<Tri>(tri, K_tri, L, K, Lw);
     }
 
 
@@ -51,7 +51,7 @@ for (int s=0; s<SEG; s++){
     alg::denseMat K_seg(NBN, NBN, 0.0);
     vector <double> L(NBN);
     integrales(fem, seg, L);    
-    assemblage<Seg>(seg, K_seg, L, Kw, Lw);
+    assemblage<Seg>(seg, K_seg, L, K, Lw);
     }
 
 auto t2 = std::chrono::high_resolution_clock::now();
@@ -61,7 +61,8 @@ std::cout << boost::format("%5t assembling %50T. ") << micros.count() << " micro
 
 t1 = std::chrono::high_resolution_clock::now();
 
-alg::sparseMat Kr(Kw);
+//alg::sparseMat Kr(Kw);
+K.collect();
 
 std::vector<size_t> ld;
 std::vector<double> Vd(NOD, 0.);
@@ -104,7 +105,7 @@ for (int i=0; i<NOD; i++){
 std::vector<double> Lr(NOD,0.0);
 Lr.assign(Lw.begin(),Lw.end());
 
-alg::mult(Kr, Xw, Lw);
+alg::mult(K, Xw, Lw);
 alg::scaled(Lw, -1.0, Lr); //Lr = -Lw
 
 t2 = std::chrono::high_resolution_clock::now();
@@ -119,7 +120,7 @@ t1 = std::chrono::high_resolution_clock::now();
 
 Xw.clear();
 Xw.resize(NOD);
-double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+double res = alg::cg_dir(K,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
 
 t2 = std::chrono::high_resolution_clock::now();
 micros = t2-t1;

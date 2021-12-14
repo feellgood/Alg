@@ -153,6 +153,10 @@ public:
 	/** call collect method for sparse vector of index i  */
 	inline void collect(const size_t &i) { m[i].collect(); }
 
+/** matrix vector multiplication : Y = this.X */
+void mult(std::vector<double> const& X,std::vector<double> &Y)
+	{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect &_v) { return _v.dot(X); } ); }
+
 private:
 /** dimension of the sparse matrix (nb of lines) */
 	const size_t N;

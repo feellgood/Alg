@@ -92,7 +92,7 @@ void integrales(Fem &fem, Tri &tri, alg::denseMat &AE, vector <double> &BE);
 void integrales(Fem &fem, Seg &seg, vector <double> &BE);
 
 template <class T>
-void assemblage(T &obj, alg::denseMat    &Ke, vector <double> &Le, alg::w_sparseMat &K,  vector <double> &L)
+void assemblage(T &obj, alg::denseMat    &Ke, vector <double> &Le, alg::sparseMat &K,  vector <double> &L)
 {
 const size_t NBN = T::NBN;
 
@@ -105,9 +105,4 @@ for (size_t ie=0; ie<NBN; ie++){
     L[i]+= Le[ie];
     }
 }
-/*
-void assemblage(Seg &seg,
-           alg::denseMat    &Ke, vector <double> &Le,
-           alg::w_sparseMat &K,  vector <double> &L);
-           */
 
