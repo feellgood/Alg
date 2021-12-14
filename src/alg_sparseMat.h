@@ -133,9 +133,13 @@ public:
 	/** call collect method for sparse vector of index i  */
 	inline void collect(const size_t &i) { m[i].collect(); }
 
-/** matrix vector multiplication : Y = this.X */
-void mult(std::vector<double> const& X,std::vector<double> &Y)
-	{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect &_v) { return _v.dot(X); } ); }
+	/** matrix vector multiplication : Y = this.X */
+	inline void mult(std::vector<double> const& X,std::vector<double> &Y)
+		{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect &_v) { return _v.dot(X); } ); }
+
+/** build diagonal preconditionner */
+void buildDiagPrecond(std::vector<double> &DP) const
+	{ for(size_t i=0;i<N;i++) { DP[i] = 1.0/(m[i].getVal(i)); } }
 
 private:
 /** dimension of the sparse matrix (nb of lines) */

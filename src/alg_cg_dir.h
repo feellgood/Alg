@@ -18,8 +18,7 @@ std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM),diag_precond(DIM), b(DIM);
 b.assign(rhs.begin(),rhs.end());// b = rhs;
 
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
-for(unsigned int i=0;i<diag_precond.size();i++)
-	{ diag_precond[i] = 1.0/A(i,i); }
+A.buildDiagPrecond(diag_precond);
 
 alg::mult(A, xd, z); 
 alg::sub(z, b);      // b = b - A xd
