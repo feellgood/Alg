@@ -4,6 +4,8 @@
 namespace alg
 {
 
+
+
 /** conjugate gradient with diagonal preconditioner with Dirichlet conditions, returns residu */
 
 double cg_dir(alg::sparseMat& A, std::vector<double> & x,const std::vector<double> & rhs, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter) 
@@ -22,7 +24,9 @@ for(unsigned int i=0;i<diag_precond.size();i++)
 alg::mult(A, xd, z); 
 alg::sub(z, b);      // b = b - A xd
 
-std::for_each(ld.begin(),ld.end(),[&b,&diag_precond](const size_t _i){ b[_i] = 0.0; diag_precond[_i] = 0.0; });
+zeroFill(ld, b);
+zeroFill(ld,diag_precond);
+
 iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
@@ -30,7 +34,7 @@ std::vector<double> v_temp(x.size());
 alg::mult(A,x,v_temp);// v_temp = A x;
 alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
 
-std::for_each(ld.begin(),ld.end(),[&r](const size_t _i){ r[_i] = 0.0; });
+zeroFill(ld,r);
 
 alg::p_direct(diag_precond,r,z);//mult(P, r, z);
 rho = alg::dot(z,r);//rho = vect_sp(z, r);
@@ -44,9 +48,8 @@ while (!iter.finished_vect(r)) {
 		alg::add(z,p);// p += z	; donc  p = z + (rho/rho_1)*p        
 		}
       alg::mult(A, p, q);
-          
-	std::for_each(ld.begin(),ld.end(),[&q](size_t _i){q[_i] = 0.0; } );	      
-	double a=rho/alg::dot(q,p); //a = rho / vect_sp(q, p);	
+      zeroFill(ld,q);  
+      double a=rho/alg::dot(q,p);
 	alg::scaled_add(p, +a, x); //add(scaled(p, +a), x);
 	alg::scaled_add(q, -a, r);//add(scaled(q, -a), r);
       rho_1 = rho;

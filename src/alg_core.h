@@ -152,6 +152,10 @@ for (size_t i=0; i<nrowsA; i++) {
      }
 }
 
+/** fill with some zeroes vector v with indices vector v_idx, usefull for 'dir' algorithm */
+inline void zeroFill(std::vector<size_t> const& v_idx, std::vector<double> &v)
+	{ std::for_each(std::execution::par_unseq,v_idx.begin(),v_idx.end(),[&v](const size_t _i){ v[_i] = 0.0; }); }
+
 } // end namespace alg
 
 #endif
