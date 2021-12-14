@@ -101,7 +101,7 @@ public:
 	inline double getVal(size_t idx) const
 		{
 		double val(0);
-		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
+		auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff const& coeff){return (coeff._i == idx); } ); 
 		if (it != x.end()) val = it->getVal();		
 		return val;		
 		}
@@ -109,7 +109,7 @@ public:
 	/** return a reference to the value of the coefficient idx */
 	inline double & getValRef(size_t idx)
 		{
-		auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } ); 
+		auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff & coeff){return (coeff._i == idx); } ); 
 		return it->valRef();// carefull might be out of bounds when it == x.end()	
 		}
 
@@ -118,7 +118,7 @@ public:
 		{
 		if (collected)
 			{
-			auto it = std::find_if(x.begin(),x.end(),[this,&idx](alg::v_coeff coeff){return (coeff._i == idx); } );
+			auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff & coeff){return (coeff._i == idx); } );
 			if (it != x.end()) it->setVal(val);
 			}
 		}
