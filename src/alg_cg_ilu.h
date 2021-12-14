@@ -5,13 +5,13 @@ namespace alg
 
 /** conjugate gradient with ILU preconditioner, returns residu */
 
-double cg_ilu(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
+double cg_ilu(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();
 std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM);    
 
-r_sparseMat LU = A;
+sparseMat LU = A;
 ilu(LU);  // approximated LU decomposition   
 
 iter.set_rhsnorm(alg::norm(b));

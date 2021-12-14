@@ -1,5 +1,6 @@
 #include "fem.h"
 
+/*
 void
 assemblage(Tri &tri,
            alg::denseMat    &Ke, vector <double> &Le,
@@ -34,4 +35,4 @@ for (size_t ie=0; ie<NBN; ie++){
     L[i]+= Le[ie];
     }
 }
-
+*/

@@ -13,7 +13,7 @@ std::for_each(v.begin(),v.end(), [&flux](const double& x) { flux << x << " "; })
 return flux;
 }
 
-inline std::ostream & operator<<(std::ostream & flux, alg::r_sparseMat const& m) {
+inline std::ostream & operator<<(std::ostream & flux, alg::sparseMat const& m) {
 m.print(flux);
 return flux;
 }
@@ -38,20 +38,20 @@ auto t1 = std::chrono::high_resolution_clock::now();
 for (int t=0; t<TRI; t++){
     Tri &tri = fem.tri[t];
     const int NBN = Tri::NBN;
-    alg::denseMat K(NBN, NBN, 0.0);
+    alg::denseMat K_tri(NBN, NBN, 0.0);
     vector <double> L(NBN);
-    integrales(fem, tri, K, L);   
-    assemblage(tri, K, L, Kw, Lw);
+    integrales(fem, tri, K_tri, L);   
+    assemblage<Tri>(tri, K_tri, L, Kw, Lw);
     }
 
 
 for (int s=0; s<SEG; s++){
     Seg &seg = fem.seg[s];
     const int NBN = Seg::NBN;
-    alg::denseMat K(NBN, NBN, 0.0);
+    alg::denseMat K_seg(NBN, NBN, 0.0);
     vector <double> L(NBN);
     integrales(fem, seg, L);    
-    assemblage(seg, K, L, Kw, Lw);
+    assemblage<Seg>(seg, K_seg, L, Kw, Lw);
     }
 
 auto t2 = std::chrono::high_resolution_clock::now();
@@ -61,7 +61,7 @@ std::cout << boost::format("%5t assembling %50T. ") << micros.count() << " micro
 
 t1 = std::chrono::high_resolution_clock::now();
 
-alg::r_sparseMat Kr(Kw);
+alg::sparseMat Kr(Kw);
 
 std::vector<size_t> ld;
 std::vector<double> Vd(NOD, 0.);

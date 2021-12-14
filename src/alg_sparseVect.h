@@ -3,7 +3,7 @@
 
 /** \file alg_sparseVect.h 
  * \brief sparse vector
-a sparse vector is a collection of v_coeff, which is a couple composed of an index and a value
+a sparse vector is an obect containing an index and a vector of v_coeff, which is a couple composed of an index and a value
 to populate with coefficients the sparse vector, use push_back method
 If several v_coeff have the same index, then they are summed when calling the method collect()
 It is possible to kill v_coeffs with index idx, calling kill(idx), it will erase all v_ceffs with index idx
@@ -93,6 +93,9 @@ public:
 	/** getter for k */
 	inline size_t getIdx(void) const {return k;}
 	
+	/** setter for k */
+	inline void setIdx(const size_t idx) {k=idx;}
+	
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
 	
 	inline double getVal(size_t idx) const
@@ -158,7 +161,7 @@ public:
 private:
 
 /** line number */
-const size_t k;
+size_t k;
 
 	/** coeffs container */
 std::vector< alg::v_coeff > x;

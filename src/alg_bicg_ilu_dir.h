@@ -5,7 +5,7 @@ namespace alg
 
 /** biconjugate gradient with ILU preconditioner with Dirichlet conditions, returns residu */
 
-double bicg_ilu_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
+double bicg_ilu_dir(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();
@@ -19,7 +19,7 @@ alg::sub(v, b);      // b = b - A xd
 std::for_each(ld.begin(),ld.end(),[&b](const size_t _i){ b[_i] = 0.0;});
 iter.set_rhsnorm(alg::norm(b));
 
-r_sparseMat LU = A;
+sparseMat LU = A;
 ilu(LU);  // approximated LU decomposition  
 
 iter.set_rhsnorm(alg::norm(b));

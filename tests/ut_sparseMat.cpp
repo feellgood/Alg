@@ -28,7 +28,7 @@ m.push_back(4,4,159);
 m.push_back(4,0,2.0);
 std::cout << "m=" << m << std::endl;
 
-alg::r_sparseMat r_m(m);
+alg::sparseMat r_m(m);
 r_m.print();
 BOOST_CHECK(m.getDim() == (size_t)5);
 

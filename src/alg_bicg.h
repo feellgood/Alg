@@ -5,7 +5,7 @@ namespace alg
 
 /** biconjugate gradient and diagonal preconditionner */
 
-double bicg(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
+double bicg(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();

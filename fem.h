@@ -91,11 +91,23 @@ void solve(Fem &fem);
 void integrales(Fem &fem, Tri &tri, alg::denseMat &AE, vector <double> &BE);
 void integrales(Fem &fem, Seg &seg, vector <double> &BE);
 
-void assemblage(Tri &tri,
-           alg::denseMat    &Ke, vector <double> &Le,
-           alg::w_sparseMat &K,  vector <double> &L);
+template <class T>
+void assemblage(T &obj, alg::denseMat    &Ke, vector <double> &Le, alg::w_sparseMat &K,  vector <double> &L)
+{
+const size_t NBN = T::NBN;
 
+for (size_t ie=0; ie<NBN; ie++){
+    size_t i= obj.ind[ie];             
+    for (size_t je=0; je<NBN; je++){
+        size_t j= obj.ind[je];
+        K.push_back(i, j, Ke(ie, je));  
+        }
+    L[i]+= Le[ie];
+    }
+}
+/*
 void assemblage(Seg &seg,
            alg::denseMat    &Ke, vector <double> &Le,
            alg::w_sparseMat &K,  vector <double> &L);
+           */
 

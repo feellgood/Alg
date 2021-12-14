@@ -10,7 +10,7 @@ namespace alg
 
 /** conjugate gradient with diagonal preconditioner, returns residu */
 
-double cg(alg::r_sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter) 
+double cg(alg::sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();

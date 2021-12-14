@@ -22,7 +22,7 @@ If some m_coeff have the same indices, they will be summed to build the real mat
 */
 class w_sparseMat
 {
-	friend class r_sparseMat;
+	friend class sparseMat;
 
 public:
 	/** constructor */
@@ -75,28 +75,55 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 }; // end class w_sparseMat
 
 
-	/** \class r_sparseMat
-read sparse matrix	 
+	/** \class sparseMat
+read and write sparse matrix	 
 	The constructor is buiding from a write sparse matrix the data to access efficiently the coefficients values
        	*/
-class r_sparseMat
+class sparseMat
 {
 public:
 	/** constructor */
-	inline r_sparseMat(w_sparseMat &A):N(A.getDim())
+	inline sparseMat(const size_t dim):N(dim)
 		{
 		m.resize(N);// N is the number of lines
+		size_t k(0);
+		std::for_each(m.begin(),m.end(),[&k](sparseVect & _v){ _v.setIdx(k);k++; } );
+		}
+
+	/** constructor from write sparse matrix */
+	inline sparseMat(w_sparseMat &A):N(A.getDim())
+		{
+		m.resize(N);// N is the number of lines
+		size_t k(0);
+		std::for_each(m.begin(),m.end(),[&k](sparseVect & _v){ _v.setIdx(k);k++; } );
 		
 		if (!A.C.empty())
 			{
 			if (!A.isSorted()) { A.rebuild(); }
-			
+			/*
+			std::for_each(std::execution::par_unseq,m.begin(),m.end(),[&A](sparseVect & _v)
+				{
+				size_t idx = _v.getIdx();
+				auto it_first = std::find_if( A.C.begin(),A.C.end(), [idx](alg::m_coeff &c){ return (c._i == idx);  } );
+				auto it_last = it_first;
+				if (it_first != A.C.end())
+					it_last = std::find_if( it_first,A.C.end(), [idx](alg::m_coeff &c){ return (c._i != idx);  } );
+				else { std::cout <<"empty line\n";exit(1);}
+				
+				for(std::vector<m_coeff>::iterator it = it_first; it != it_last ; ++it) 
+					{if (it->_i == idx) _v.push_back(it->_j,it->getVal());  }
+				} );
+			*/
 			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
 				{ if (it->_i < N) m[it->_i].push_back(it->_j,it->getVal()); }
 			
 			collect();
 			}
 		}
+
+/** inserter with direct values of a coefficient */
+	inline void push_back(const size_t i,const size_t j, const double val) {m[i].push_back(j,val);}
+
 	/** printing function */
 	inline void print(void) const
 		{ std::for_each(m.begin(),m.end(),[](sparseVect const& _v) {std::cout << _v;} ); }
@@ -134,8 +161,8 @@ private:
 	std::vector<sparseVect> m;
 }; // end class r_sparseMat
 
-/** operator<< for r_sparseMat */
-inline std::ostream & operator<<(std::ostream & flux, r_sparseMat const& m) {m.print(flux); return flux;}
+/** operator<< for sparseMat */
+inline std::ostream & operator<<(std::ostream & flux, sparseMat const& m) {m.print(flux); return flux;}
 
 /** operator<< for w_sparseMat */
 inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.print(flux); return flux;}

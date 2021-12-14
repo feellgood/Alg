@@ -57,7 +57,7 @@ inline double norm(const std::vector<double> & X)
 	{ return sqrt(fabs( alg::dot(X,X) )); }
 
 /** Y = A*X with sparseMat A */
-inline void mult(alg::r_sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
+inline void mult(alg::sparseMat & A,std::vector<double> const& X,std::vector<double> &Y)
 {
 const size_t _size = X.size();
 Y.resize(_size);

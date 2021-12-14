@@ -16,7 +16,7 @@ return flux;
 }
 
 /** LU solver */
-void lu_solve(alg::r_sparseMat& LU, const std::vector<double> & b, std::vector<double> & x){
+void lu_solve(alg::sparseMat& LU, const std::vector<double> & b, std::vector<double> & x){
 const size_t N=LU.getDim();
 x.clear();
 if (x.size() != N){ x.resize(N, 0.);}
@@ -37,7 +37,7 @@ for (size_t i=N; i-- >0;) { // iterate from NOD-1 downto 0
 }
 
 /** ILU algo, in place */
-void ilu(alg::r_sparseMat& A){
+void ilu(alg::sparseMat& A){
 A.collect();  //  coefficients are sorted in lexicographic order
 
 size_t N=A.getDim();
