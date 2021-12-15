@@ -16,7 +16,7 @@ b.assign(rhs.begin(), rhs.end());// b = rhs;
 
 alg::mult(A, xd, v);
 alg::sub(v, b);      // b = b - A xd
-std::for_each(ld.begin(),ld.end(),[&b](const size_t _i){ b[_i] = 0.0;});
+zeroFill(ld,b);
 iter.set_rhsnorm(alg::norm(b));
 
 sparseMat LU = A;
@@ -28,7 +28,7 @@ r.assign(b.begin(),b.end());// r = b;
 alg::mult(A, x, v);         // v = A x;
 alg::sub(v, r);             // r -= v; donc r = b - A x;
 
-std::for_each(ld.begin(),ld.end(),[&r](const size_t _i){ r[_i] = 0.0; });
+zeroFill(ld,r);
 rt.assign(r.begin(),r.end()); // copy(r, rt);
 p.assign(r.begin(),r.end()); // copy(r, p );
 
@@ -45,11 +45,11 @@ while (!iter.finished_vect(r)) {
 		}
 
       lu_solve(LU, p, phat);   // phat = LU \ p
-      std::for_each(ld.begin(),ld.end(),[&phat](const size_t _i){ phat[_i] = 0.0; }); // phat[mask] = 0
+      zeroFill(ld,phat);
       alg::mult(A, phat, v);   //  v = A phat;
-      std::for_each(ld.begin(),ld.end(),[&v](const size_t _i){ v[_i] = 0.0; }); // v[mask] = 0
-     
-	  alpha=rho_1/alg::dot(v, rt);    // alpha = rho_1 /(v'*rtilde);
+      zeroFill(ld,v);
+      
+	alpha=rho_1/alg::dot(v, rt);    // alpha = rho_1 /(v'*rtilde);
       s.assign(r.begin(), r.end());   // s = r
 	  alg::scaled_add(v, -alpha, s);  // s = s -alpha v; donc s = r -alpha v
 
@@ -59,10 +59,10 @@ while (!iter.finished_vect(r)) {
          }
 
       lu_solve(LU, s, shat);   // shat = LU \ s
-      std::for_each(ld.begin(),ld.end(),[&shat](const size_t _i){ shat[_i] = 0.0; }); // shat[mask] = 0
+      zeroFill(ld,shat);
       alg::mult(A, shat, t);               //  t = A shat;
-      std::for_each(ld.begin(),ld.end(),[&t](const size_t _i){ t[_i] = 0.0; }); // t[mask] = 0
-
+      zeroFill(ld,t);
+      
       omega = alg::dot(t, s)/alg::dot(t,t); // omega = (t'* s) / (t'*t);
       alg::scaled_add(phat, alpha, x); // x = x + alpha phat;
       alg::scaled_add(shat, omega, x); // x = x + omega shat;
