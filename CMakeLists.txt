@@ -13,30 +13,12 @@ cmake_minimum_required(VERSION 3.0)
 ENABLE_LANGUAGE(CXX)
 
 MESSAGE(STATUS "CXX ${CMAKE_CXX_COMPILER_ID}")
-
 MESSAGE(STATUS "version = ${ALG_VERSION}")
-
-#===========================================================================
-# these parameters are used to build a config.h file 
-#===========================================================================
-
-execute_process(
-    COMMAND getconf _NPROCESSORS_ONLN
-    OUTPUT_VARIABLE MAX_NB_THREADS OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-MESSAGE(STATUS "MAX_NB_THREADS = ${MAX_NB_THREADS}")
-
-#===========================================================================
-# Compiler options -DNDEBUG
-# -fsanitize=address leak  null (to debug memory leak) undefined
-#===========================================================================
 
 set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
-set(HEADERS config.h alg.h alg_core.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_lu.h alg_cg.h alg_cg_dir.h alg_cg_ilu.h alg_cg_ilu_dir.h alg_bicg.h alg_bicg_dir.h alg_bicg_ilu.h alg_bicg_ilu_dir.h)
+set(HEADERS alg.h alg_core.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_lu.h alg_cg.h alg_cg_dir.h alg_cg_ilu.h alg_cg_ilu_dir.h alg_bicg.h alg_bicg_dir.h alg_bicg_ilu.h alg_bicg_ilu_dir.h)
 set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cpp savesol.cpp savevtk.cpp integrales.cpp fem.h)
-
-configure_file(src/config.h.in ./config.h)
 
 ADD_EXECUTABLE(exe ${SOURCES})
 target_include_directories(exe PUBLIC src)
