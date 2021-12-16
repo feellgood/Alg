@@ -10,7 +10,6 @@ const int NOD = fem.NOD;
 const int SEG = fem.SEG;
 const int TRI = fem.TRI;
 pair <string,int> p,p1,p2;
-fem.pts= annAllocPts(NOD, 2);
 
 // calcul du diametre et du centrage
 double xmin, xmax, ymin, ymax, lx,ly;
@@ -20,16 +19,11 @@ xmax = ymax = -HUGE;
 for (int i=0; i<NOD; i++){
     double xi,yi;
     xi = fem.node[i].x;      yi = fem.node[i].y;
-    fem.pts[i][0]=xi;        fem.pts[i][1]=yi;
     if (xi<xmin) xmin=xi;    
 	if (xi>xmax) xmax=xi;
     if (yi<ymin) ymin=yi;    
 	if (yi>ymax) ymax=yi;
     }
-
-// allocation de l'arbre de recherche
-fem.kdtree = new ANNkd_tree(fem.pts, NOD, 2);
-if (!fem.kdtree) exit(1);
 
 lx=xmax-xmin; fem.lx=lx;
 ly=ymax-ymin; fem.ly=ly;

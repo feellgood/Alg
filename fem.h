@@ -17,8 +17,6 @@
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "ANN.h"		// ANN declarations
-
 #include "alg_core.h"
 
 //#include "alg_sparseMat.h"
@@ -67,9 +65,6 @@ struct Fem{
     map <pair<string,int>,double > param;                   /* tableaux associatifs des parametres physiques */
     map <pair<string,int>,double > dir;                     /* tableaux associatifs des conditions de dirichlet */
     map <pair<string,int>,string > per;                     /* tableaux associatifs des conditions periodiques */
-
-    ANNkd_tree* kdtree;
-    ANNpointArray pts;
     };
 
 void extract_comment(istream &flux);

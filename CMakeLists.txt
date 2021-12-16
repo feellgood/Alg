@@ -22,7 +22,7 @@ set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cp
 
 ADD_EXECUTABLE(exe ${SOURCES})
 target_include_directories(exe PUBLIC src)
-target_link_libraries(exe ANN -ltbb)
+target_link_libraries(exe -ltbb)
 
 install(FILES src/${HEADERS} 
 	DESTINATION include/alg
