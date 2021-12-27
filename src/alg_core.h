@@ -40,17 +40,23 @@ inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y
 	else
 		{ std::cout<<"vector size mismatch in p_direct.\n"; exit(1);}
 	}
+
+// in C++ 17 trans cannot be a template, only available in C++20 and could be template<class std::function<double(double,double)> Op>
+/** transformation of Y with operator Op onto X,Y, convenient function to define add, sub scaled_add, or homemade transformations with a lambda. Execution policy is set to parallel  */
+inline void trans(std::vector<double> const& X, std::vector<double> & Y, const std::function<double(double,double)> &Op)
+{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),Op  ); }
+
 /** Y += X       */
 inline void add(const std::vector<double> & X, std::vector<double> & Y)
-	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),std::plus<double>()  ); }
+	{ trans(X,Y,std::plus<double>() ); }
 
 /** Y -= X       */
 inline void sub(const std::vector<double> & X, std::vector<double> & Y)
-	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),std::minus<double>()  ); }
+	{ trans(X,Y,std::minus<double>() ); }
 
 /** Y += alpha*X       */
 inline void scaled_add(const std::vector<double> & X,const double alpha, std::vector<double> & Y)
-	{ std::transform(std::execution::par,Y.begin(),Y.end(),X.begin(),Y.begin(),[alpha] (const double _x,double _y) { return _x+(alpha*_y); }   ); }
+	{ trans(X,Y, [alpha] (const double _x,double _y) { return _x+(alpha*_y); } );}
 
 /** euclidian norm of vector X */
 inline double norm(const std::vector<double> & X)
