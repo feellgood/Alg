@@ -15,21 +15,17 @@ const size_t DIM = x.size();
 if (rhs.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
 
 std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM),diag_precond(DIM), b(DIM);    
-b.assign(rhs.begin(),rhs.end());// b = rhs;
 
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
 A.buildDiagPrecond(diag_precond);
-
-alg::mult(A, xd, z); 
-alg::sub(z, b);      // b = b - A xd
-
-zeroFill(ld, b);
 zeroFill(ld,diag_precond);
+
+alg::LinComb<false>(A,xd,rhs,b,std::minus<double>());// b = rhs - A xd
+zeroFill(ld, b);
 
 iter.set_rhsnorm(alg::norm(b));
 	
 alg::LinComb<false>(A,x,b,r,std::minus<double>()); // r = b - A x
-
 zeroFill(ld,r);
 
 alg::p_direct(diag_precond,r,z);// z = diag_precond*r
@@ -49,8 +45,6 @@ while (!iter.finished_vect(r))
 		alg::add(z,p);// p += z	; donc  p = (rho/rho_1)*p + diag_precond*r        
 		}
       
-      //alg::mult(A, p, q);
-      //zeroFill(ld,q);  
       alg::maskedMult(mask,A,p,q);
       
       double a=rho/alg::dot(q,p);
