@@ -137,6 +137,14 @@ public:
 	inline void mult(std::vector<double> const& X,std::vector<double> &Y) const
 		{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect const&_v) { return _v.dot(X); } ); }
 
+/** matrix vector multiplication : Y = this.X according mask b */
+	inline void maskedMult(std::vector<bool> const &b, std::vector<double> const& X, std::vector<double> &Y) const
+		{
+		std::transform(std::execution::par_unseq,m.begin(),m.end(),b.begin(),Y.begin(),
+		[&X] (alg::sparseVect const&_v,const bool _b) { double val(0); if (_b) {val = _v.dot(X);} return val; } ); 
+		}
+
+
 /** build diagonal preconditionner */
 void buildDiagPrecond(std::vector<double> &DP) const
 	{ for(size_t i=0;i<N;i++) { DP[i] = 1.0/(m[i].getVal(i)); } }

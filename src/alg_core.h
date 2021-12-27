@@ -70,6 +70,15 @@ Y.resize(_size);
 if (A.getDim() == _size) A.mult(X,Y);
 }
 
+/** Y = A*X with sparseMat A and mask b */
+inline void maskedMult(std::vector<bool> const &b, alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
+{
+const size_t _size = X.size();
+Y.resize(_size);
+if (A.getDim() == _size) A.maskedMult(b,X,Y);
+}
+
+
 /** if (T == true) Y = Op(B,A*X) else Y = Op(A*X,B) with sparseMat A, Operator Op will act on the result of A*X and B component to component */
 template<bool T>
 void LinComb(alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> const&B,std::vector<double> &Y,const std::function<double(double,double)> Op)
