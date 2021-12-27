@@ -36,6 +36,9 @@ alg::p_direct(diag_precond,r,z);// z = diag_precond*r
 rho = alg::dot(z,r);// rho = z.r
 p.assign(z.begin(),z.end()); // p = z
 
+std::vector<bool> mask;
+alg::buildMask(DIM,ld,mask);
+
 while (!iter.finished_vect(r)) 
 	{
       if (!iter.first())
@@ -45,8 +48,11 @@ while (!iter.finished_vect(r))
 	        alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
 		alg::add(z,p);// p += z	; donc  p = (rho/rho_1)*p + diag_precond*r        
 		}
-      alg::mult(A, p, q);
-      zeroFill(ld,q);  
+      
+      //alg::mult(A, p, q);
+      //zeroFill(ld,q);  
+      alg::maskedMult(mask,A,p,q);
+      
       double a=rho/alg::dot(q,p);
 	alg::scaled_add(p, +a, x); //add(scaled(p, +a), x);
 	alg::scaled_add(q, -a, r);//add(scaled(q, -a), r);

@@ -141,7 +141,8 @@ public:
 	inline void maskedMult(std::vector<bool> const &b, std::vector<double> const& X, std::vector<double> &Y) const
 		{
 		std::transform(std::execution::par_unseq,m.begin(),m.end(),b.begin(),Y.begin(),
-		[&X] (alg::sparseVect const&_v,const bool _b) { double val(0); if (_b) {val = _v.dot(X);} return val; } ); 
+		[&X] (alg::sparseVect const&_v,const bool _b) { return( _b ? _v.dot(X) : 0.0 ); } 
+		); 
 		}
 
 
