@@ -134,8 +134,8 @@ public:
 	inline void collect(const size_t &i) { m[i].collect(); }
 
 	/** matrix vector multiplication : Y = this.X */
-	inline void mult(std::vector<double> const& X,std::vector<double> &Y)
-		{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect &_v) { return _v.dot(X); } ); }
+	inline void mult(std::vector<double> const& X,std::vector<double> &Y) const
+		{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect const&_v) { return _v.dot(X); } ); }
 
 /** build diagonal preconditionner */
 void buildDiagPrecond(std::vector<double> &DP) const

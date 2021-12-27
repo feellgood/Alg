@@ -29,9 +29,13 @@ zeroFill(ld,diag_precond);
 iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
+/*
 std::vector<double> v_temp(x.size()); 
 alg::mult(A,x,v_temp);// v_temp = A x;
 alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
+*/
+alg::LinComb<false>(A,x,b,r,std::minus<double>()); // r = b - A x
+
 
 zeroFill(ld,r);
 

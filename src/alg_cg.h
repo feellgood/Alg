@@ -17,15 +17,17 @@ const size_t DIM = x.size();
 std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM), diag_precond(DIM);    
 
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
-for(unsigned int i=0;i<diag_precond.size();i++)
-	{ diag_precond[i] = 1.0/A(i,i); }
+A.buildDiagPrecond(diag_precond);
 
 iter.set_rhsnorm(alg::norm(b));
-	
+
+/*	
 r.assign(b.begin(),b.end());// r = b;
 std::vector<double> v_temp(DIM); 
 alg::mult(A,x,v_temp);// v_temp = A x;
 alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
+*/
+alg::LinComb<false>(A,x,b,r,std::minus<double>()); // r = b - A x 
 
 alg::p_direct(diag_precond,r,z);//mult(P, r, z);
 rho = alg::dot(z,r);//rho = vect_sp(z, r);
