@@ -28,24 +28,17 @@ zeroFill(ld,diag_precond);
 
 iter.set_rhsnorm(alg::norm(b));
 	
-r.assign(b.begin(),b.end());// r = b;
-/*
-std::vector<double> v_temp(x.size()); 
-alg::mult(A,x,v_temp);// v_temp = A x;
-alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
-*/
 alg::LinComb<false>(A,x,b,r,std::minus<double>()); // r = b - A x
-
 
 zeroFill(ld,r);
 
-alg::p_direct(diag_precond,r,z);//mult(P, r, z);
-rho = alg::dot(z,r);//rho = vect_sp(z, r);
-p.assign(z.begin(),z.end());//copy(z, p);
+alg::p_direct(diag_precond,r,z);// z = diag_precond*r
+rho = alg::dot(z,r);// rho = z.r
+p.assign(z.begin(),z.end()); p = z
 
 while (!iter.finished_vect(r)) {
       if (!iter.first()) { 
- 	        alg::p_direct(diag_precond,r,z);//mult(P, r, z);
+ 	        alg::p_direct(diag_precond,r,z);// z = diag_precond*r
 	        rho = alg::dot(z,r);
 	        alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
 		alg::add(z,p);// p += z	; donc  p = z + (rho/rho_1)*p        
