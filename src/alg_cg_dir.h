@@ -34,14 +34,16 @@ zeroFill(ld,r);
 
 alg::p_direct(diag_precond,r,z);// z = diag_precond*r
 rho = alg::dot(z,r);// rho = z.r
-p.assign(z.begin(),z.end()); p = z
+p.assign(z.begin(),z.end()); // p = z
 
-while (!iter.finished_vect(r)) {
-      if (!iter.first()) { 
+while (!iter.finished_vect(r)) 
+	{
+      if (!iter.first())
+      		{ 
  	        alg::p_direct(diag_precond,r,z);// z = diag_precond*r
 	        rho = alg::dot(z,r);
 	        alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
-		alg::add(z,p);// p += z	; donc  p = z + (rho/rho_1)*p        
+		alg::add(z,p);// p += z	; donc  p = (rho/rho_1)*p + diag_precond*r        
 		}
       alg::mult(A, p, q);
       zeroFill(ld,q);  

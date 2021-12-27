@@ -174,6 +174,14 @@ for (size_t i=0; i<nrowsA; i++) {
 inline void zeroFill(std::vector<size_t> const& v_idx, std::vector<double> &v)
 	{ std::for_each(std::execution::par_unseq,v_idx.begin(),v_idx.end(),[&v](const size_t _i){ v[_i] = 0.0; }); }
 
+/** build a logic mask from index list stored in v_idx */
+inline void buildMask(const size_t dim,std::vector<size_t> const& v_idx,std::vector<bool> &mask)
+	{
+	mask.resize(dim);
+	std::fill(mask.begin(),mask.end(),true);
+	std::for_each(v_idx.begin(),v_idx.end(),[&mask](const size_t _i) {mask[_i] = false;} );
+	}
+
 } // end namespace alg
 
 #endif

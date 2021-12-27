@@ -46,4 +46,19 @@ alg::LinComb<false>(A,x,b,r2,std::minus<double>()); // r = b - A x
 for(size_t i=0;i<DIM;i++) BOOST_TEST(r2[i] == r[i]);
 }
 
+BOOST_AUTO_TEST_CASE(buildMask)
+{
+const size_t DIM = 5;
+std::vector<size_t> idx {1,3,4};
+std::vector<bool> mask;
+
+alg::buildMask(DIM,idx,mask);
+
+BOOST_CHECK( mask[0] == true);
+BOOST_CHECK( mask[1] == false);
+BOOST_CHECK( mask[2] == true);
+BOOST_CHECK( mask[3] == false);
+BOOST_CHECK( mask[4] == false);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
