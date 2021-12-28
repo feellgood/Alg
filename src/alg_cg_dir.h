@@ -15,10 +15,10 @@ const size_t DIM = x.size();
 if (rhs.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
 
 std::vector<double> p(DIM),q(DIM),r(DIM),z(DIM),diag_precond(DIM), b(DIM);    
+std::vector<bool> mask;
+alg::buildMask(DIM,ld,mask);
 
-// le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
-A.buildDiagPrecond(diag_precond);
-zeroFill(ld,diag_precond);
+A.buildDiagPrecond(mask,diag_precond);
 
 alg::LinComb<false>(A,xd,rhs,b,std::minus<double>());// b = rhs - A xd
 zeroFill(ld, b);
@@ -31,9 +31,6 @@ zeroFill(ld,r);
 alg::p_direct(diag_precond,r,z);// z = diag_precond*r
 rho = alg::dot(z,r);// rho = z.r
 p.assign(z.begin(),z.end()); // p = z
-
-std::vector<bool> mask;
-alg::buildMask(DIM,ld,mask);
 
 while (!iter.finished_vect(r)) 
 	{

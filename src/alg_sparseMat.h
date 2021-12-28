@@ -150,6 +150,10 @@ public:
 void buildDiagPrecond(std::vector<double> &DP) const
 	{ for(size_t i=0;i<N;i++) { DP[i] = 1.0/(m[i].getVal(i)); } }
 
+/** build diagonal preconditionner respecting mask b */
+void buildDiagPrecond(std::vector<bool> const& b,std::vector<double> &DP) const
+	{ for(size_t i=0;i<N;i++) { DP[i] = (b[i] ? 1.0/(m[i].getVal(i)) : 0.0 ); } }
+
 private:
 /** dimension of the sparse matrix (nb of lines) */
 	const size_t N;
