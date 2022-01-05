@@ -20,13 +20,15 @@ alg::buildMask(DIM,ld,mask);
 
 A.buildDiagPrecond(mask,diag_precond);
 
-alg::LinComb<false>(A,xd,rhs,b,std::minus<double>());// b = rhs - A xd
-zeroFill(ld, b);
+//alg::LinComb<false>(A,xd,rhs,b,std::minus<double>());// b = rhs - A xd
+//zeroFill(ld, b);
+alg::maskedLinComb<false>(ld,mask,A,xd,rhs,b,std::minus<double>());// b = rhs - A xd with respect to mask
 
 iter.set_rhsnorm(alg::norm(b));
 	
-alg::LinComb<false>(A,x,b,r,std::minus<double>()); // r = b - A x
-zeroFill(ld,r);
+//alg::LinComb<false>(A,x,b,r,std::minus<double>()); // r = b - A x
+//zeroFill(ld,r);
+alg::maskedLinComb<false>(ld,mask,A,x,b,r,std::minus<double>()); // r = b - A x with respect to mask
 
 alg::p_direct(diag_precond,r,z);// z = diag_precond*r
 rho = alg::dot(z,r);// rho = z.r

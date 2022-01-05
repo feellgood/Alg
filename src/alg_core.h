@@ -12,6 +12,10 @@
 
 namespace alg
 {
+/** fill with some zeroes vector v with indices vector v_idx, usefull for 'dir' algorithm */
+inline void zeroFill(std::vector<size_t> const& v_idx, std::vector<double> &v)
+	{ std::for_each(std::execution::par_unseq,v_idx.begin(),v_idx.end(),[&v](const size_t _i){ v[_i] = 0.0; }); }
+
 /**  Y = alpha*X */
 inline void scaled(const std::vector<double> & X, const double alpha, std::vector<double> & Y) 
 	{ std::transform(std::execution::par,X.begin(),X.end(),Y.begin(),[alpha](const double _x){ return alpha*_x; }); }
@@ -89,6 +93,23 @@ if (A.getDim() == _size) A.mult(X,Y);
 
 if (T) std::transform(std::execution::par,Y.begin(),Y.end(),B.begin(),Y.begin(),[Op](double _x,double _y){return Op(_x,_y);} );
 else std::transform(std::execution::par,Y.begin(),Y.end(),B.begin(),Y.begin(),[Op](double _x,double _y){return Op(_y,_x);} );
+}
+
+
+
+/**
+ if (T == true) Y = Op(B,A*X) else Y = Op(A*X,B) with sparseMat A, Operator Op will act on the result of A*X and B component to component with respect to mask b */
+template<bool T>
+void maskedLinComb(std::vector<size_t> const& v_idx, std::vector<bool> const &b, alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> const&B,std::vector<double> &Y,const std::function<double(double,double)> Op)
+{
+const size_t _size = X.size();
+Y.resize(_size);
+if (A.getDim() == _size) A.maskedMult(b,X,Y);
+
+if (T) std::transform(std::execution::par,Y.begin(),Y.end(),B.begin(),Y.begin(),[Op](double _x,double _y){return Op(_x,_y);} );
+else std::transform(std::execution::par,Y.begin(),Y.end(),B.begin(),Y.begin(),[Op](double _x,double _y){return Op(_y,_x);} );
+
+alg::zeroFill(v_idx,Y);
 }
 
 /** Y = A*X with denseMat A */
@@ -178,10 +199,6 @@ for (size_t i=0; i<nrowsA; i++) {
 	}
      }
 }
-
-/** fill with some zeroes vector v with indices vector v_idx, usefull for 'dir' algorithm */
-inline void zeroFill(std::vector<size_t> const& v_idx, std::vector<double> &v)
-	{ std::for_each(std::execution::par_unseq,v_idx.begin(),v_idx.end(),[&v](const size_t _i){ v[_i] = 0.0; }); }
 
 /** build a logic mask from index list stored in v_idx */
 inline void buildMask(const size_t dim,std::vector<size_t> const& v_idx,std::vector<bool> &mask)
