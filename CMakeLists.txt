@@ -41,3 +41,19 @@ if(${ENABLE_UTESTS})
     include(CTest)
     add_subdirectory(tests)
 endif()
+
+#===========================================================================
+# GPU cuda code, by default it is not built. you have to switch it ON while cmaking to build some executables using GPU :
+#  cmake . -DENABLE_GPU=ON
+# NB: ENABLE_GPU value is written in CMakeCache.txt
+#===========================================================================
+
+option(ENABLE_GPU "Enable GPU" OFF)
+
+message( STATUS "enable GPU: ENABLE_GPU = "  ${ENABLE_GPU} )
+if(${ENABLE_GPU})
+    add_subdirectory(src/GPU)
+endif()
+
+
+
