@@ -14,3 +14,11 @@ All cg and related algorithms are using diagonal pre-conditioner.
 C++ 17 and STL
 
 The package libtbb-dev has to be installed because STL depends on it for the implementation of parallel execution policies. You have to link with -ltbb (see CMakeLists.txt).
+
+### Options : 
+1) Some unit tests are available passing the following option to cmake (OFF by default):
+cmake . -DENABLE_UTESTS=ON
+
+2) Some GPU executable (dev only) are available using the dedicated option (OFF by default):
+cmake . -DENABLE_GPU=ON 
+These small executables are here for development purpose only, they are useless to the alg library at the moment.
