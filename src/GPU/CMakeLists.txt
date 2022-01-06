@@ -1,5 +1,5 @@
 PROJECT(ALG)
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 
 find_package(CUDA REQUIRED)
 
