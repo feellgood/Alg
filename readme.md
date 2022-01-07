@@ -1,4 +1,5 @@
 # Alg - A set of linear solvers for sparse matrices
+Version 1.4.0
 
 Alg is a library, header only, to handle sparse matrices involved in some finite element problems. It is NOT a general purpose library, only the minimal set of elementary algebraic functions is implemented in order to give access to gradient conjugate and bi-conjugate gradient algorithms.
 
@@ -13,7 +14,9 @@ All cg and related algorithms are using diagonal pre-conditioner.
 ### Dependencies :
 C++ 17 and STL
 
-The package libtbb-dev has to be installed because STL depends on it for the implementation of parallel execution policies. You have to link with -ltbb (see CMakeLists.txt).
+libtbb-dev has to be installed because STL depends on TBB for the implementation of parallel execution policies.
+how to install :
+sudo apt-get install libtbb-dev
 
 ### Options : 
 1) Some unit tests are available passing the following option to cmake (OFF by default):
@@ -21,4 +24,4 @@ cmake . -DENABLE_UTESTS=ON
 
 2) Some GPU executable (dev only) are available using the dedicated option (OFF by default):
 cmake . -DENABLE_GPU=ON 
-These small executables are here for development purpose only, they are useless to the alg library at the moment.
+These small executables are here for future development purpose only, they are useless to the alg library at the moment.
