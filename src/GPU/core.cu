@@ -33,6 +33,25 @@ void p_direct(const thrust::device_vector<double> & X,const thrust::device_vecto
 	thrust::transform(X.begin(),X.end(),Y.begin(),Z.begin(),thrust::multiplies<double>()); 
 	}
 
+/** Y += X       */
+void add(const thrust::device_vector<double> & X, thrust::device_vector<double> & Y)
+	{ thrust::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),thrust::plus<double>() ); }
+
+/** Y -= X       */
+void sub(const thrust::device_vector<double> & X, thrust::device_vector<double> & Y)
+	{ thrust::transform(Y.begin(),Y.end(),X.begin(),Y.begin(),thrust::minus<double>() ); }
+
+/** Y += alpha*X       */
+void scaled_add(const thrust::device_vector<double> & X,const double alpha, thrust::device_vector<double> & Y)
+	{
+	auto op = [alpha] __device__ (const double _x,double _y) { return _x+(alpha*_y); };
+	thrust::transform(Y.begin(),Y.end(),X.begin(),Y.begin(), op );
+	}
+
+/** euclidian norm of vector X */
+double norm(const thrust::device_vector<double> & X)
+	{ return sqrt(fabs( GPU::dot(X,X) )); }
+
 } // end namespace GPU
 	
 int main(void)
