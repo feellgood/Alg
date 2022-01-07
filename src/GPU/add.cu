@@ -3,18 +3,9 @@
 
 #include<iostream>
 
-// we cannt make a template for the kernel, so we use overloading to handle both float and double
-
-/** Kernel to add in parallel on GPU : c = a+b */
-__global__ void addKernel(const double *a, const double *b, double *c, int size)
-{
-int i = blockIdx.x *blockDim.x + threadIdx.x;
-if (i<size)
-	{ c[i] = a[i] + b[i]; }
-}
-
-/** Kernel to add in parallel on GPU : c = a+b */
-__global__ void addKernel(const float *a, const float *b, float *c, int size)
+/** template  Kernel to add in parallel on GPU : c = a+b */
+template<typename T>
+__global__ void addKernel(const T *a, const T *b, T *c, int size)
 {
 int i = blockIdx.x *blockDim.x + threadIdx.x;
 if (i<size)
