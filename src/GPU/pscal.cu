@@ -25,11 +25,12 @@ std::cout << "X.Y = " << GPU::dot(dX,dY) << std::endl;
 GPU::scaled(dX,2.0,dY);
 std::cout << "result = { " << dY[0] << "; " << dY[1] << "; "<< dY[2] << "; "<< dY[3] << "}" << std::endl;
 std::cout <<"CUDA error: " << cudaGetErrorString(cudaGetLastError()) << std::endl;
-*/
+
 thrust::device_vector<double> dZ(4);
 
 GPU::p_direct(dX,dY,dZ);
 std::cout << "result = { " << dZ[0] << "; " << dZ[1] << "; "<< dZ[2] << "; "<< dZ[3] << "}" << std::endl;
+*/
 std::cout <<"CUDA error: " << cudaGetErrorString(cudaGetLastError()) << std::endl;
 
 return 0;
