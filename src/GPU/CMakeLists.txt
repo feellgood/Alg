@@ -21,7 +21,7 @@ add_executable( add add.cu )
 set_property( TARGET add PROPERTY CUDA_STANDARD 11)
 set_target_properties( add PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
 
-add_executable( pscal core.cu )
+add_executable( pscal pscal.cu )
 set_property( TARGET pscal PROPERTY CUDA_STANDARD 11)
 set_target_properties( pscal PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
 target_compile_options(pscal PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
