@@ -1,3 +1,6 @@
+#ifndef GPU_COEFF_H
+#define GPU_COEFF_H
+
 namespace GPU
 {
 /**
@@ -8,9 +11,9 @@ class v_coeff
 {
 public:
 	/** no parameter constructor */
-	inline v_coeff(): _i(0),_c(0.0) {}
+	inline __host__ __device__ v_coeff(): _i(0),_c(0.0) {}
 	/** constructor */
-	inline v_coeff(const size_t i,const double c):_i(i),_c(c) {}
+	inline __host__ __device__ v_coeff(const size_t i,const double c):_i(i),_c(c) {}
 	
 	/** getter for the value of the coefficient */
 	inline double getVal(void) const {return _c;} 
@@ -44,3 +47,5 @@ private:
 }; //end class v_coeff
 
 }
+
+#endif

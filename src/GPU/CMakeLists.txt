@@ -28,4 +28,10 @@ target_compile_options(pscal PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
 -std=c++11;
 --expt-extended-lambda   > )
 
+add_executable( sparseVect sparseVect.cu )
+set_property( TARGET sparseVect PROPERTY CUDA_STANDARD 11)
+set_target_properties( sparseVect PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
+target_compile_options(sparseVect PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
+-std=c++11;
+--expt-extended-lambda   > )
 

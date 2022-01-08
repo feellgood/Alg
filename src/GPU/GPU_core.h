@@ -1,10 +1,12 @@
+#ifndef GPU_CORE_H
+#define GPU_CORE_H
+
 #include<thrust/transform.h>
 #include<thrust/for_each.h>
 #include<thrust/inner_product.h>
 #include<thrust/functional.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
-#include<iostream>
 
 namespace GPU
 {
@@ -53,5 +55,5 @@ double norm(const thrust::device_vector<double> & X)
 	{ return sqrt(fabs( GPU::dot(X,X) )); }
 
 } // end namespace GPU
-
+#endif
 

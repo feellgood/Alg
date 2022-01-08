@@ -23,4 +23,6 @@ src/GPU/detect_cuda_compute_capabilities.cu
 src/GPU/hello
 src/GPU/add
 src/GPU/pscal
+src/GPU/sparseVect
+
 
