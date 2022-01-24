@@ -86,10 +86,11 @@ public:
 	inline void setCollected(bool c) {collected = c;}
 
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
-	inline double getVal(size_t idx) const
+	inline double getVal(const size_t idx) const
 		{
 		double val(0);
-		auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff const& coeff){return (coeff._i == idx); } ); 
+		auto pred = [&idx](alg::v_coeff const& coeff){return (coeff._i == idx); };
+		auto it = std::find_if(x.begin(),x.end(), pred ); 
 		if (it != x.end()) val = it->getVal();		
 		return val;		
 		}
@@ -112,13 +113,25 @@ public:
 		}
 
 	/** scalar product */
-	inline double dot(const std::vector<double> & X) const
+	inline double dot(std::vector<double> const& X) const
 	{
 	double val(0);
 	if (!isCollected()) {std::cout << "warning : cannot dot on an uncollected sparseVect" << std::endl;exit(1);}
 	else
-		{const unsigned int X_dim = X.size();
-		std::for_each(x.begin(),x.end(),[&X,X_dim,&val](alg::v_coeff coeff){ if(coeff._i < X_dim ) { val += coeff.getVal()*X.at(coeff._i); } } );
+		{
+		const unsigned int X_dim = X.size();
+		/*
+		std::vector<double> filtered_X;
+		for(auto it=x.begin();it!=x.end();++it) 
+			{ if(it->_i < X_dim ) { filtered_X.push_back( X[it->_i] ); } }
+		
+		auto transOp = [](alg::v_coeff const& a, const double b) { return(a.getVal()*b); }; 
+		val = std::transform_reduce(std::execution::par,x.begin(),x.end(),X.begin(),0.0,std::plus<>(), transOp); //std::multiplies<>() );
+		*/
+		
+		auto op = [&X,X_dim,&val](alg::v_coeff const& coeff){ if(coeff._i < X_dim ) { val += coeff.getVal()*X.at(coeff._i); } };
+		std::for_each(x.begin(),x.end(), op );
+		
 		//for(auto it=x.begin();it!=x.end();++it) { if(it->_i < X_dim ) { val += it->getVal()*X[it->_i]; } }
 		}	
 	return val;
