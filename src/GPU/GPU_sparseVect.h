@@ -4,22 +4,17 @@
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
-//#include "GPU_coeff.h"
-
 namespace GPU
 {
 /**
 \class sparseVect
-sparse vector : it is a container for v_coeff
+sparse vector : it is a container for a vector of double and a vector of indices
 */
 class sparseVect
 {
 public:
 	/** dummy constructor */
 	inline sparseVect() : sorted(true) {}
-
-	/** constructor by initialization list */
-//	inline sparseVect(thrust::device_vector<GPU::v_coeff> _v) : sorted(false) { x.assign(_v.begin(),_v.end()); } 
 
 	/** inserter with value of a vector coefficient */
 	inline void __host__ __device__ push_back(const size_t _idx,const double c) { idx.push_back(_idx); x.push_back(c); sorted = false; }
@@ -44,10 +39,7 @@ public:
 		auto result = thrust::find(idx.begin(),idx.end(), _idx ); 
 		
 		if (result != idx.end()) 
-			{
-			size_t _i = thrust::distance(idx.begin(),result);  
-			val = x[ _i ];
-			}		
+			{ val = x[ thrust::distance(idx.begin(),result) ]; }		
 
 		return val;		
 		}
