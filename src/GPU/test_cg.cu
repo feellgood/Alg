@@ -41,7 +41,7 @@ int *I, *J ;
 I = new int[N+1];
 J = new int[nz];
 
-float tol;
+double tol;
 
 decltype(tol) *val, *x, *rhs;
 
@@ -63,7 +63,7 @@ for (int i = 0; i<N; i++)
 tol = 1e-6;
 int max_iter = 100;
 
-cg(I,J,val,x,rhs,N,nz,tol,max_iter);
+cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter);
 
 for(int i=0;i<N;i++)
 	{std::cout<< "x[" << i << "]: " << x[i] <<std::endl;}
