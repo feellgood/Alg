@@ -21,7 +21,7 @@ double norm(const std::vector<double> & X);
 
 /**
  \class iteration
- monitor over the successive iterations if a value is converging or diverging
+ monitor over the successive iterations if an algorithm is converging or not
  */
   class iteration {
   protected :
@@ -42,7 +42,7 @@ double norm(const std::vector<double> & X);
 	double resminreach;
 
 /** Threshold beyond which the iterative is considered to diverge. */
-    	double diverged_res; 
+//    	double diverged_res; 
 
 /** iteration number. */
     size_t nit;     
@@ -55,8 +55,7 @@ double norm(const std::vector<double> & X);
 
   public :
 	/** constructor */
-inline iteration(double r = 1.0E-8, int noi = 0, size_t mit = (size_t)(-1),double div_res = 1E200)
-      : rhsn(1.0), maxiter(mit), noise(noi), resmax(r), diverged_res(div_res)
+inline iteration(double r = 1.0E-8, int noi = 0, size_t mit = (size_t)(-1)) : rhsn(1.0), maxiter(mit), noise(noi), resmax(r)
     { nit = 0; res = 0.0; written = false; resminreach = 1E200; }
 
 /** increment of the number of iterations */    
@@ -88,14 +87,7 @@ inline double get_res() const { return res; }
 
 /** force status to be convergent */
 inline void enforce_converged(bool c = true)
-    { if (c) res = double(0); else res = rhsn * resmax + double(1); }
-
-/** getter for diverged_res */
-inline double get_diverged_residual(void) const
-	{ return diverged_res; }
-
-/** setter for diverged_res */
-inline void set_diverged_residual(double r) { diverged_res = r; }
+	{ if (c) res = double(0); else res = rhsn * resmax + double(1); }
 
 /** getter for number of iterations */
 inline size_t get_iteration(void) const { return nit; }
@@ -127,19 +119,8 @@ inline bool converged(double nr) {
     }
 
 /** monitor the convergence through a vector */
-inline bool converged(const std::vector<double> &v)
-    { double norm2 =alg::norm(v); return converged(norm2); }
-    
-/** return if the monitored algo has diverged */
-inline bool diverged(void)
-	 { return std::isnan(res) || (nit>=maxiter) || (res>=rhsn*diverged_res && nit > 4); }
+inline bool converged(const std::vector<double> &v) { return converged( alg::norm(v) ); }
 
-/** monitor the divergence through a number */
-inline bool diverged(double nr) {
-      res = std::fabs(nr);
-      resminreach = std::min(resminreach, res);
-      return diverged();
-    }
 
 /** returns true if the algo has converged according the convergence criterias through a norm value nr */
 inline bool finished(double nr) {
@@ -149,12 +130,11 @@ inline bool finished(double nr) {
         std::cout << " iter " << std::setw(3) << nit << " residual " << std::setw(12) << std::fabs(nr) / a << std::endl;
         written = true;
       }
-      return (converged(nr) || diverged(nr));
+    return converged(nr);
     }
     
 /** returns true if the algo has converged according the convergence criterias through a vector */
-inline bool finished_vect(const std::vector<double> &v)
-    { return finished( alg::norm(v) ); }
+inline bool finished_vect(const std::vector<double> &v) { return finished( alg::norm(v) ); }
 
   };
 }

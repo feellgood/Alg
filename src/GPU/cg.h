@@ -32,6 +32,10 @@ cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const float *x, int inc
 nz = nb de coefficients, stockés dans val, I,J indirections sur les indices de la matrices creuses x résultat ; rhs, second membre du système, de dimension N
 */
 
+namespace GPU
+{
+
+
 template <typename T>
 void cg(int *I, int *J, T *val, T *x, T *rhs, int N, int nz,const T tol, int max_iter)
 {
@@ -150,4 +154,7 @@ cudaFree(d_r);
 cudaFree(d_p);
 cudaFree(d_Ax);
 }
+
+} // end namespace GPU
+
 

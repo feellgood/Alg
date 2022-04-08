@@ -63,7 +63,7 @@ for (int i = 0; i<N; i++)
 tol = 1e-6;
 int max_iter = 100;
 
-cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter);
+GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter);
 
 for(int i=0;i<N;i++)
 	{std::cout<< "x[" << i << "]: " << x[i] <<std::endl;}
