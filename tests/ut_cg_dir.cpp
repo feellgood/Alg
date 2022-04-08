@@ -56,7 +56,7 @@ alg::scaled(Lw,-1.0,Lr);//Lr = -Lw
 
 alg::iteration iter(1e-6);
 iter.set_maxiter(MAXITER);
-iter.set_noisy(VERBOSE);
+iter.set_verbosity(VERBOSE);
 
 Xw.clear();
 Xw.resize(NOD);

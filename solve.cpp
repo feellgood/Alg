@@ -18,11 +18,8 @@ m.print(flux);
 return flux;
 }
 
-void solve(Fem &fem)
+void solve(Fem &fem, const int MAXITER)
 {
-const int MAXITER=fem.NOD;
-const int VERBOSE=0;
-
 typedef map <pair<string,int>,double> mapType;
 
 const size_t NOD = fem.NOD;
@@ -114,7 +111,7 @@ std::cout<< boost::format("%5t conditions %50T. ") << micros.count() << " micros
 
 alg::iteration iter(1e-6);
 iter.set_maxiter(MAXITER);
-iter.set_noisy(VERBOSE);
+iter.set_verbosity(false);
 
 t1 = std::chrono::high_resolution_clock::now();
 

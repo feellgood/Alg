@@ -81,7 +81,7 @@ void plotsol(Fem &fem);
 void savevtk(Fem &fem);
 void savesol(Fem &fem);
 
-void solve(Fem &fem);
+void solve(Fem &fem,const int MAXITER);
 
 void integrales(Fem &fem, Tri &tri, alg::denseMat &AE, vector <double> &BE);
 void integrales(Fem &fem, Seg &seg, vector <double> &BE);

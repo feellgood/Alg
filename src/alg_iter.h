@@ -32,17 +32,14 @@ double norm(const std::vector<double> & X);
 /** Max. number of iterations. */
 	size_t maxiter; 
 
-/** if noise > 0 iterations are printed. */
-    	int noise;
+/** if true iterations are printed. */
+    	bool verbose;
     
 /** maximum residu. */
 	double resmax;     
     
 /** minimum value of the residu along iterations */	
 	double resminreach;
-
-/** Threshold beyond which the iterative is considered to diverge. */
-//    	double diverged_res; 
 
 /** iteration number. */
     size_t nit;     
@@ -55,7 +52,7 @@ double norm(const std::vector<double> & X);
 
   public :
 	/** constructor */
-inline iteration(double r = 1.0E-8, int noi = 0, size_t mit = (size_t)(-1)) : rhsn(1.0), maxiter(mit), noise(noi), resmax(r)
+inline iteration(double r = 1.0E-8, bool noise = false, size_t mit = (size_t)(-1)) : rhsn(1.0), maxiter(mit), verbose(noise), resmax(r)
     { nit = 0; res = 0.0; written = false; resminreach = 1E200; }
 
 /** increment of the number of iterations */    
@@ -67,14 +64,12 @@ inline void operator ++() { (*this)++; }
 /** true if iterations are starting */
 inline bool first(void) { return nit == 0; }
 
-    /** get the "noisyness" (verbosity) of the solvers */
-inline int get_noisy(void) const { return noise; }
+    /** get the verbosity of the solvers */
+inline bool get_verbosity(void) const { return verbose; }
 
-/** set the "noisyness" (verbosity) of the solvers */
-inline void set_noisy(int n) { noise = n; }
+/** set the verbosity of the solvers */
+inline void set_verbosity(const bool n) { verbose = n; }
     
-/** reduce noisiness */
-inline void reduce_noisy(void) { if (noise > 0) noise--; }
 
 /** getter for resmax */
 inline double get_resmax(void) const { return resmax; }
@@ -84,10 +79,6 @@ inline void set_resmax(double r) { resmax = r; }
 
 /** getter for residu res */
 inline double get_res() const { return res; }
-
-/** force status to be convergent */
-inline void enforce_converged(bool c = true)
-	{ if (c) res = double(0); else res = rhsn * resmax + double(1); }
 
 /** getter for number of iterations */
 inline size_t get_iteration(void) const { return nit; }
@@ -124,7 +115,7 @@ inline bool converged(const std::vector<double> &v) { return converged( alg::nor
 
 /** returns true if the algo has converged according the convergence criterias through a norm value nr */
 inline bool finished(double nr) {
-	if (noise > 0 && !written) {
+	if (verbose && !written) {
         double a = (rhsn == 0) ? 1.0 : rhsn;
         converged(nr);
         std::cout << " iter " << std::setw(3) << nit << " residual " << std::setw(12) << std::fabs(nr) / a << std::endl;

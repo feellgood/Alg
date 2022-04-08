@@ -28,7 +28,8 @@ lecture(fem);
 femutil(fem);
 chapeaux(fem);
 affichage(fem);
-solve(fem);  
+const int MAXITER = 500;
+solve(fem,MAXITER);  
 
 /*
 savesol(fem);
