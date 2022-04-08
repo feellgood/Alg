@@ -2,7 +2,6 @@
 #include <cuda_runtime.h>
 #include <cusparse.h>
 
-#include<iostream>
 #include <type_traits>
 
 cublasStatus_t cublas_axpy(cublasHandle_t handle, int n, const double *alpha, const double *x, int incx, double * y, int incy )
@@ -37,7 +36,7 @@ namespace GPU
 
 
 template <typename T>
-void cg(int *I, int *J, T *val, T *x, T *rhs, int N, int nz,const T tol, int max_iter)
+T cg(int *I, int *J, T *val, T *x, T *rhs, int N, int nz,const T tol, const int max_iter, int &nb_iter)
 {
 cudaDataType_t size_float;
 
@@ -133,7 +132,6 @@ while(r1 > tol*tol && k <= max_iter)
 	r0 = r1;
 	cublas_dot(cublasHandle,N,d_r,1,d_r,1,&r1);
 	cudaDeviceSynchronize();
-	std::cout << "iteration = " << k << " ; residual = " << sqrt(r1) << std::endl; 
 	k++;
 	}
 
@@ -153,6 +151,8 @@ cudaFree(d_x);
 cudaFree(d_r);
 cudaFree(d_p);
 cudaFree(d_Ax);
+nb_iter = k;
+return sqrt(r1);
 }
 
 } // end namespace GPU

@@ -41,7 +41,7 @@ int *I, *J ;
 I = new int[N+1];
 J = new int[nz];
 
-double tol;
+double tol,res;
 
 decltype(tol) *val, *x, *rhs;
 
@@ -62,8 +62,10 @@ for (int i = 0; i<N; i++)
 
 tol = 1e-6;
 int max_iter = 100;
+int nb_iter;
 
-GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter);
+res = GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter,nb_iter);
+std::cout << "nb iter = " << nb_iter << "; residu = " << res << std::endl;
 
 for(int i=0;i<N;i++)
 	{std::cout<< "x[" << i << "]: " << x[i] <<std::endl;}
