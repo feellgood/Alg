@@ -54,9 +54,7 @@ alg::mult(Kr,Xw,Lw);
 
 alg::scaled(Lw,-1.0,Lr);//Lr = -Lw
 
-alg::iteration iter(1e-6);
-iter.set_maxiter(MAXITER);
-iter.set_verbosity(VERBOSE);
+alg::iteration iter(1e-6,VERBOSE,MAXITER);
 
 Xw.clear();
 Xw.resize(NOD);

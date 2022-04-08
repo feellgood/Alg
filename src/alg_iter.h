@@ -31,15 +31,9 @@ double norm(const std::vector<double> & X);
     
 /** Max. number of iterations. */
 	size_t maxiter; 
-
-/** if true iterations are printed. */
-    	bool verbose;
     
 /** maximum residu. */
 	double resmax;     
-    
-/** minimum value of the residu along iterations */	
-	double resminreach;
 
 /** iteration number. */
     size_t nit;     
@@ -52,8 +46,10 @@ double norm(const std::vector<double> & X);
 
   public :
 	/** constructor */
-inline iteration(double r = 1.0E-8, bool noise = false, size_t mit = (size_t)(-1)) : rhsn(1.0), maxiter(mit), verbose(noise), resmax(r)
-    { nit = 0; res = 0.0; written = false; resminreach = 1E200; }
+inline iteration(double r = 1.0E-8, bool noise = false, size_t mit = (size_t)(-1)) : rhsn(1.0), maxiter(mit), resmax(r), nit(0), res(0), written(false), verbose(noise) { }
+
+/** if true iterations are printed. */
+const bool verbose;
 
 /** increment of the number of iterations */    
 inline void operator ++(int) { nit++; written = false; }
@@ -63,13 +59,6 @@ inline void operator ++() { (*this)++; }
 
 /** true if iterations are starting */
 inline bool first(void) { return nit == 0; }
-
-    /** get the verbosity of the solvers */
-inline bool get_verbosity(void) const { return verbose; }
-
-/** set the verbosity of the solvers */
-inline void set_verbosity(const bool n) { verbose = n; }
-    
 
 /** getter for resmax */
 inline double get_resmax(void) const { return resmax; }
@@ -103,11 +92,11 @@ inline bool converged(void)
 	{ return !std::isnan(res) && res <= rhsn * resmax; }
 
 /** monitor the convergence through a number */
-inline bool converged(double nr) { 
+inline bool converged(double nr) 
+	{ 
       res = std::fabs(nr);
-      resminreach = std::min(resminreach, res);
       return converged();
-    }
+	}
 
 /** monitor the convergence through a vector */
 inline bool converged(const std::vector<double> &v) { return converged( alg::norm(v) ); }

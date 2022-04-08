@@ -109,9 +109,7 @@ t2 = std::chrono::high_resolution_clock::now();
 micros = t2-t1;
 std::cout<< boost::format("%5t conditions %50T. ") << micros.count() << " microsecondes" << std::endl;
 
-alg::iteration iter(1e-6);
-iter.set_maxiter(MAXITER);
-iter.set_verbosity(false);
+alg::iteration iter(1e-6,false,MAXITER);
 
 t1 = std::chrono::high_resolution_clock::now();
 
