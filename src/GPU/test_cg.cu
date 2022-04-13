@@ -3,12 +3,17 @@
 #include<iostream>
 #include<iomanip>
 
+#include <stdlib.h>
+#include <time.h>
+
 #include<type_traits>
 
-/* genTridiag: generate a random tridiagonal symmetric matrix */
+/* genTridiag: generate a random tridiagonal symmetric matrix , zero based indices */
 template <typename T>
 void genTridiag(int *I, int *J, T *val, int N, int nz)
 {
+srand(time(NULL));
+
   I[0] = 0, J[0] = 0, J[1] = 1;
   val[0] = (T) rand() / RAND_MAX + 10.0f;
   val[1] = (T) rand() / RAND_MAX;
@@ -33,9 +38,110 @@ void genTridiag(int *I, int *J, T *val, int N, int nz)
   I[N] = nz;
 }
 
+template <typename T>
+inline T sq(T x) {return x*x;}
+
+template <typename T>
+void multCSR_MatVect(int *I,int *J, T *val, T *x,const int N, T *y)
+{
+for(int i=0;i<N;i++)
+	{
+	y[i] = 0;
+	for(int k=I[i];k<I[i+1];k++)
+		{ y[i] += val[ k ]*x[J[k]]; }
+	}
+}
+
+bool test_multCSR(void)
+{
+const int N = 5;
+const int nb_coeff = 9;
+int *I, *J ;
+I = new int[N];
+J = new int[nb_coeff];
+I[0]= 0;
+I[1]= 2;
+I[2]= 4;
+I[3]= 7;
+I[4]= 9;
+J[0]= 0;
+J[1]= 1;
+J[2]= 1;
+J[3]= 2;
+J[4]= 0;
+J[5]= 3;
+J[6]= 4;
+J[7]= 2;
+J[8]= 4;
+
+double *val, *x, *y;
+val = new double[nb_coeff];
+val[0]= 1.0;
+val[1]= 4.0;
+val[2]= 2.0;
+val[3]= 3.0;
+val[4]= 5.0;
+val[5]= 7.0;
+val[6]= 8.0;
+val[7]= 9.0;
+val[8]= 6.0;
+
+x = new double[N];
+y = new double[4];
+
+x[0]=1.0;
+x[1]=2.0;
+x[2]=3.0;
+x[3]=2.0;
+x[4]=1.0;
+
+multCSR_MatVect<double>(I,J,val,x,N,y);
+
+bool test = (y[0] == 9.0) && (y[1] == 13) && (y[2] == 27) && (y[3] == 33); 
+
+delete [] I;
+delete [] J;
+delete [] val;
+delete [] x;
+delete [] y;
+
+return test;
+}
+
+template <typename T>
+T check_sol(int *I,int *J, T *val, T *x,int N, T *rhs)
+{
+T result(0);
+T *y;
+
+y = new T[N];
+for (int i=0;i<N;i++) 
+	{ 
+	std::cout << "I[" << i << "] =" << I[i] << std::endl;
+	}
+std::cout << "I["<< N <<"] =" << I[N] << std::endl;
+
+for (int k=0; k < I[N];k++) {std::cout << "J[" << k << "] =" << J[k] << " ; val[" << k << "]= " << val[k] << std::endl;}
+
+multCSR_MatVect<T>(I,J,val,x,N,y);
+
+for(int k =0;k<N;k++) 
+	{
+	result += sq<T>( y[k] - rhs[k]);
+	std::cout <<k << ": " << y[k] <<" ; " << rhs[k] << std::endl;
+	
+	}
+delete [] y;
+
+return sqrt(result);
+}
+
 int main(void)
 {
-const int N =10;
+if(test_multCSR()) { std::cout << "mult mat vect with CSR indices Ok." <<std::endl; }
+
+
+const int N =5;
 int nz = (N-2)*3 + 4;
 int *I, *J ;
 I = new int[N+1];
@@ -50,14 +156,11 @@ x = new decltype(tol)[N];
 rhs = new decltype(tol)[N];
 
 genTridiag<decltype(tol)>(I, J, val, N, nz);
-//for(int i=0;i<nz;i++)	{std::cout<< "val[" << i << "]: " << val[i] <<std::endl;}
-
 
 for (int i = 0; i<N; i++)
 	{
-	x[i] = i/10.f;
 	rhs[i] = 1.0;
-	std::cout<< "x[" << i << "]: " << x[i] <<std::endl;
+	x[i] = rhs[i]; // initial guess
 	}
 
 tol = 1e-6;
@@ -67,8 +170,12 @@ int nb_iter;
 res = GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter,nb_iter);
 std::cout << "nb iter = " << nb_iter << "; residu = " << res << std::endl;
 
-for(int i=0;i<N;i++)
-	{std::cout<< "x[" << i << "]: " << x[i] <<std::endl;}
+// for(int i=0;i<N;i++) {std::cout<< "x[" << i << "]: " << x[i] <<std::endl;}
+	
+decltype(tol) verif = check_sol(I,J,val,x,N,rhs);
+
+std::cout << "verif = " << verif <<std::endl;
+
 delete[] x;
 
 delete[] I;

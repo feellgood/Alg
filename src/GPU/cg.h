@@ -27,16 +27,25 @@ cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const double *x, int in
 
 cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const float *x, int incx, float * y, int incy)
 { return cublasScopy(handle,n,x,incx,y,incy); }
-/*
-nz = nb de coefficients, stockés dans val, I,J indirections sur les indices de la matrices creuses x résultat ; rhs, second membre du système, de dimension N
-*/
+
 
 namespace GPU
 {
-
+/**
+I,J indices of the non zero coefficients of the sparse matrix
+val : values of the non zero coefficients of the sparse matrix 
+x : result of dimension N
+rhs : right hand size
+N : dimension of the linear system to solve
+nz : nb of coefficients of the sparse matrix
+tol : tolerance
+max_iter : nb iteration maximum
+nb_iter : number of iteration done
+returns residue
+*/
 
 template <typename T>
-T cg(int *I, int *J, T *val, T *x, T *rhs, int N, int nz,const T tol, const int max_iter, int &nb_iter)
+T cg(int *I, int *J, T *val, T *x, T *rhs,const int N,const int nz,const T tol, const int max_iter, int &nb_iter)
 {
 cudaDataType_t size_float;
 
