@@ -80,7 +80,7 @@ cudaMalloc((void **)&d_Ax, N * sizeof(T));
 cusparseSpMatDescr_t matA;
 cusparseCreateCsr(&matA, N, N, nz, d_row, d_col, d_val,CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,CUSPARSE_INDEX_BASE_ZERO, size_float);
 
-cudaMemcpy(d_x,x,N*sizeof(T),cudaMemcpyHostToDevice);
+//cudaMemcpy(d_x,x,N*sizeof(T),cudaMemcpyHostToDevice);// bug !!
 
 cusparseDnVecDescr_t vecx;
 cusparseCreateDnVec(&vecx, N, d_x, size_float);
@@ -109,9 +109,6 @@ void *buffer = NULL;
 cudaMalloc(&buffer, bufferSize);
 
 cusparseSpMV(cusparseHandle, CUSPARSE_OPERATION_NON_TRANSPOSE, &alpha, matA, vecx, &beta, vecAx, size_float,CUSPARSE_CSRMV_ALG1, buffer);
-
-cublas_axpy(cublasHandle, N, &alpham1, d_Ax, 1, d_r, 1);
-cublas_dot(cublasHandle, N, d_r , 1, d_r, 1, &r1);
 
 cublas_axpy(cublasHandle, N, &alpham1, d_Ax, 1, d_r, 1);
 cublas_dot(cublasHandle, N, d_r , 1, d_r, 1, &r1);

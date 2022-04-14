@@ -115,22 +115,11 @@ T result(0);
 T *y;
 
 y = new T[N];
-for (int i=0;i<N;i++) 
-	{ 
-	std::cout << "I[" << i << "] =" << I[i] << std::endl;
-	}
-std::cout << "I["<< N <<"] =" << I[N] << std::endl;
-
-for (int k=0; k < I[N];k++) {std::cout << "J[" << k << "] =" << J[k] << " ; val[" << k << "]= " << val[k] << std::endl;}
 
 multCSR_MatVect<T>(I,J,val,x,N,y);
 
 for(int k =0;k<N;k++) 
-	{
-	result += sq<T>( y[k] - rhs[k]);
-	std::cout <<k << ": " << y[k] <<" ; " << rhs[k] << std::endl;
-	
-	}
+	{ result += sq<T>( y[k] - rhs[k]); }
 delete [] y;
 
 return sqrt(result);
