@@ -41,63 +41,6 @@ srand(time(NULL));
 }
 
 
-
-bool test_multCSR(void)
-{
-const int N = 5;
-const int nb_coeff = 9;
-int *I, *J ;
-I = new int[N];
-J = new int[nb_coeff];
-I[0]= 0;
-I[1]= 2;
-I[2]= 4;
-I[3]= 7;
-I[4]= 9;
-J[0]= 0;
-J[1]= 1;
-J[2]= 1;
-J[3]= 2;
-J[4]= 0;
-J[5]= 3;
-J[6]= 4;
-J[7]= 2;
-J[8]= 4;
-
-double *val, *x, *y;
-val = new double[nb_coeff];
-val[0]= 1.0;
-val[1]= 4.0;
-val[2]= 2.0;
-val[3]= 3.0;
-val[4]= 5.0;
-val[5]= 7.0;
-val[6]= 8.0;
-val[7]= 9.0;
-val[8]= 6.0;
-
-x = new double[N];
-y = new double[4];
-
-x[0]=1.0;
-x[1]=2.0;
-x[2]=3.0;
-x[3]=2.0;
-x[4]=1.0;
-
-alg::multCSR_MatVect<double>(I,J,val,x,N,y);
-
-bool test = (y[0] == 9.0) && (y[1] == 13) && (y[2] == 27) && (y[3] == 33); 
-
-delete [] I;
-delete [] J;
-delete [] val;
-delete [] x;
-delete [] y;
-
-return test;
-}
-
 template <typename T>
 T check_sol(int *I,int *J, T *val, T *x,int N, T *rhs)
 {
@@ -117,9 +60,6 @@ return sqrt(result);
 
 int main(void)
 {
-if(test_multCSR())
-	{ std::cout << "mult mat vect with CSR indices Ok." <<std::endl; }
-
 const int N =100000;
 int nz = (N-2)*3 + 4;
 int *I, *J ;
