@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 
 find_package(CUDA REQUIRED)
 
-enable_language(CUDA)
+enable_language(CXX CUDA)
 
 include(FindCUDA/select_compute_arch)
 CUDA_DETECT_INSTALLED_GPUS(INSTALLED_GPU)
@@ -30,6 +30,13 @@ add_executable( sparseVect sparseVect.cu )
 set_property( TARGET sparseVect PROPERTY CUDA_STANDARD 11)
 set_target_properties( sparseVect PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
 target_compile_options(sparseVect PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -std=c++11; --expt-extended-lambda   > )
+
+add_library(alg_GPU STATIC cg.h) # OBJECT ? INTERFACE ?
+set_property( TARGET alg_GPU PROPERTY CUDA_STANDARD 11)
+set_target_properties( alg_GPU PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties( alg_GPU PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
+target_link_libraries( alg_GPU ${CUDA_cusparse_LIBRARY} ${CUDA_cublas_LIBRARY} )
+target_compile_options( alg_GPU PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -std=c++11; --expt-extended-lambda   > )
 
 add_executable( test_cg test_cg.cu )
 set_property( TARGET test_cg PROPERTY CUDA_STANDARD 11)
