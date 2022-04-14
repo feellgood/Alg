@@ -127,8 +127,8 @@ return sqrt(result);
 
 int main(void)
 {
-if(test_multCSR()) { std::cout << "mult mat vect with CSR indices Ok." <<std::endl; }
-
+if(test_multCSR())
+	{ std::cout << "mult mat vect with CSR indices Ok." <<std::endl; }
 
 const int N =5;
 int nz = (N-2)*3 + 4;
@@ -156,13 +156,10 @@ tol = 1e-6;
 int max_iter = 100;
 int nb_iter;
 
-res = GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,nz,tol,max_iter,nb_iter);
+res = GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,tol,max_iter,nb_iter);
 std::cout << "nb iter = " << nb_iter << "; residu = " << res << std::endl;
 
-// for(int i=0;i<N;i++) {std::cout<< "x[" << i << "]: " << x[i] <<std::endl;}
-	
 decltype(tol) verif = check_sol(I,J,val,x,N,rhs);
-
 std::cout << "verif = " << verif <<std::endl;
 
 delete[] x;

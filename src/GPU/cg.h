@@ -45,7 +45,7 @@ returns residue
 */
 
 template <typename T>
-T cg(int *I, int *J, T *val, T *x, T *rhs,const int N,const int nz,const T tol, const int max_iter, int &nb_iter)
+T cg(int *I, int *J, T *val, T *x, T *rhs, const int N, const T tol, const int max_iter, int &nb_iter)
 {
 cudaDataType_t size_float;
 
@@ -54,6 +54,8 @@ if (std::is_same<T,float>::value)
 else if (std::is_same<T,double>::value)
 	{ size_float = CUDA_R_64F; }
 else exit(1);
+
+const int nz = I[N];
 
 int *d_col, *d_row;
 int k;
@@ -65,7 +67,6 @@ cublasCreate(&cublasHandle);
 
 cusparseHandle_t cusparseHandle = 0;
 cusparseCreate(&cusparseHandle);
-
 
 cudaMalloc((void **)&d_col, nz * sizeof(int));
 cudaMalloc((void **)&d_row, (N + 1) * sizeof(int));
@@ -79,8 +80,6 @@ cudaMalloc((void **)&d_Ax, N * sizeof(T));
   /* Wrap raw data into cuSPARSE generic API objects */
 cusparseSpMatDescr_t matA;
 cusparseCreateCsr(&matA, N, N, nz, d_row, d_col, d_val,CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,CUSPARSE_INDEX_BASE_ZERO, size_float);
-
-//cudaMemcpy(d_x,x,N*sizeof(T),cudaMemcpyHostToDevice);// bug !!
 
 cusparseDnVecDescr_t vecx;
 cusparseCreateDnVec(&vecx, N, d_x, size_float);
