@@ -8,6 +8,8 @@
 
 #include<type_traits>
 
+#include "../alg_utils.h"
+
 /* genTridiag: generate a random tridiagonal symmetric matrix , zero based indices */
 template <typename T>
 void genTridiag(int *I, int *J, T *val, int N, int nz)
@@ -38,19 +40,7 @@ srand(time(NULL));
   I[N] = nz;
 }
 
-template <typename T>
-inline T sq(T x) {return x*x;}
 
-template <typename T>
-void multCSR_MatVect(int *I,int *J, T *val, T *x,const int N, T *y)
-{
-for(int i=0;i<N;i++)
-	{
-	y[i] = 0;
-	for(int k=I[i];k<I[i+1];k++)
-		{ y[i] += val[ k ]*x[J[k]]; }
-	}
-}
 
 bool test_multCSR(void)
 {
@@ -95,7 +85,7 @@ x[2]=3.0;
 x[3]=2.0;
 x[4]=1.0;
 
-multCSR_MatVect<double>(I,J,val,x,N,y);
+alg::multCSR_MatVect<double>(I,J,val,x,N,y);
 
 bool test = (y[0] == 9.0) && (y[1] == 13) && (y[2] == 27) && (y[3] == 33); 
 
@@ -116,10 +106,10 @@ T *y;
 
 y = new T[N];
 
-multCSR_MatVect<T>(I,J,val,x,N,y);
+alg::multCSR_MatVect<T>(I,J,val,x,N,y);
 
 for(int k =0;k<N;k++) 
-	{ result += sq<T>( y[k] - rhs[k]); }
+	{ result += alg::sq<T>( y[k] - rhs[k]); }
 delete [] y;
 
 return sqrt(result);
@@ -130,7 +120,7 @@ int main(void)
 if(test_multCSR())
 	{ std::cout << "mult mat vect with CSR indices Ok." <<std::endl; }
 
-const int N =5;
+const int N =100000;
 int nz = (N-2)*3 + 4;
 int *I, *J ;
 I = new int[N+1];
