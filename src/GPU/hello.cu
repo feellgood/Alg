@@ -13,7 +13,7 @@ hello_kernel<<<1,1>>>();
 
 cudaDeviceProp devProp;
 if (cudaSuccess == cudaGetDeviceProperties(&devProp,0))
-	std::cout << "CUDA Device = " << devProp.major << "." << devProp.minor << "has "<< devProp.multiProcessorCount << "Multi-processors" << std::endl;
+	std::cout << "CUDA Device = " << devProp.major << "." << devProp.minor << " has "<< devProp.multiProcessorCount << " multi-processors" << std::endl;
 
 //wait for device to finish to see the result (here the 'hello world' from the GPU)
 cudaDeviceSynchronize();

@@ -1,9 +1,9 @@
-PROJECT(ALG)
+PROJECT(ALG LANGUAGES CXX CUDA)
 cmake_minimum_required(VERSION 3.16)
 
-find_package(CUDA REQUIRED)
-
-enable_language(CXX CUDA)
+find_package( CUDA 10.1 REQUIRED)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CUDA_STANDARD 11)
 
 include(FindCUDA/select_compute_arch)
 CUDA_DETECT_INSTALLED_GPUS(INSTALLED_GPU)
@@ -31,16 +31,28 @@ set_property( TARGET sparseVect PROPERTY CUDA_STANDARD 11)
 set_target_properties( sparseVect PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
 target_compile_options(sparseVect PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -std=c++11; --expt-extended-lambda   > )
 
-add_library(alg_GPU STATIC cg.h) # OBJECT ? INTERFACE ?
-set_property( TARGET alg_GPU PROPERTY CUDA_STANDARD 11)
-set_target_properties( alg_GPU PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties( alg_GPU PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
-target_link_libraries( alg_GPU ${CUDA_cusparse_LIBRARY} ${CUDA_cublas_LIBRARY} )
-target_compile_options( alg_GPU PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -std=c++11; --expt-extended-lambda   > )
 
-add_executable( test_cg test_cg.cu )
-set_property( TARGET test_cg PROPERTY CUDA_STANDARD 11)
-set_target_properties( test_cg PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
-target_link_libraries( test_cg ${CUDA_cusparse_LIBRARY} ${CUDA_cublas_LIBRARY} )
-target_compile_options( test_cg PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -std=c++11; --expt-extended-lambda   > )
+add_library(alg_GPU STATIC infos.cu cg.cu alg_GPU.h)
+target_compile_features ( alg_GPU PUBLIC cxx_std_11 )
+set_target_properties( alg_GPU PROPERTIES
+					LINKER_LANGUAGE CUDA
+					CUDA_ARCHITECTURES ${CUDA_ARCH_LIST}
+					#POSITION_INDEPENDENT_CODE ON # for -fPIC option on
+					CUDA_SEPARABLE_COMPILATION ON
+					#CUDA_RESOLVE_DEVICE_SYMBOLS ON
+					#IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/libalg_GPU.a"
+					)
+target_link_libraries( alg_GPU ${CUDA_cusparse_LIBRARY} ${CUDA_cublas_LIBRARY} )
+
+
+#link_directories( ${CMAKE_SOURCE_DIR}/src/GPU )
+add_executable( test_cg test_cg.cu alg_GPU.h )
+set_target_properties( test_cg PROPERTIES
+					LINKER_LANGUAGE CUDA
+					CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} 
+					#POSITION_INDEPENDENT_CODE ON # for -fPIC option on
+					CUDA_SEPARABLE_COMPILATION ON
+					
+					)
+target_link_libraries( test_cg PRIVATE alg_GPU )
 

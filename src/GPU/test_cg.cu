@@ -1,6 +1,7 @@
-#include "cg.h"
+#include "alg_GPU.h"
+//#include "cg.h"
 
-#include<iostream>
+
 #include<iomanip>
 
 #include <stdlib.h>
@@ -9,6 +10,7 @@
 #include<type_traits>
 
 #include "../alg_utils.h"
+
 
 /* genTridiag: generate a random tridiagonal symmetric matrix , zero based indices */
 template <typename T>
@@ -60,6 +62,8 @@ return sqrt(result);
 
 int main(void)
 {
+infos();
+
 const int N =100000;
 int nz = (N-2)*3 + 4;
 int *I, *J ;
@@ -83,14 +87,15 @@ for (int i = 0; i<N; i++)
 	}
 
 tol = 1e-6;
-int max_iter = 100;
-int nb_iter;
+int max_iter(100);
+int nb_iter(0);
 
-res = GPU::cg<decltype(tol)>(I,J,val,x,rhs,N,tol,max_iter,nb_iter);
+res = cg(I,J,val,x,rhs,N,tol,max_iter,nb_iter);
+
+//res = cg<decltype(tol)>(I,J,val,x,rhs,N,tol,max_iter,nb_iter);
 std::cout << "nb iter = " << nb_iter << "; residu = " << res << std::endl;
 
-decltype(tol) verif = check_sol(I,J,val,x,N,rhs);
-std::cout << "verif = " << verif <<std::endl;
+std::cout << "check solution returns : " << check_sol(I,J,val,x,N,rhs) <<std::endl;
 
 delete[] x;
 

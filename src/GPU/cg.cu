@@ -29,8 +29,9 @@ cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const float *x, int inc
 { return cublasScopy(handle,n,x,incx,y,incy); }
 
 
-namespace GPU
-{
+//namespace GPU
+//{
+
 /**
 I,J indices of the non zero coefficients of the sparse matrix
 val : values of the non zero coefficients of the sparse matrix 
@@ -44,6 +45,7 @@ nb_iter : number of iteration done
 returns residue
 */
 
+/*
 template <typename T>
 T cg(int *I, int *J, T *val, T *x, T *rhs, const int N, const T tol, const int max_iter, int &nb_iter)
 {
@@ -77,7 +79,7 @@ cudaMalloc((void **)&d_r, N * sizeof(T));
 cudaMalloc((void **)&d_p, N * sizeof(T));
 cudaMalloc((void **)&d_Ax, N * sizeof(T));
 
-  /* Wrap raw data into cuSPARSE generic API objects */
+  // Wrap raw data into cuSPARSE generic API objects
 cusparseSpMatDescr_t matA;
 cusparseCreateCsr(&matA, N, N, nz, d_row, d_col, d_val,CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,CUSPARSE_INDEX_BASE_ZERO, size_float);
 
@@ -101,7 +103,7 @@ T alpham1 = -1.0;
 T beta = 0.0;
 r0 = 0.0;
 
-/* Allocate workspace for cuSPARSE */
+// Allocate workspace for cuSPARSE 
 size_t bufferSize = 0;
 cusparseSpMV_bufferSize(cusparseHandle, CUSPARSE_OPERATION_NON_TRANSPOSE, &alpha, matA, vecx,&beta, vecAx, size_float, CUSPARSE_CSRMV_ALG1, &bufferSize);
 void *buffer = NULL;
@@ -159,7 +161,125 @@ cudaFree(d_Ax);
 nb_iter = k;
 return sqrt(r1);
 }
+*/
 
-} // end namespace GPU
+double cg(int *I, int *J, double *val, double *x, double *rhs, const int N, const double tol, const int max_iter, int &nb_iter)
+{
+cudaDataType_t size_float = CUDA_R_64F;
+
+/*
+if (std::is_same<T,float>::value)
+	{ size_float = CUDA_R_32F; }
+else if (std::is_same<T,double>::value)
+	{ size_float = CUDA_R_64F; }
+else exit(1);
+*/
+const int nz = I[N];
+
+int *d_col, *d_row;
+int k;
+double *d_val, *d_x, *d_r, *d_p, *d_Ax;
+double r0,r1,a,na,b,dot;
+
+cublasHandle_t cublasHandle = 0;
+cublasCreate(&cublasHandle);
+
+cusparseHandle_t cusparseHandle = 0;
+cusparseCreate(&cusparseHandle);
+
+cudaMalloc((void **)&d_col, nz * sizeof(int));
+cudaMalloc((void **)&d_row, (N + 1) * sizeof(int));
+cudaMalloc((void **)&d_val, nz * sizeof(double));
+
+cudaMalloc((void **)&d_x, N * sizeof(double));
+cudaMalloc((void **)&d_r, N * sizeof(double));
+cudaMalloc((void **)&d_p, N * sizeof(double));
+cudaMalloc((void **)&d_Ax, N * sizeof(double));
+
+  /* Wrap raw data into cuSPARSE generic API objects */
+cusparseSpMatDescr_t matA;
+cusparseCreateCsr(&matA, N, N, nz, d_row, d_col, d_val,CUSPARSE_INDEX_32I, CUSPARSE_INDEX_32I,CUSPARSE_INDEX_BASE_ZERO, size_float);
+
+cusparseDnVecDescr_t vecx;
+cusparseCreateDnVec(&vecx, N, d_x, size_float);
+
+cusparseDnVecDescr_t vecp;
+cusparseCreateDnVec(&vecp, N, d_p, size_float);
+
+cusparseDnVecDescr_t vecAx;
+cusparseCreateDnVec(&vecAx, N, d_Ax, size_float);
+
+cudaMemcpy(d_col, J, nz * sizeof(int), cudaMemcpyHostToDevice);
+cudaMemcpy(d_row, I, (N + 1) * sizeof(int), cudaMemcpyHostToDevice);
+cudaMemcpy(d_val, val, nz * sizeof(double), cudaMemcpyHostToDevice);
+cudaMemcpy(d_x,x,N*sizeof(double), cudaMemcpyHostToDevice);
+cudaMemcpy(d_r,rhs,N*sizeof(double), cudaMemcpyHostToDevice);
+
+double alpha = 1.0;
+double alpham1 = -1.0;
+double beta = 0.0;
+r0 = 0.0;
+
+/* Allocate workspace for cuSPARSE */
+size_t bufferSize = 0;
+cusparseSpMV_bufferSize(cusparseHandle, CUSPARSE_OPERATION_NON_TRANSPOSE, &alpha, matA, vecx,&beta, vecAx, size_float, CUSPARSE_CSRMV_ALG1, &bufferSize);
+void *buffer = NULL;
+cudaMalloc(&buffer, bufferSize);
+
+cusparseSpMV(cusparseHandle, CUSPARSE_OPERATION_NON_TRANSPOSE, &alpha, matA, vecx, &beta, vecAx, size_float,CUSPARSE_CSRMV_ALG1, buffer);
+
+cublas_axpy(cublasHandle, N, &alpham1, d_Ax, 1, d_r, 1);
+cublas_dot(cublasHandle, N, d_r , 1, d_r, 1, &r1);
+
+k=1;
+
+while(r1 > tol*tol && k <= max_iter)
+	{
+	if (k>1)
+		{
+		b = r1/r0;
+		cublas_scal(cublasHandle, N, &b, d_p, 1);
+		cublas_axpy(cublasHandle, N, &alpha, d_r, 1, d_p, 1);
+		}
+	else
+		{ cublas_copy(cublasHandle, N, d_r, 1, d_p, 1); }
+	
+	cusparseSpMV(cusparseHandle, CUSPARSE_OPERATION_NON_TRANSPOSE, &alpha, matA, vecp, &beta, vecAx, size_float, CUSPARSE_CSRMV_ALG1, buffer);//CUSPARSE_SPMV_ALG_DEFAULT
+	
+	cublas_dot(cublasHandle, N, d_p, 1, d_Ax, 1, &dot);
+	a = r1/dot;
+	
+	cublas_axpy(cublasHandle,N,&a,d_p,1,d_x,1);
+	na = -a;
+	cublas_axpy(cublasHandle,N,&na,d_Ax,1,d_r,1);
+	
+	r0 = r1;
+	cublas_dot(cublasHandle,N,d_r,1,d_r,1,&r1);
+	cudaDeviceSynchronize();
+	k++;
+	}
+
+cudaMemcpy(x, d_x, N * sizeof(double), cudaMemcpyDeviceToHost);
+
+cusparseDestroy(cusparseHandle);
+cublasDestroy(cublasHandle);
+
+cusparseDestroySpMat(matA);
+cusparseDestroyDnVec(vecx);
+cusparseDestroyDnVec(vecAx);
+
+cudaFree(d_col);
+cudaFree(d_row);
+cudaFree(d_val);
+cudaFree(d_x);
+cudaFree(d_r);
+cudaFree(d_p);
+cudaFree(d_Ax);
+nb_iter = k;
+return sqrt(r1);
+}
+
+
+//} // end namespace GPU
 
 
