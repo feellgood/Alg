@@ -33,7 +33,7 @@ inline double dot(const std::vector<double> & X,const std::vector<double> & Y)
 	{return std::transform_reduce(X.begin(),X.end(),Y.begin(),0.0,std::plus<>(),std::multiplies<>()); } //C++17
 //	{ return std::inner_product(X.begin(),X.end(),Y.begin(),0.0); } // C++11
 
-/** direct product : Z = X⊗Y */
+/** direct product : component to component product of the two vectors x and Y, returns Z = X⊗Y ; also known as Hadamard product of two vectors */
 inline void p_direct(const std::vector<double> & X,const std::vector<double> & Y,std::vector<double> & Z)
 	{
 	if (X.size() == Y.size())

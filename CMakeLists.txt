@@ -56,5 +56,3 @@ if(${ENABLE_GPU})
     add_subdirectory(src/GPU)
 endif()
 
-
-
