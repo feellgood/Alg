@@ -1,14 +1,9 @@
-#include "alg_GPU.h"
-//#include "cg.h"
-
-
 #include<iomanip>
-
 #include <stdlib.h>
 #include <time.h>
-
 #include<type_traits>
 
+#include "alg_GPU.h" // headers for the declaration of the functions of the static library alg_GPU
 #include "../alg_utils.h"
 
 
