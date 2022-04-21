@@ -18,10 +18,6 @@ if (CUDA_FOUND)
 
 	message("CUDA_ARCH = ${CUDA_ARCH_LIST}")
 
-	add_executable( hello hello.cu )
-	set_property( TARGET hello PROPERTY CUDA_STANDARD 11)
-	set_target_properties( hello PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
-
 	add_executable( add add.cu )
 	set_property( TARGET add PROPERTY CUDA_STANDARD 11)
 	set_target_properties( add PROPERTIES CUDA_ARCHITECTURES ${CUDA_ARCH_LIST} )
