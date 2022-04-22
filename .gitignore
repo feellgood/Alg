@@ -4,6 +4,7 @@ CMakeFiles/
 DartConfiguration.tcl
 Makefile
 cmake_install.cmake
+install_manifest.txt
 exe
 main.o
 config.h
