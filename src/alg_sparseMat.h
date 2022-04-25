@@ -11,6 +11,7 @@ w_sparseMat : write sparse matrix : a std::vector of m_coeff = triplet of two in
 
 #include "alg_coeff.h"
 #include "alg_sparseVect.h"
+#include "alg_utils.h"
 
 namespace alg
 {
@@ -57,6 +58,9 @@ public:
 	inline void print(std::ostream & flux) const
 	{ flux<<'{'; std::for_each(C.begin(),C.end(), [&flux](const m_coeff &c){ flux << '{' << c._i << ','<< c._j << ':' << c.getVal() <<'}';}); flux<<"}\n"; }
 
+	template<typename T>
+	void buildCSR_sparseMat(int *I,int *J,T *val,int &N) const
+		{ alg::buildCSR_sparseMat<T>(C,I,J,val,N); }
 
 private:
 /** dimension of sparse matrix, N is the number of lines */

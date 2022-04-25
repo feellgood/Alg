@@ -1,6 +1,10 @@
 #ifndef ALG_UTILS_H
 #define ALG_UTILS_H
 
+#include <vector>
+
+#include "alg_coeff.h"
+
 namespace alg
 {
 
@@ -57,6 +61,12 @@ else
 		for(int k=I[i];k<I[i+1];k++)
 			{ val[k] *= diag[i]; }
 	}
+}
+
+template<typename T>
+	void buildCSR_sparseMat(std::vector<alg::m_coeff> C,int *I,int *J,T *val,int &N)
+{
+
 }
 
 } // end namespace alg
