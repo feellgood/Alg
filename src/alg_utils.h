@@ -22,7 +22,7 @@ for(int i=0;i<N;i++)
 
 /**
 build diagonal preconditionner of CSR matrix ; all diagonal coefficients must be non zero
-diagDim might be different from N
+diagDim might be different from the dimension of the matrix
 */
 template <typename T>
 void build_diagPrecond_CSRmat(int *I,int *J, T *val, T * diag,const int diagDim)
@@ -46,11 +46,17 @@ for(int i=0;i<diagDim;i++)
 in place left multiplication of a CSR sparse matrix by a diagonal matrix stored in diag
  */
 template <typename T>
-void leftMult_diagPrecond_CSRmat(int *I,int *J, T *val, T *x,const int N, T * diag)
+void leftMult_diagPrecond_CSRmat(int *I, T *val,const int N, T * diag,const int diagDim)
 {
-for(int i=0;i<N;i++)
-	for(int k=I[i];k<I[i+1];k++)
-		{ val[k] *= diag[i]; }
+// diagDim might be inferior to N
+if(diagDim>N)
+	{ exit(1); }
+else
+	{
+	for(int i=0;i<diagDim;i++)
+		for(int k=I[i];k<I[i+1];k++)
+			{ val[k] *= diag[i]; }
+	}
 }
 
 } // end namespace alg
