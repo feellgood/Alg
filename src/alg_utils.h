@@ -1,6 +1,7 @@
 #ifndef ALG_UTILS_H
 #define ALG_UTILS_H
 
+#include<type_traits>
 #include <vector>
 
 #include "alg_coeff.h"
@@ -63,10 +64,30 @@ else
 	}
 }
 
+/**
+build the CSR sparse matrix from the vector of m_coeff C ordered, outputs = I,J,val,N
+dim_C is the dimension of Im(C)
+I,J and val are memory allocated, must be deleted otherwise memory leak.
+Zero index based.
+*/
 template<typename T>
-	void buildCSR_sparseMat(std::vector<alg::m_coeff> C,int *I,int *J,T *val,int &N)
+	void buildCSR_sparseMat(const std::vector<alg::m_coeff> C, const int dim_C,int *I,int *J,T *val,int &N)
 {
+int nb_coeff = C.size();
+N = dim_C;
+I = new int[dim_C+1];
+I[N] = nb_coeff;
+J = new int[nb_coeff];
+val = new T[nb_coeff];
 
+int i=0;
+for(size_t k=0;k<nb_coeff;k++)
+	{
+	val[k] = C[k].getVal();
+	J[k]=C[k]._j;
+	if((C[k]._i == i )&&(i < dim_C)) 
+		{I[i] = k;  i++;}
+	}
 }
 
 } // end namespace alg
