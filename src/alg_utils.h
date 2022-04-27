@@ -13,16 +13,13 @@ namespace alg
 template <typename T>
 inline T sq(T x) {return x*x;}
 
-/** multiplication of a sparse matrix with a dense vector ; CSR sparse matrix  */
+/** multiplication of a sparse matrix with a dense vector ; CSR sparse matrix ; return : y , must be zero initialized  */
 template <typename T>
 void multCSR_MatVect(int *I,int *J, T *val, T *x,const int N, T *y)
 {
 for(int i=0;i<N;i++)
-	{
-	y[i] = 0;
 	for(int k=I[i];k<I[i+1];k++)
 		{ y[i] += val[ k ]*x[J[k]]; }
-	}
 }
 
 /**
@@ -83,7 +80,7 @@ val = new T[nb_coeff];
 int i=0;
 for(size_t k=0;k<nb_coeff;k++)
 	{
-	val[k] = C[k].getVal();
+	val[k] = (T) C[k].getVal();
 	J[k]=C[k]._j;
 	if((C[k]._i == i )&&(i < dim_C)) 
 		{I[i] = k;  i++;}

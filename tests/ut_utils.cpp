@@ -42,7 +42,7 @@ val[7]= 9.0;
 val[8]= 6.0;
 
 x = new double[N];
-y = new double[4];
+y = new double[4]();// initialization to zero
 
 x[0]=1.0;
 x[1]=2.0;

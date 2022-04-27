@@ -44,7 +44,7 @@ T check_sol(int *I,int *J, T *val, T *x,int N, T *rhs)
 T result(0);
 T *y;
 
-y = new T[N];
+y = new T[N]();//initialization to zero
 
 alg::multCSR_MatVect<T>(I,J,val,x,N,y);
 
