@@ -170,9 +170,7 @@ val[9]= -2.0;
 val[10]= 6.0;
 
 const int diagDim = N-1;
-diag = new double[diagDim];
-
-for (int i=0;i<diagDim;i++) { diag[i]=0; }
+diag = new double[diagDim]();
 
 alg::build_diagPrecond_CSRmat<double>(I,J,val,diag,diagDim);
 
@@ -181,7 +179,7 @@ alg::leftMult_diagPrecond_CSRmat<double>(I,val,N,diag,diagDim);
 alg::build_diagPrecond_CSRmat<double>(I,J,val,diag,diagDim);// diag precond should be unit matrix after the left multiplication above
 
 bool test = (diag[0] == 1.0) && (diag[1] == 1.0) && (diag[2] == 1.0) && (diag[3] == 1.0); 
-if (test) std::cout << "diag from CSR matrix Ok." <<std::endl;
+if (test) std::cout << "diag is unit matrix." <<std::endl;
 
 BOOST_TEST(diag[0] == (double)1.0);
 BOOST_TEST(diag[1] == (double)1.0);
@@ -206,5 +204,70 @@ delete [] val;
 delete [] diag;
 }
 
+BOOST_AUTO_TEST_CASE(buildCSRmat_fromCOO,* boost::unit_test::tolerance(1e-15))
+{
+int N(0);
+int *I, *J;
+double *val;
+
+std::vector<alg::m_coeff> C;// there are 10 coefficients
+C.push_back(alg::m_coeff(0,0,1.0));
+C.push_back(alg::m_coeff(0,1,4.0));
+C.push_back(alg::m_coeff(1,1,2.0));
+C.push_back(alg::m_coeff(1,2,3.0));
+C.push_back(alg::m_coeff(2,0,5.0));
+C.push_back(alg::m_coeff(2,2,-1.0));
+C.push_back(alg::m_coeff(2,3,7.0));
+C.push_back(alg::m_coeff(2,4,8.0));
+C.push_back(alg::m_coeff(3,2,9.0));
+C.push_back(alg::m_coeff(3,3,-2.0));
+C.push_back(alg::m_coeff(3,4,6.0));
+
+const int dim_C = 4;
+size_t nb_coeff = C.size();
+I = new int[dim_C+1];
+J = new int[nb_coeff];
+val = new double[nb_coeff];
+
+alg::buildCSR_sparseMat<double>(C,dim_C,I,J,val,N);
+
+BOOST_TEST(I[0]== (int)0);
+BOOST_TEST(I[1]== (int)2);
+BOOST_TEST(I[2]== (int)4);
+BOOST_TEST(I[3]== (int)8);
+BOOST_TEST(I[4]== (int)11);//nb_coeff
+
+BOOST_TEST(J[0]== (int)0);
+BOOST_TEST(J[1]== (int)1);
+BOOST_TEST(J[2]== (int)1);
+BOOST_TEST(J[3]== (int)2);
+BOOST_TEST(J[4]== (int)0);
+BOOST_TEST(J[5]== (int)2);
+BOOST_TEST(J[6]== (int)3);
+BOOST_TEST(J[7]== (int)4);
+BOOST_TEST(J[8]== (int)2);
+BOOST_TEST(J[9]== (int)3);
+BOOST_TEST(J[10]== (int)4);
+
+BOOST_TEST(val[0] == (double)1.0);
+BOOST_TEST(val[1] == (double)4.0);
+BOOST_TEST(val[2] == (double)2.0);
+BOOST_TEST(val[3] == (double)3.0);
+BOOST_TEST(val[4] == (double)5.0);
+BOOST_TEST(val[5] == (double)-1.0);
+BOOST_TEST(val[6] == (double)7.0);
+BOOST_TEST(val[7] == (double)8.0);
+BOOST_TEST(val[8] == (double)9.0);
+BOOST_TEST(val[9] == (double)-2.0);
+BOOST_TEST(val[10] == (double)6.0);
+
+BOOST_TEST(N == dim_C);
+
+std::cout << "CSR matrix Ok." <<std::endl;
+
+delete [] I;
+delete [] J;
+delete [] val;
+}
 
 BOOST_AUTO_TEST_SUITE_END()
