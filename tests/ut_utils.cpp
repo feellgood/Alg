@@ -9,40 +9,40 @@ BOOST_AUTO_TEST_SUITE(ut_utils)
 
 BOOST_AUTO_TEST_CASE(multCSR_MV,* boost::unit_test::tolerance(1e-15))
 {
-const int N = 5;
+const int N = 4;
 const int nb_coeff = 9;
-int *I, *J ;
-I = new int[N];
-J = new int[nb_coeff];
-I[0]= 0;
-I[1]= 2;
-I[2]= 4;
-I[3]= 7;
-I[4]= 9;
-J[0]= 0;
-J[1]= 1;
-J[2]= 1;
-J[3]= 2;
-J[4]= 0;
-J[5]= 3;
-J[6]= 4;
-J[7]= 2;
-J[8]= 4;
+alg::CSR_mat<double> A(N,nb_coeff);
 
-double *val, *x, *y;
-val = new double[nb_coeff];
-val[0]= 1.0;
-val[1]= 4.0;
-val[2]= 2.0;
-val[3]= 3.0;
-val[4]= 5.0;
-val[5]= 7.0;
-val[6]= 8.0;
-val[7]= 9.0;
-val[8]= 6.0;
+A.I[0]= 0;
+A.I[1]= 2;
+A.I[2]= 4;
+A.I[3]= 7;
+A.I[4]= 9;//nb_coeff
 
-x = new double[N];
-y = new double[4]();// initialization to zero
+A.J[0]= 0;
+A.J[1]= 1;
+A.J[2]= 1;
+A.J[3]= 2;
+A.J[4]= 0;
+A.J[5]= 3;
+A.J[6]= 4;
+A.J[7]= 2;
+A.J[8]= 4;
+
+double *x, *y;
+
+A.val[0]= 1.0;
+A.val[1]= 4.0;
+A.val[2]= 2.0;
+A.val[3]= 3.0;
+A.val[4]= 5.0;
+A.val[5]= 7.0;
+A.val[6]= 8.0;
+A.val[7]= 9.0;
+A.val[8]= 6.0;
+
+x = new double[N+1];
+y = new double[N]();// initialization to zero
 
 x[0]=1.0;
 x[1]=2.0;
@@ -50,10 +50,7 @@ x[2]=3.0;
 x[3]=2.0;
 x[4]=1.0;
 
-alg::multCSR_MatVect<double>(I,J,val,x,N,y);
-delete [] I;
-delete [] J;
-delete [] val;
+alg::multCSR_MatVect<double>(A,x,y);
 delete [] x;
 
 bool test = (y[0] == 9.0) && (y[1] == 13) && (y[2] == 27) && (y[3] == 33); 
@@ -69,55 +66,50 @@ delete [] y;
 
 BOOST_AUTO_TEST_CASE(diagPrecond,* boost::unit_test::tolerance(1e-15))
 {
-const int N = 5;
+const int N = 4;
 const int nb_coeff = 11;
-int *I, *J ;
-I = new int[N];
-J = new int[nb_coeff];
-I[0]= 0;
-I[1]= 2;
-I[2]= 4;
-I[3]= 8;
-I[4]= 11;
+alg::CSR_mat<double> A(N,nb_coeff);
 
-J[0]= 0;
-J[1]= 1;
-J[2]= 1;
-J[3]= 2;
-J[4]= 0;
-J[5]= 2;
-J[6]= 3;
-J[7]= 4;
-J[8]= 2;
-J[9]= 3;
-J[10]= 4;
+A.I[0]= 0;
+A.I[1]= 2;
+A.I[2]= 4;
+A.I[3]= 8;
+A.I[4]= 11;
 
-double *val, *diag;
-val = new double[nb_coeff];
-val[0]= 1.0;
-val[1]= 4.0;
-val[2]= 2.0;
-val[3]= 3.0;
-val[4]= 5.0;
-val[5]= -1.0;
-val[6]= 7.0;
-val[7]= 8.0;
-val[8]= 9.0;
-val[9]= -2.0;
-val[10]= 6.0;
+A.J[0]= 0;
+A.J[1]= 1;
+A.J[2]= 1;
+A.J[3]= 2;
+A.J[4]= 0;
+A.J[5]= 2;
+A.J[6]= 3;
+A.J[7]= 4;
+A.J[8]= 2;
+A.J[9]= 3;
+A.J[10]= 4;
 
-const int diagDim = N-1;
+
+A.val[0]= 1.0;
+A.val[1]= 4.0;
+A.val[2]= 2.0;
+A.val[3]= 3.0;
+A.val[4]= 5.0;
+A.val[5]= -1.0;
+A.val[6]= 7.0;
+A.val[7]= 8.0;
+A.val[8]= 9.0;
+A.val[9]= -2.0;
+A.val[10]= 6.0;
+
+double *diag;
+const int diagDim = N;
 diag = new double[diagDim];
 
 for (int i=0;i<diagDim;i++) { diag[i]=0; }
 
-alg::build_diagPrecond_CSRmat<double>(I,J,val,diag,diagDim);
+alg::build_diagPrecond_CSRmat<double>(A,diag,diagDim);
 
 for (int i=0;i<diagDim;i++) { std::cout << "diag["<< i << "]= " << diag[i] << std::endl; }
-
-delete [] I;
-delete [] J;
-delete [] val;
 
 bool test = (diag[0] == 1.0) && (diag[1] == 0.5) && (diag[2] == -1.0) && (diag[3] == -0.5); 
 if (test) std::cout << "diag from CSR matrix Ok." <<std::endl;
@@ -132,51 +124,50 @@ delete [] diag;
 
 BOOST_AUTO_TEST_CASE(multCSRmat_diagPrecond,* boost::unit_test::tolerance(1e-15))
 {
-const int N = 5;
+const int N = 4;
 const int nb_coeff = 11;
-int *I, *J ;
-I = new int[N];
-J = new int[nb_coeff];
-I[0]= 0;
-I[1]= 2;
-I[2]= 4;
-I[3]= 8;
-I[4]= 11;
+alg::CSR_mat<double> A(N,nb_coeff);
 
-J[0]= 0;
-J[1]= 1;
-J[2]= 1;
-J[3]= 2;
-J[4]= 0;
-J[5]= 2;
-J[6]= 3;
-J[7]= 4;
-J[8]= 2;
-J[9]= 3;
-J[10]= 4;
+A.I[0]= 0;
+A.I[1]= 2;
+A.I[2]= 4;
+A.I[3]= 8;
+A.I[4]= nb_coeff;
 
-double *val, *diag;
-val = new double[nb_coeff];
-val[0]= 1.0;
-val[1]= 4.0;
-val[2]= 2.0;
-val[3]= 3.0;
-val[4]= 5.0;
-val[5]= -1.0;
-val[6]= 7.0;
-val[7]= 8.0;
-val[8]= 9.0;
-val[9]= -2.0;
-val[10]= 6.0;
+A.J[0]= 0;
+A.J[1]= 1;
+A.J[2]= 1;
+A.J[3]= 2;
+A.J[4]= 0;
+A.J[5]= 2;
+A.J[6]= 3;
+A.J[7]= 4;
+A.J[8]= 2;
+A.J[9]= 3;
+A.J[10]= 4;
 
-const int diagDim = N-1;
+double *diag;
+
+A.val[0]= 1.0;
+A.val[1]= 4.0;
+A.val[2]= 2.0;
+A.val[3]= 3.0;
+A.val[4]= 5.0;
+A.val[5]= -1.0;
+A.val[6]= 7.0;
+A.val[7]= 8.0;
+A.val[8]= 9.0;
+A.val[9]= -2.0;
+A.val[10]= 6.0;
+
+const int diagDim = N;
 diag = new double[diagDim]();
 
-alg::build_diagPrecond_CSRmat<double>(I,J,val,diag,diagDim);
+alg::build_diagPrecond_CSRmat<double>(A,diag,diagDim);
 
-alg::leftMult_diagPrecond_CSRmat<double>(I,val,N,diag,diagDim);
+alg::leftMult_diagPrecond_CSRmat<double>(A,diag,diagDim);
 
-alg::build_diagPrecond_CSRmat<double>(I,J,val,diag,diagDim);// diag precond should be unit matrix after the left multiplication above
+alg::build_diagPrecond_CSRmat<double>(A,diag,diagDim);// diag precond should be unit matrix after the left multiplication above
 
 bool test = (diag[0] == 1.0) && (diag[1] == 1.0) && (diag[2] == 1.0) && (diag[3] == 1.0); 
 if (test) std::cout << "diag is unit matrix." <<std::endl;
@@ -186,21 +177,18 @@ BOOST_TEST(diag[1] == (double)1.0);
 BOOST_TEST(diag[2] == (double)1.0);
 BOOST_TEST(diag[3] == (double)1.0);
 
-BOOST_TEST(val[0] == (double)1.0);
-BOOST_TEST(val[1] == (double)4.0);
-BOOST_TEST(val[2] == (double)1.0);
-BOOST_TEST(val[3] == (double)1.5);
-BOOST_TEST(val[4] == (double)-5.0);
-BOOST_TEST(val[5] == (double)1.0);
-BOOST_TEST(val[6] == (double)-7.0);
-BOOST_TEST(val[7] == (double)-8.0);
-BOOST_TEST(val[8] == (double)-4.5);
-BOOST_TEST(val[9] == (double)1.0);
-BOOST_TEST(val[10] == (double)-3.0);
+BOOST_TEST(A.val[0] == (double)1.0);
+BOOST_TEST(A.val[1] == (double)4.0);
+BOOST_TEST(A.val[2] == (double)1.0);
+BOOST_TEST(A.val[3] == (double)1.5);
+BOOST_TEST(A.val[4] == (double)-5.0);
+BOOST_TEST(A.val[5] == (double)1.0);
+BOOST_TEST(A.val[6] == (double)-7.0);
+BOOST_TEST(A.val[7] == (double)-8.0);
+BOOST_TEST(A.val[8] == (double)-4.5);
+BOOST_TEST(A.val[9] == (double)1.0);
+BOOST_TEST(A.val[10] == (double)-3.0);
 
-delete [] I;
-delete [] J;
-delete [] val;
 delete [] diag;
 }
 

@@ -4,6 +4,8 @@
 
 #include <type_traits>
 
+#include "../alg_utils.h"
+
 cublasStatus_t cublas_axpy(cublasHandle_t handle, int n, const double *alpha, const double *x, int incx, double * y, int incy )
 { return cublasDaxpy(handle, n, alpha, x, incx, y, incy); }
 
@@ -29,12 +31,6 @@ cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const float *x, int inc
 { return cublasScopy(handle,n,x,incx,y,incy); }
 
 
-
-
-
-//namespace GPU
-//{
-
 /**
 I,J indices of the non zero coefficients of the sparse matrix
 val : values of the non zero coefficients of the sparse matrix 
@@ -48,9 +44,8 @@ nb_iter : number of iteration done
 returns residue
 */
 
-
-template <typename T>
-T cg(int *I, int *J, T *val, T *x, T *rhs, const int N, const T tol, const int max_iter, int &nb_iter)
+template <class T>
+T _cg(alg::CSR_mat<T> const& A, T *x, T *rhs, const T tol, const int max_iter, int &nb_iter)
 {
 cudaDataType_t size_float;
 
@@ -60,7 +55,8 @@ else if (std::is_same<T,double>::value)
 	{ size_float = CUDA_R_64F; }
 else exit(1);
 
-const int nz = I[N];
+const int nz = A.I[A.N];
+const int N = A.N-1;
 
 int *d_col, *d_row;
 int k;
@@ -95,9 +91,9 @@ cusparseCreateDnVec(&vecp, N, d_p, size_float);
 cusparseDnVecDescr_t vecAx;
 cusparseCreateDnVec(&vecAx, N, d_Ax, size_float);
 
-cudaMemcpy(d_col, J, nz * sizeof(int), cudaMemcpyHostToDevice);
-cudaMemcpy(d_row, I, (N + 1) * sizeof(int), cudaMemcpyHostToDevice);
-cudaMemcpy(d_val, val, nz * sizeof(T), cudaMemcpyHostToDevice);
+cudaMemcpy(d_col, A.J, nz * sizeof(int), cudaMemcpyHostToDevice);
+cudaMemcpy(d_row, A.I, (N + 1) * sizeof(int), cudaMemcpyHostToDevice);
+cudaMemcpy(d_val, A.val, nz * sizeof(T), cudaMemcpyHostToDevice);
 cudaMemcpy(d_x,x,N*sizeof(T), cudaMemcpyHostToDevice);
 cudaMemcpy(d_r,rhs,N*sizeof(T), cudaMemcpyHostToDevice);
 
@@ -145,7 +141,7 @@ while(r1 > tol*tol && k <= max_iter)
 	k++;
 	}
 
-cudaMemcpy(x, d_x, N * sizeof(T), cudaMemcpyDeviceToHost);
+cudaMemcpy(x, d_x, N*sizeof(T), cudaMemcpyDeviceToHost);
 
 cusparseDestroy(cusparseHandle);
 cublasDestroy(cublasHandle);
@@ -161,22 +157,14 @@ cudaFree(d_x);
 cudaFree(d_r);
 cudaFree(d_p);
 cudaFree(d_Ax);
+
 nb_iter = k;
 return sqrt(r1);
 }
 
+double cg(alg::CSR_mat<double> const& A, double *x, double *rhs, const double tol, const int max_iter, int &nb_iter)
+{ return _cg<double>(A, x, rhs, tol, max_iter, nb_iter); }
 
-double cg(int *I, int *J, double *val, double *x, double *rhs, const int N, const double tol, const int max_iter, int &nb_iter)
-{
-return cg<double>(I, J, val, x, rhs, N, tol, max_iter, nb_iter);
-}
-
-float cg(int *I, int *J, float *val, float *x, float *rhs, const int N, const float tol, const int max_iter, int &nb_iter)
-{
-return cg<float>(I, J, val, x, rhs, N, tol, max_iter, nb_iter);
-}
-
-
-//} // end namespace GPU
-
+float cg(alg::CSR_mat<float> const& A, float *x, float *rhs, const float tol, const int max_iter, int &nb_iter)
+{ return _cg<float>(A, x, rhs, tol, max_iter, nb_iter); }
 

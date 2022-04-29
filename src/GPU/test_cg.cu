@@ -9,48 +9,52 @@
 
 /* genTridiag: generate a random tridiagonal symmetric matrix , zero based indices */
 template <typename T>
-void genTridiag(int *I, int *J, T *val, int N, int nz)
+void genTridiag(alg::CSR_mat<T> &A)
 {
 srand(time(NULL));
 
-  I[0] = 0, J[0] = 0, J[1] = 1;
-  val[0] = (T) rand() / RAND_MAX + 10.0f;
-  val[1] = (T) rand() / RAND_MAX;
-  int start;
+A.I[0] = 0, A.J[0] = 0, A.J[1] = 1;
+A.val[0] = (T) rand() / RAND_MAX + 10.0f;
+A.val[1] = (T) rand() / RAND_MAX;
+int start;
 
-  for (int i = 1; i < N; i++) 
+for (int i = 1; i < A.N; i++) 
   {
-    if (i > 1) { I[i] = I[i - 1] + 3; } else { I[1] = 2; }
+    if (i > 1) { A.I[i] = A.I[i - 1] + 3; } else { A.I[1] = 2; }
 
     start = (i - 1) * 3 + 2;
-    J[start] = i - 1;
-    J[start + 1] = i;
+    A.J[start] = i - 1;
+    A.J[start + 1] = i;
 
-    if (i < N - 1) { J[start + 2] = i + 1; }
+    if (i < A.N - 1) { A.J[start + 2] = i + 1; }
 
-    val[start] = val[start - 1];
-    val[start + 1] = (T) rand() / RAND_MAX + 10.0f;
+    A.val[start] = A.val[start - 1];
+    A.val[start + 1] = (T) rand() / RAND_MAX + 10.0f;
 
-    if (i < N - 1) { val[start + 2] = (T) rand() / RAND_MAX; }
+    if (i < A.N - 1) { A.val[start + 2] = (T) rand() / RAND_MAX; }
   }
-
-  I[N] = nz;
 }
 
 
 template <typename T>
-T check_sol(int *I,int *J, T *val, T *x,int N, T *rhs)
+T check_sol(alg::CSR_mat<T> const& A,T *x,T *rhs)
 {
 T result(0);
-T *y;
 
-y = new T[N]();//initialization to zero
+//T *y;
+const int DIM_y = A.N;
 
-alg::multCSR_MatVect<T>(I,J,val,x,N,y);
+T y[DIM_y];
+//y = new T[DIM_y];
 
-for(int k =0;k<N;k++) 
+
+for(int k =0;k<DIM_y;k++) {y[k]= 0;} //initialization to zero
+
+alg::multCSR_MatVect<T>(A,x,y);
+
+for(int k =0;k<DIM_y;k++) 
 	{ result += alg::sq<T>( y[k] - rhs[k]); }
-delete [] y;
+//delete [] y;
 
 return sqrt(result);
 }
@@ -59,21 +63,20 @@ int main(void)
 {
 infos();
 
-const int N =100000;
-int nz = (N-2)*3 + 4;
-int *I, *J ;
-I = new int[N+1];
-J = new int[nz];
-
 double tol,res;
 
-decltype(tol) *val, *x, *rhs;
+const int N =100000;
 
-val = new decltype(tol)[nz];
+const int nb_coeff = (N-2)*3 + 4;// nb_coeff of a tri_diag sparse mat
+
+alg::CSR_mat<decltype(tol)> A(N,nb_coeff);
+
+genTridiag<decltype(tol)>(A);
+std::cout << "random tri-diagonal sparse matrix filled.\n";
+
+decltype(tol) *x, *rhs;
 x = new decltype(tol)[N];
 rhs = new decltype(tol)[N];
-
-genTridiag<decltype(tol)>(I, J, val, N, nz);
 
 for (int i = 0; i<N; i++)
 	{
@@ -85,18 +88,13 @@ tol = 1e-6;
 int max_iter(100);
 int nb_iter(0);
 
-res = cg(I,J,val,x,rhs,N,tol,max_iter,nb_iter);
+std::cout << "now starting gradient conjugate on GPU... ";
+res = cg(A,x,rhs,tol,max_iter,nb_iter);
+std::cout << "\t ... job done on GPU.\n";
 
-//res = cg<decltype(tol)>(I,J,val,x,rhs,N,tol,max_iter,nb_iter);
-std::cout << "nb iter = " << nb_iter << "; residu = " << res << std::endl;
-
-std::cout << "check solution returns : " << check_sol(I,J,val,x,N,rhs) <<std::endl;
+std::cout << "nb iter = " << nb_iter << "; residu = " << res << "\tcheck solution returns : " << check_sol(A,x,rhs) <<std::endl;
 
 delete[] x;
-
-delete[] I;
-delete[] J;
-delete[] val;
 delete[] rhs;
 
 std::cout <<"CUDA error: " << cudaGetErrorString(cudaGetLastError()) << std::endl;
