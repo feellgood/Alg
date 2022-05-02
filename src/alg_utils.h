@@ -15,6 +15,9 @@ template <typename T>
 class CSR_mat
 	{
 	public:
+	/**
+	constructor : memory allocation only
+	*/
 		CSR_mat(const int _N, const int nb_coeff) :N(_N) 
 			{
 			I = new int[N+1];
@@ -22,6 +25,42 @@ class CSR_mat
 			J = new int[nb_coeff];
 			val = new T[nb_coeff];
 			}
+		
+		/**
+constructor : build the CSR sparse matrix from the vector of m_coeff C ordered
+dim_C is the dimension of the ending space of the application C = number of lines.
+Zero index based.
+*/
+		CSR_mat(const std::vector<alg::m_coeff> C, const size_t dim_C) : N(dim_C)
+		{
+		size_t nb_coeff = C.size();
+		I = new int[N+1];
+		I[N] = nb_coeff;
+		J = new int[nb_coeff];
+		val = new T[nb_coeff];
+
+		size_t i(0);
+		for(size_t k=0;k<nb_coeff;k++)
+			{
+			val[k] = (T) C[k].getVal();
+			J[k]=C[k]._j;
+			if((C[k]._i == i )&&(i < dim_C)) 
+				{
+				I[i] = k;  
+				i++;
+				}
+			}
+		}
+		
+		/**
+		constructor copy : we do not need it, so we define it deleted.
+		*/
+		CSR_mat(const CSR_mat&) = delete;
+		
+		/**
+		assignment operator= :  we do not need it, so we define it deleted.
+		*/
+		CSR_mat& operator=(const CSR_mat&) = delete;
 		
 		~CSR_mat()
 			{
@@ -82,31 +121,7 @@ else
 	}
 }
 
-/**
-build the CSR sparse matrix from the vector of m_coeff C ordered, outputs = I,J,val,N
-dim_C is the dimension of the ending space of the application C = number of lines
-I,J and val are memory allocated, must be deleted otherwise memory leak.
-Zero index based.
-*/
-template<typename T>
-void buildCSR_sparseMat(const std::vector<alg::m_coeff> C, const size_t dim_C,int *I,int *J,T *val,int &N)
-{
-size_t nb_coeff = C.size();
-N = dim_C;
-I[N] = nb_coeff;
 
-size_t i(0);
-for(size_t k=0;k<nb_coeff;k++)
-	{
-	val[k] = (T) C[k].getVal();
-	J[k]=C[k]._j;
-	if((C[k]._i == i )&&(i < dim_C)) 
-		{
-		I[i] = k;  
-		i++;
-		}
-	}
-}
 
 } // end namespace alg
 
