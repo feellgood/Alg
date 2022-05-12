@@ -56,7 +56,7 @@ else if (std::is_same<T,double>::value)
 else exit(1);
 
 const int nz = A.I[A.N];
-const int N = A.N-1;
+const int N = A.N;
 
 int *d_col, *d_row;
 int k;

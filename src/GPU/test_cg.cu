@@ -40,13 +40,8 @@ template <typename T>
 T check_sol(alg::CSR_mat<T> const& A,T *x,T *rhs)
 {
 T result(0);
-
-//T *y;
 const int DIM_y = A.N;
-
 T y[DIM_y];
-//y = new T[DIM_y];
-
 
 for(int k =0;k<DIM_y;k++) {y[k]= 0;} //initialization to zero
 
@@ -54,10 +49,10 @@ alg::multCSR_MatVect<T>(A,x,y);
 
 for(int k =0;k<DIM_y;k++) 
 	{ result += alg::sq<T>( y[k] - rhs[k]); }
-//delete [] y;
 
 return sqrt(result);
 }
+
 
 int main(void)
 {
@@ -65,7 +60,7 @@ infos();
 
 double tol,res;
 
-const int N =100000;
+const int N =15;
 
 const int nb_coeff = (N-2)*3 + 4;// nb_coeff of a tri_diag sparse mat
 
@@ -93,6 +88,7 @@ res = cg(A,x,rhs,tol,max_iter,nb_iter);
 std::cout << "\t ... job done on GPU.\n";
 
 std::cout << "nb iter = " << nb_iter << "; residu = " << res << "\tcheck solution returns : " << check_sol(A,x,rhs) <<std::endl;
+
 
 delete[] x;
 delete[] rhs;
