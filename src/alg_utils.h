@@ -121,6 +121,25 @@ else
 	}
 }
 
+/**
+computes norm2(A x - rhs) 
+*/
+template <typename T>
+T check_sol(alg::CSR_mat<T> const& A,T *x,T *rhs)
+{
+T result(0);
+const int DIM_y = A.N;
+T y[DIM_y];
+
+for(int k =0;k<DIM_y;k++) {y[k]= 0;} //initialization to zero
+
+alg::multCSR_MatVect<T>(A,x,y);
+
+for(int k =0;k<DIM_y;k++) 
+	{ result += alg::sq<T>( y[k] - rhs[k]); }
+
+return sqrt(result);
+}
 
 
 } // end namespace alg

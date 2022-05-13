@@ -36,24 +36,6 @@ for (int i = 1; i < A.N; i++)
 }
 
 
-template <typename T>
-T check_sol(alg::CSR_mat<T> const& A,T *x,T *rhs)
-{
-T result(0);
-const int DIM_y = A.N;
-T y[DIM_y];
-
-for(int k =0;k<DIM_y;k++) {y[k]= 0;} //initialization to zero
-
-alg::multCSR_MatVect<T>(A,x,y);
-
-for(int k =0;k<DIM_y;k++) 
-	{ result += alg::sq<T>( y[k] - rhs[k]); }
-
-return sqrt(result);
-}
-
-
 int main(void)
 {
 infos();
@@ -87,7 +69,7 @@ std::cout << "now starting gradient conjugate on GPU... ";
 res = cg(A,x,rhs,tol,max_iter,nb_iter);
 std::cout << "\t ... job done on GPU.\n";
 
-std::cout << "nb iter = " << nb_iter << "; residu = " << res << "\tcheck solution returns : " << check_sol(A,x,rhs) <<std::endl;
+std::cout << "nb iter = " << nb_iter << "; residu = " << res << "\tcheck solution returns : " << alg::check_sol(A,x,rhs) <<std::endl;
 
 
 delete[] x;
