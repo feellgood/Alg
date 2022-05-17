@@ -14,3 +14,6 @@ float cg(alg::CSR_mat<float> const& A, float *x, float *rhs, const float tol, co
 /** print the cuda architecture and the number of multi-processors of the GPU */
 void infos(void);
 
+
+/** print last CUDA error */
+void status(void);

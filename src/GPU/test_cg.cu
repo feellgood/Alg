@@ -67,14 +67,11 @@ int nb_iter(0);
 
 std::cout << "now starting gradient conjugate on GPU... ";
 res = cg(A,x,rhs,tol,max_iter,nb_iter);
-std::cout << "\t ... job done on GPU.\n";
-
-std::cout << "nb iter = " << nb_iter << "; residu = " << res << "\tcheck solution returns : " << alg::check_sol(A,x,rhs) <<std::endl;
-
+std::cout << "\t ... job done on GPU in " << nb_iter << " iterations; residu = " << res << "\ncheck solution returns : " << alg::check_sol(A,x,rhs) <<std::endl;
 
 delete[] x;
 delete[] rhs;
 
-std::cout <<"CUDA error: " << cudaGetErrorString(cudaGetLastError()) << std::endl;
+status();
 return 0;
 }
