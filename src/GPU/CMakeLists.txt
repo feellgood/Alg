@@ -43,7 +43,7 @@ if (CUDA_FOUND)
 	target_compile_options(sparseVect PRIVATE $<$<COMPILE_LANGUAGE:CUDA>: -std=c++11; --expt-extended-lambda   > )
 
 
-	add_library(alg_GPU STATIC infos.cu cg.cu alg_GPU.h)
+	add_library(alg_GPU STATIC infos.cu cg.cu precond_cg.cu alg_GPU.h)
 	target_compile_features ( alg_GPU PUBLIC cxx_std_11 )
 	set_target_properties( alg_GPU PROPERTIES
 						LINKER_LANGUAGE CUDA

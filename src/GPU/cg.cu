@@ -9,6 +9,9 @@
 
 
 /**
+conjuguate gradient without preconditionner : carefull ! might be unstable
+
+A : input sparse matrix with CSR encoding, zero index pased
 I,J indices of the non zero coefficients of the sparse matrix
 val : values of the non zero coefficients of the sparse matrix 
 x : result of dimension N
@@ -32,7 +35,7 @@ else if (std::is_same<T,double>::value)
 	{ size_float = CUDA_R_64F; }
 else exit(1);
 
-const int nz = A.I[A.N];
+const int nz = A.I[A.N];//nb of coefficients of the sparse matrix
 const int N = A.N;
 
 int *d_col, *d_row;

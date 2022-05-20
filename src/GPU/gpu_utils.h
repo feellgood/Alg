@@ -1,3 +1,6 @@
+#ifndef GPU_UTILS_H
+#define GPU_UTILS_H
+
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 #include <cusparse.h>
@@ -25,3 +28,5 @@ cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const double *x, int in
 
 cublasStatus_t cublas_copy(cublasHandle_t handle, int n, const float *x, int incx, float * y, int incy)
 { return cublasScopy(handle,n,x,incx,y,incy); }
+
+#endif

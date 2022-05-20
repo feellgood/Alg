@@ -69,6 +69,10 @@ std::cout << "now starting gradient conjugate on GPU... ";
 res = cg(A,x,rhs,tol,max_iter,nb_iter);
 std::cout << "\t ... job done on GPU in " << nb_iter << " iterations; residu = " << res << "\ncheck solution returns : " << alg::check_sol(A,x,rhs) <<std::endl;
 
+std::cout << "now starting precond gradient conjugate on GPU... ";
+res = precond_cg(A,x,rhs,tol,max_iter,nb_iter);
+std::cout << "\t ... job done on GPU in " << nb_iter << " iterations; residu = " << res << "\ncheck solution returns : " << alg::check_sol(A,x,rhs) <<std::endl;
+
 delete[] x;
 delete[] rhs;
 
