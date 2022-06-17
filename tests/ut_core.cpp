@@ -8,13 +8,15 @@
 
 BOOST_AUTO_TEST_SUITE(ut_core)
 
+#include "alg_cg.h" // to get LinComb template
+
 BOOST_AUTO_TEST_CASE(Stupid)
 {
 float x = 1.0;
 BOOST_CHECK(x != 0.0f);
 }
 
-BOOST_AUTO_TEST_CASE(LinComb,* boost::unit_test::tolerance(1e-15))
+BOOST_AUTO_TEST_CASE(false_LinComb,* boost::unit_test::tolerance(1e-15))
 {
 const size_t DIM = 5;
 
@@ -42,7 +44,7 @@ alg::mult(r_A,x,v_temp);// v_temp = A x;
 alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
 
 std::vector<double> r2(DIM);
-alg::LinComb<false>(A,x,b,r2,std::minus<double>()); // r = b - A x
+LinComb<false>(A,x,b,r2,std::minus<double>()); // r = b - A x
 for(size_t i=0;i<DIM;i++) BOOST_TEST(r2[i] == r[i]);
 }
 
