@@ -4,11 +4,11 @@
 #include <vector>
 #include <iostream>
 
-#include "alg.h"
+#include "alg_core.h"
+#include "alg_cg.h" // to get LinComb template
+
 
 BOOST_AUTO_TEST_SUITE(ut_core)
-
-#include "alg_cg.h" // to get LinComb template
 
 BOOST_AUTO_TEST_CASE(Stupid)
 {

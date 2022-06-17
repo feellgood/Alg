@@ -3,11 +3,20 @@
 
 #include<type_traits>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
 #include "alg_coeff.h"
 
 namespace alg
 {
+
+/** overloaded operator for vector printing */
+inline std::ostream & operator<<(std::ostream & flux, std::vector<double> const& v) 
+{
+std::for_each(v.begin(),v.end(), [&flux](const double& x) { flux << x << " "; });
+return flux;
+}
 
 enum precondType {NONE, DIAG};
 

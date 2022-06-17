@@ -7,6 +7,7 @@
 
 #include <numeric> // inner_product
 #include <execution>
+#include <cmath>
 #include "alg_sparseMat.h"
 #include "alg_denseMat.h"
 
@@ -66,13 +67,7 @@ inline void scaled_add(const std::vector<double> & X,const double alpha, std::ve
 inline double norm(const std::vector<double> & X)
 	{ return sqrt(fabs( alg::dot(X,X) )); }
 
-/** Y = A*X with sparseMat A */
-inline void mult(alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
-{
-const size_t _size = X.size();
-Y.resize(_size);
-if (A.getDim() == _size) A.mult(X,Y);
-}
+
 
 /** Y = A*X with sparseMat A and mask b */
 inline void maskedMult(std::vector<bool> const &b, alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)

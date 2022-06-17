@@ -14,7 +14,10 @@ The Iteration object calculates whether the solution has reached the
 
 
 #include <iomanip>
+#include <iostream>
 #include <vector>
+#include <cmath>
+
 namespace alg {
 
 double norm(const std::vector<double> & X);

@@ -12,6 +12,9 @@ It is also possible to erase v_coeffs with value zero calling kill_zero, it may 
 
 #include <execution>
 #include <vector>
+#include <iostream> 
+
+#include "alg_coeff.h"
 
 namespace alg
 {

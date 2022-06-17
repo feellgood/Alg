@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 
-#include "alg.h" 
+#include "alg_core.h"
 
 BOOST_AUTO_TEST_SUITE(ut_alg)
 

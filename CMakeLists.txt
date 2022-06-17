@@ -16,15 +16,27 @@ ENABLE_LANGUAGE(CXX CUDA)
 MESSAGE(STATUS "CXX ${CMAKE_CXX_COMPILER_ID}")
 MESSAGE(STATUS "version = ${ALG_VERSION}")
 
+add_subdirectory(${PROJECT_SOURCE_DIR}/src)
+
+# on peut pas faire find_library parce qu'elle n'existe pas encore ... -> utilisation de add_dependencies
+#find_library(ALG_LIB_A libalg.a PATHS ${PROJECT_SOURCE_DIR}/src)
+#MESSAGE(STATUS "alg library ${ALG_LIB_A}")
+
+
 set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
-set(HEADERS alg.h alg_core.h alg_iter.h alg_coeff.h alg_sparseVect.h alg_sparseMat.h alg_denseMat.h alg_lu.h alg_cg.h alg_cg_dir.h alg_cg_ilu.h alg_cg_ilu_dir.h alg_bicg.h alg_bicg_dir.h alg_bicg_ilu.h alg_bicg_ilu_dir.h)
-set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cpp savesol.cpp savevtk.cpp integrales.cpp fem.h)
+set(HEADERS fem.h)
+set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cpp savesol.cpp savevtk.cpp integrales.cpp)
 
-ADD_EXECUTABLE(exe ${SOURCES})
+
+ADD_EXECUTABLE(exe ${SOURCES} ${HEADERS})
+add_dependencies(exe alg)
 target_include_directories(exe PUBLIC src)
-target_link_libraries(exe -ltbb)
+target_link_libraries(exe -ltbb alg)#${ALG_LIB_A} )
 
+
+
+# attention à revoir complètement
 install(FILES src/${HEADERS} 
 	DESTINATION include/alg
 	COMPONENT headers)

@@ -9,9 +9,9 @@ w_sparseMat : write sparse matrix : a std::vector of m_coeff = triplet of two in
 
 #include <vector>
 
-#include "alg_coeff.h"
 #include "alg_sparseVect.h"
 #include "alg_utils.h"
+
 
 namespace alg
 {
@@ -167,6 +167,14 @@ inline std::ostream & operator<<(std::ostream & flux, sparseMat const& m) {m.pri
 
 /** operator<< for w_sparseMat */
 inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.print(flux); return flux;}
+
+/** Y = A*X with sparseMat A */
+inline void mult(alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
+{
+const size_t _size = X.size();
+Y.resize(_size);
+if (A.getDim() == _size) A.mult(X,Y);
+}
 
 } // end namespace alg
 

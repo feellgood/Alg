@@ -16,9 +16,9 @@ add_executable( test_ut_sparseVect ut_sparseVect.cpp )
 
 add_executable( test_ut_sparseMat ut_sparseMat.cpp )
 
-add_executable( test_ut_core ut_core.cpp )
+add_executable( test_ut_core ut_core.cpp ../src/alg_lu.cpp )
 
-add_executable( test_ut_cg_dir ut_cg_dir.cpp )
+add_executable( test_ut_cg_dir ut_cg_dir.cpp ../src/alg_cg_dir.cpp ../src/alg_lu.cpp )
 
 add_executable( test_ut_utils ut_utils.cpp )
 
