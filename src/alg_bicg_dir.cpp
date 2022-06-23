@@ -68,5 +68,5 @@ while (!iter.finished_vect(r)) {
       ++iter;
       }   
 alg::add(xd, x); // x = x + xd
-return alg::norm(r)/alg::norm(b);
+return iter.get_res()/iter.get_rhsnorm();
 }

@@ -59,5 +59,5 @@ while (!iter.finished_vect(r)) {
       rho_2 = rho_1;
       ++iter;
       }   
-return alg::norm(r)/alg::norm(b);
+return iter.get_res()/iter.get_rhsnorm();
 }
