@@ -13,6 +13,11 @@ diagonal preconditioner is implemented in most routines.
 
 All cg and related algorithms are using diagonal pre-conditioner.
 
+### installation
+
+sudo make install
+to copy the static library libalg.a to usr/local/lib and headers to usr/local/include/alg
+
 ### Dependencies :
 C++ 17 and STL
 
