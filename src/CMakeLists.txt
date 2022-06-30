@@ -12,3 +12,7 @@ add_library(alg STATIC ${ALG_HEADERS} ${ALG_SOURCES})
 						#POSITION_INDEPENDENT_CODE ON # for -fPIC option on
 						)
 
+install(FILES src/${ALG_HEADERS} 
+	DESTINATION include/alg
+	COMPONENT headers)
+

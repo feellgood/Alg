@@ -18,11 +18,6 @@ MESSAGE(STATUS "version = ${ALG_VERSION}")
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src)
 
-# on peut pas faire find_library parce qu'elle n'existe pas encore ... -> utilisation de add_dependencies
-#find_library(ALG_LIB_A libalg.a PATHS ${PROJECT_SOURCE_DIR}/src)
-#MESSAGE(STATUS "alg library ${ALG_LIB_A}")
-
-
 set( CMAKE_CXX_FLAGS "-Wall -Wextra -std=c++17 -O3 -march=native" CACHE STRING "C++ compiler flags used during builds." FORCE )
 
 set(HEADERS fem.h)
@@ -32,14 +27,7 @@ set(SOURCES main.cpp lecture.cpp femutil.cpp chapeaux.cpp affichage.cpp solve.cp
 ADD_EXECUTABLE(exe ${SOURCES} ${HEADERS})
 add_dependencies(exe alg)
 target_include_directories(exe PUBLIC src)
-target_link_libraries(exe -ltbb alg)#${ALG_LIB_A} )
-
-
-
-# attention à revoir complètement
-install(FILES src/${HEADERS} 
-	DESTINATION include/alg
-	COMPONENT headers)
+target_link_libraries(exe -ltbb alg)
 
 #===========================================================================
 # unit tests, by default it is not built. you have to switch it ON while cmaking to build the unit tests and to be able to call 'make test' afterward:
