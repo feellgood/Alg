@@ -154,11 +154,12 @@ return sqrt(result);
 node template for btree
 */
 template<typename T> 
-struct node_t{
-    T *data;
-	node_t *left;
-	node_t *right;
-};
+struct node_t
+	{
+    	T *data;
+	node_t *left, *right;
+	};
+
 
 /**
 btree for write sparse matrix
@@ -171,7 +172,6 @@ public:
 	
 	/** destructor */
 	~btree() { destroy_tree(root); }
-
 
 	/**
 	constructor copy : we do not need it, so we define it deleted.
@@ -188,6 +188,9 @@ public:
 	*/
 	void insert(T data);
 	
+	/**
+	search node function
+	*/
 	node_t<T> *search(size_t _i)
 		{ return search(_i, root); }
 	
@@ -211,9 +214,11 @@ private:
 	void destroy_tree(node_t<T> *leaf);
 	void insert(T data, node_t<T> *leaf);
 	node_t<T> *search(size_t _i, node_t<T> *leaf);
-	void inorder_print(node_t<T> *leaf);
-	void postorder_print(node_t<T> *leaf);
-	void preorder_print(node_t<T> *leaf);
+	
+	void inorder_print(const node_t<T> *leaf);
+	void postorder_print(const node_t<T> *leaf);
+	void preorder_print(const node_t<T> *leaf);
+    	
     	void inorder_insert(node_t<T> *leaf, std::vector<T> &v);
 	
 	node_t<T> *root;
@@ -224,7 +229,7 @@ private:
 public data inserter
 */
 template<typename T> 
-void btree<T>::insert(T data)
+void btree<T>::insert(const T data)
 {
 	if(root != NULL)
 		{ insert(data, root); }
@@ -319,7 +324,7 @@ node_t<T> *btree<T>::search(size_t _i, node_t<T> *leaf){
 
 /** private printing function */
 template<typename T>
-void btree<T>::inorder_print(node_t<T> *leaf){
+void btree<T>::inorder_print(const node_t<T> *leaf){
 	if(leaf != NULL){
 		inorder_print(leaf->left);
 		std::cout << "{" << leaf->data->_i<< ":"<<leaf->data->getVal() << "},";
@@ -329,7 +334,7 @@ void btree<T>::inorder_print(node_t<T> *leaf){
 
 /** private printing function */
 template<typename T>
-void btree<T>::postorder_print(node_t<T> *leaf){
+void btree<T>::postorder_print(const node_t<T> *leaf){
 	if(leaf != NULL){
 		inorder_print(leaf->left);
 		inorder_print(leaf->right);
@@ -339,7 +344,7 @@ void btree<T>::postorder_print(node_t<T> *leaf){
 
 /** private printing function */
 template<typename T>
-void btree<T>::preorder_print(node_t<T> *leaf){
+void btree<T>::preorder_print(const node_t<T> *leaf){
 	if(leaf != NULL){
 		std::cout << "{" << leaf->data->_i<< ":"<< leaf->data->getVal() << "},";
 		inorder_print(leaf->left);
