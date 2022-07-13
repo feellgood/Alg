@@ -150,6 +150,202 @@ for(int k =0;k<DIM_y;k++)
 return sqrt(result);
 }
 
+template<typename T> 
+struct node_t{
+    T *data;
+	node_t *left;
+	node_t *right;
+};
+
+// begin btree
+
+template<typename T> 
+class btree{
+public:
+	btree();
+	~btree();
+
+	void insert(T data);
+	node_t<T> *search(size_t _i);
+	void destroy_tree();
+	void inorder_print();
+	void postorder_print();
+	void preorder_print();
+    void inorder_insert(std::vector<T> &v);
+
+private:
+	void destroy_tree(node_t<T> *leaf);
+	void insert(T data, node_t<T> *leaf);
+	node_t<T> *search(size_t _i, node_t<T> *leaf);
+	void inorder_print(node_t<T> *leaf);
+	void postorder_print(node_t<T> *leaf);
+	void preorder_print(node_t<T> *leaf);
+    void inorder_insert(node_t<T> *leaf, std::vector<T> &v);
+	node_t<T> *root;
+};
+
+
+template<typename T> 
+btree<T>::btree(){
+	root = NULL;
+}
+
+template<typename T> 
+btree<T>::~btree(){
+	destroy_tree();
+}
+
+template<typename T> 
+void btree<T>::destroy_tree(node_t<T> *leaf){
+	if(leaf != NULL){
+		destroy_tree(leaf->left);
+		destroy_tree(leaf->right);
+        delete leaf->data;
+		delete leaf;
+	}
+}
+
+template<typename T> 
+void btree<T>::insert(T data, node_t<T> *leaf){
+
+	if (data._i == leaf->data->_i){
+       leaf->data->add(data.getVal());
+       return;
+	   }
+
+	if (data._i < leaf->data->_i){
+	   if (leaf->left != NULL){
+		  insert(data, leaf->left);
+		}
+       else{
+		  leaf->left = new node_t<T>; 
+          if (!leaf->left) exit(1);
+          T* data_ptr = new T(data._i, data.getVal()); 
+          if (!data_ptr) exit(1);
+          leaf->left->data  = data_ptr;
+		  leaf->left->left  = NULL;
+		  leaf->left->right = NULL;
+		  }
+       return;
+	   }
+
+    if (data._i > leaf->data->_i){
+	   if (leaf->right != NULL){
+		  insert(data, leaf->right);
+		  } 
+       else{
+		  leaf->right = new node_t<T>;
+          if (!leaf->right) exit(1);
+          T* data_ptr = new T(data._i, data.getVal()); 
+          if (!data_ptr) exit(1);
+          leaf->right->data  = data_ptr;
+		  leaf->right->right = NULL;
+		  leaf->right->left  = NULL;
+		  }
+       return;
+	   }
+
+}
+
+template<typename T> 
+void btree<T>::insert(T data){
+	if(root != NULL){
+		insert(data, root);
+	}else{
+		root = new node_t<T>;
+        if (!root) exit(1);
+        root->data = new T(data._i, data.getVal());
+		root->left = NULL;
+		root->right = NULL;
+	}
+}
+
+template<typename T> 
+node_t<T> *btree<T>::search(size_t _i, node_t<T> *leaf){
+	if(leaf != NULL){
+		if(_i == leaf->data->_i){
+			return leaf;
+		}
+		if(_i < leaf->data->_i){
+			return search(_i, leaf->left);
+		}else{
+			return search(_i, leaf->right);
+		}
+	}else{
+		return NULL;
+	}
+}
+
+template<typename T> 
+node_t<T> *btree<T>::search(size_t _i){
+	return search(_i, root);
+}
+
+template<typename T> 
+void btree<T>::destroy_tree(){
+	destroy_tree(root);
+}
+
+template<typename T> 
+void btree<T>::inorder_print(){
+	inorder_print(root);
+	std::cout << "\n";
+}
+
+template<typename T>
+void btree<T>::inorder_print(node_t<T> *leaf){
+	if(leaf != NULL){
+		inorder_print(leaf->left);
+		std::cout << "{" << leaf->data->_i<< ":"<<leaf->data->getVal() << "},";
+		inorder_print(leaf->right);
+	}
+}
+
+template<typename T>
+void btree<T>::postorder_print(){
+	postorder_print(root);
+	std::cout << "\n";
+}
+
+template<typename T>
+void btree<T>::postorder_print(node_t<T> *leaf){
+	if(leaf != NULL){
+		inorder_print(leaf->left);
+		inorder_print(leaf->right);
+		std::cout << "{" << leaf->data->_i<< ":"<<leaf->data->getVal() << "},";
+	}
+}
+
+template<typename T>
+void btree<T>::preorder_print(){
+	preorder_print(root);
+	std::cout << "\n";
+}
+
+template<typename T>
+void btree<T>::preorder_print(node_t<T> *leaf){
+	if(leaf != NULL){
+		std::cout << "{" << leaf->data->_i<< ":"<< leaf->data->getVal() << "},";
+		inorder_print(leaf->left);
+		inorder_print(leaf->right);
+	}
+}
+
+template<typename T> 
+void btree<T>::inorder_insert(std::vector<T> &v){
+	inorder_insert(root, v);
+}
+
+template<typename T> 
+void btree<T>::inorder_insert(node_t<T> *leaf, std::vector<T> &v){
+	if(leaf != NULL){
+		inorder_insert(leaf->left, v);
+        alg::v_coeff data{leaf->data->_i, leaf->data->getVal()};
+        v.push_back(data);
+		inorder_insert(leaf->right, v);
+	}
+}
+// end btree
 
 } // end namespace alg
 
