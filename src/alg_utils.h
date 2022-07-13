@@ -183,20 +183,27 @@ public:
 	*/
 	btree& operator=(const btree&) = delete;
 
+	/**
+	data inserter
+	*/
 	void insert(T data);
 	
 	node_t<T> *search(size_t _i)
 		{ return search(_i, root); }
 	
+	/** printing function */
 	void inorder_print()
 		{ inorder_print(root); std::cout << "\n"; }
 	
+	/** printing function */
 	void postorder_print()
 		{ postorder_print(root); std::cout << "\n"; }
 	
+	/** printing function */
 	void preorder_print()
 		{ preorder_print(root); std::cout << "\n"; }
     
+    	/** std::vector inserter  */
     	void inorder_insert(std::vector<T> &v)
     		{ inorder_insert(root, v); }
 
@@ -213,16 +220,42 @@ private:
 };
 
 
+/** 
+public data inserter
+*/
+template<typename T> 
+void btree<T>::insert(T data)
+{
+	if(root != NULL)
+		{ insert(data, root); }
+	else
+		{
+		root = new node_t<T>;
+        	if (!root) exit(1);
+        	root->data = new T(data._i, data.getVal());
+		root->left = NULL;
+		root->right = NULL;
+		}
+}
+
+
+/**
+private function to destroy the tree and dealloc mem, recursive
+*/
 template<typename T> 
 void btree<T>::destroy_tree(node_t<T> *leaf){
 	if(leaf != NULL){
 		destroy_tree(leaf->left);
 		destroy_tree(leaf->right);
-        delete leaf->data;
+        	delete leaf->data;
 		delete leaf;
 	}
 }
 
+
+/**
+private inserter
+*/
 template<typename T> 
 void btree<T>::insert(T data, node_t<T> *leaf){
 
@@ -264,19 +297,10 @@ void btree<T>::insert(T data, node_t<T> *leaf){
 	   }
 }
 
-template<typename T> 
-void btree<T>::insert(T data){
-	if(root != NULL){
-		insert(data, root);
-	}else{
-		root = new node_t<T>;
-        if (!root) exit(1);
-        root->data = new T(data._i, data.getVal());
-		root->left = NULL;
-		root->right = NULL;
-	}
-}
 
+/** 
+private leaf search, recursive
+*/
 template<typename T> 
 node_t<T> *btree<T>::search(size_t _i, node_t<T> *leaf){
 	if(leaf != NULL){
@@ -293,6 +317,7 @@ node_t<T> *btree<T>::search(size_t _i, node_t<T> *leaf){
 	}
 }
 
+/** private printing function */
 template<typename T>
 void btree<T>::inorder_print(node_t<T> *leaf){
 	if(leaf != NULL){
@@ -302,6 +327,7 @@ void btree<T>::inorder_print(node_t<T> *leaf){
 	}
 }
 
+/** private printing function */
 template<typename T>
 void btree<T>::postorder_print(node_t<T> *leaf){
 	if(leaf != NULL){
@@ -311,6 +337,7 @@ void btree<T>::postorder_print(node_t<T> *leaf){
 	}
 }
 
+/** private printing function */
 template<typename T>
 void btree<T>::preorder_print(node_t<T> *leaf){
 	if(leaf != NULL){
@@ -320,16 +347,17 @@ void btree<T>::preorder_print(node_t<T> *leaf){
 	}
 }
 
+/** private inserter for vector */
 template<typename T> 
 void btree<T>::inorder_insert(node_t<T> *leaf, std::vector<T> &v){
-	if(leaf != NULL){
+	if(leaf != NULL)
+		{
 		inorder_insert(leaf->left, v);
-        alg::v_coeff data{leaf->data->_i, leaf->data->getVal()};
-        v.push_back(data);
+        	alg::v_coeff data{leaf->data->_i, leaf->data->getVal()};
+        	v.push_back(data);
 		inorder_insert(leaf->right, v);
-	}
+		}
 }
-// end btree
 
 } // end namespace alg
 
