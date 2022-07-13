@@ -150,6 +150,9 @@ for(int k =0;k<DIM_y;k++)
 return sqrt(result);
 }
 
+/**
+node template for btree
+*/
 template<typename T> 
 struct node_t{
     T *data;
@@ -157,17 +160,17 @@ struct node_t{
 	node_t *right;
 };
 
-// begin btree
-
+/**
+btree for write sparse matrix
+*/
 template<typename T> 
 class btree{
 public:
-	btree();
-	~btree();
+	btree(): root(NULL) {}
+	~btree() { destroy_tree(root); }
 
 	void insert(T data);
 	node_t<T> *search(size_t _i);
-	void destroy_tree();
 	void inorder_print();
 	void postorder_print();
 	void preorder_print();
@@ -180,20 +183,11 @@ private:
 	void inorder_print(node_t<T> *leaf);
 	void postorder_print(node_t<T> *leaf);
 	void preorder_print(node_t<T> *leaf);
-    void inorder_insert(node_t<T> *leaf, std::vector<T> &v);
+    	void inorder_insert(node_t<T> *leaf, std::vector<T> &v);
+	
 	node_t<T> *root;
 };
 
-
-template<typename T> 
-btree<T>::btree(){
-	root = NULL;
-}
-
-template<typename T> 
-btree<T>::~btree(){
-	destroy_tree();
-}
 
 template<typename T> 
 void btree<T>::destroy_tree(node_t<T> *leaf){
@@ -279,11 +273,6 @@ node_t<T> *btree<T>::search(size_t _i, node_t<T> *leaf){
 template<typename T> 
 node_t<T> *btree<T>::search(size_t _i){
 	return search(_i, root);
-}
-
-template<typename T> 
-void btree<T>::destroy_tree(){
-	destroy_tree(root);
 }
 
 template<typename T> 
