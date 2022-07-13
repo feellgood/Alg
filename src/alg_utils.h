@@ -169,6 +169,17 @@ public:
 	btree(): root(NULL) {}
 	~btree() { destroy_tree(root); }
 
+
+	/**
+	constructor copy : we do not need it, so we define it deleted.
+	*/
+	btree(const btree&) = delete;
+		
+	/**
+	assignment operator= :  we do not need it, so we define it deleted.
+	*/
+	btree& operator=(const btree&) = delete;
+
 	void insert(T data);
 	node_t<T> *search(size_t _i);
 	void inorder_print();
