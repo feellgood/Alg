@@ -166,7 +166,10 @@ btree for write sparse matrix
 template<typename T> 
 class btree{
 public:
+	/** constructor */
 	btree(): root(NULL) {}
+	
+	/** destructor */
 	~btree() { destroy_tree(root); }
 
 
@@ -181,11 +184,21 @@ public:
 	btree& operator=(const btree&) = delete;
 
 	void insert(T data);
-	node_t<T> *search(size_t _i);
-	void inorder_print();
-	void postorder_print();
-	void preorder_print();
-    void inorder_insert(std::vector<T> &v);
+	
+	node_t<T> *search(size_t _i)
+		{ return search(_i, root); }
+	
+	void inorder_print()
+		{ inorder_print(root); std::cout << "\n"; }
+	
+	void postorder_print()
+		{ postorder_print(root); std::cout << "\n"; }
+	
+	void preorder_print()
+		{ preorder_print(root); std::cout << "\n"; }
+    
+    	void inorder_insert(std::vector<T> &v)
+    		{ inorder_insert(root, v); }
 
 private:
 	void destroy_tree(node_t<T> *leaf);
@@ -249,7 +262,6 @@ void btree<T>::insert(T data, node_t<T> *leaf){
 		  }
        return;
 	   }
-
 }
 
 template<typename T> 
@@ -281,17 +293,6 @@ node_t<T> *btree<T>::search(size_t _i, node_t<T> *leaf){
 	}
 }
 
-template<typename T> 
-node_t<T> *btree<T>::search(size_t _i){
-	return search(_i, root);
-}
-
-template<typename T> 
-void btree<T>::inorder_print(){
-	inorder_print(root);
-	std::cout << "\n";
-}
-
 template<typename T>
 void btree<T>::inorder_print(node_t<T> *leaf){
 	if(leaf != NULL){
@@ -299,12 +300,6 @@ void btree<T>::inorder_print(node_t<T> *leaf){
 		std::cout << "{" << leaf->data->_i<< ":"<<leaf->data->getVal() << "},";
 		inorder_print(leaf->right);
 	}
-}
-
-template<typename T>
-void btree<T>::postorder_print(){
-	postorder_print(root);
-	std::cout << "\n";
 }
 
 template<typename T>
@@ -317,23 +312,12 @@ void btree<T>::postorder_print(node_t<T> *leaf){
 }
 
 template<typename T>
-void btree<T>::preorder_print(){
-	preorder_print(root);
-	std::cout << "\n";
-}
-
-template<typename T>
 void btree<T>::preorder_print(node_t<T> *leaf){
 	if(leaf != NULL){
 		std::cout << "{" << leaf->data->_i<< ":"<< leaf->data->getVal() << "},";
 		inorder_print(leaf->left);
 		inorder_print(leaf->right);
 	}
-}
-
-template<typename T> 
-void btree<T>::inorder_insert(std::vector<T> &v){
-	inorder_insert(root, v);
 }
 
 template<typename T> 
