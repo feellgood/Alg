@@ -3,7 +3,7 @@
 
 /** \file alg_sparseVect.h 
  * \brief sparse vector
-a sparse vector is an obect containing an index and a vector of v_coeff, which is a couple composed of an index and a value
+a sparse vector is a derived class from SparseVect abstract class. It is a std::vector of v_coeff, which is a couple composed of an index and a value
 to populate with coefficients the sparse vector, use push_back method
 If several v_coeff have the same index, then they are summed when calling the method collect()
 It is possible to kill v_coeffs with index idx, calling kill(idx), it will erase all v_ceffs with index idx
@@ -20,11 +20,12 @@ namespace alg
 {
 /** 
 \class SparseVect
-virtual sparse vector class
+Abstract sparse vector class, push_back to insert in a container the coefficients, dot to compute scalar product.
 */
 class SparseVect
 {
 public:
+/** push_back method to insert a coefficient in the sparse vector container  */
 	virtual void push_back(const size_t idx,const double c) = 0;
 
 /** scalar product */
