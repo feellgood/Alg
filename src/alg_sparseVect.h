@@ -25,8 +25,11 @@ Abstract sparse vector class, push_back to insert in a container the coefficient
 class SparseVect
 {
 public:
-/** push_back method to insert a coefficient in the sparse vector container  */
+/** push_back method to insert a coefficient in the sparse vector container. If the coefficient does not exist it has to be created, if it does the coeff should be either += added or included in a container to treat it later, with sort() and collect() methods if needed  */
 	virtual void push_back(const size_t idx,const double c) = 0;
+
+	/** return the value of the coefficient of index idx, if idx is not unique returns the first occurence */
+	virtual double getVal(const size_t idx) const = 0;
 
 /** scalar product */
 	virtual double dot(std::vector<double> const& X) const = 0;
@@ -104,7 +107,7 @@ public:
 	inline bool isCollected(void) const {return collected;}
 
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
-	inline double getVal(const size_t idx) const
+	double getVal(const size_t idx) const
 		{
 		double val(0);
 		auto pred = [&idx](alg::v_coeff const& coeff){return (coeff._i == idx); };
