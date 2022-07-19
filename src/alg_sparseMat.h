@@ -76,7 +76,7 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 
 
 /** \class sparseMat
-read and write sparse matrix	 
+read sparse matrix	 
 	The constructor is buiding from a write sparse matrix the data to access efficiently the coefficients values
 */
 class sparseMat

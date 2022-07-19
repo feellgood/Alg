@@ -113,11 +113,13 @@ public:
 		}
 
 	/** return a reference to the value of the coefficient idx, we should never do that ... */
+	/*
 	inline double & getValRef(size_t idx)
 		{
 		auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff & coeff){return (coeff._i == idx); } ); 
 		return it->valRef();// carefull might be out of bounds when it == x.end()	
 		}
+	*/
 
 	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, call collect() method before if needed */
 	/*

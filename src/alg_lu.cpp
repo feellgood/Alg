@@ -29,7 +29,10 @@ A.collect();  //  coefficients are sorted in lexicographic order
 size_t N=A.getDim();
 for (size_t i=1; i<N; i++){ // row 0 unchanged  
     alg::sparseVect &Ai = A(i);
-    double &Aii= Ai.getValRef(i);
+    //double &Aii= Ai.getValRef(i);
+    auto it_ii = std::find_if(Ai.begin(),Ai.end(),[i](alg::v_coeff & coeff){return (coeff._i == i); } ); 
+    double &Aii = it_ii->valRef();
+    
     double Aii_bak=Aii;
     for (auto it_ik=Ai.begin(); it_ik != Ai.end() && it_ik->_i < i; ++it_ik){
         size_t k=it_ik->_i;
