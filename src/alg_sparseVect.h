@@ -26,13 +26,16 @@ class SparseVect
 {
 public:
 	virtual void push_back(const size_t idx,const double c) = 0;
+
+/** scalar product */
+	virtual double dot(std::vector<double> const& X) const = 0;
 };
 
 
 
 /**
 \class sparseVect
-sparse vector : it is a container for v_coeff
+sparse vector : container for v_coeff
 */
 
 //class sparseVect
@@ -99,9 +102,6 @@ public:
 	/** getter for collected */
 	inline bool isCollected(void) const {return collected;}
 
-	/** setter for collected */
-	inline void setCollected(bool c) {collected = c;}
-
 	/** getter for the value of a coefficient of index idx, if several coeffs have the same index then it returns the value of the first occurence */
 	inline double getVal(const size_t idx) const
 		{
@@ -130,7 +130,7 @@ public:
 		}
 
 	/** scalar product */
-	inline double dot(std::vector<double> const& X) const
+	double dot(std::vector<double> const& X) const
 	{
 	double val(0);
 	if (!isCollected()) {std::cout << "warning : cannot dot on an uncollected sparseVect" << std::endl;exit(1);}
