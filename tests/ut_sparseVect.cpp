@@ -142,7 +142,6 @@ BOOST_AUTO_TEST_CASE(p_scal,* boost::unit_test::tolerance(1e-15))
 	alg::sparseVect v;
 
 	v.push_back(0,1.0);
-	v.push_back(10,101);
 	v.push_back(2,0.5);
 	v.push_back(3,-0.25);
 

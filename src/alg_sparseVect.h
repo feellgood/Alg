@@ -50,8 +50,7 @@ public:
 	inline sparseVect() : sorted(true),collected(false) {}
 
 	/** constructor by initialization list */
-	inline sparseVect(std::vector<alg::v_coeff> _v) : sorted(false),collected(false)
-		{ x.assign(_v.begin(),_v.end()); } 
+	inline sparseVect(std::vector<alg::v_coeff> _v) : sorted(false),collected(false) { x.assign(_v.begin(),_v.end()); } 
 
 	/** inserter with value of a vector coefficient */
 	inline void push_back(const size_t idx,const double c) { x.push_back(alg::v_coeff(idx,c) ); sorted = false; collected=false; }
@@ -97,9 +96,6 @@ public:
 	/** getter for sorted */
 	inline bool isSorted(void) const {return sorted;}
 	
-	/** setter for sorted */
-	inline void setSorted(bool s) {sorted = s;}
-	
 	/** getter for emptyness of the container of the coeffs */
 	inline bool isEmpty(void) const {return x.empty();} 
 
@@ -116,7 +112,7 @@ public:
 		return val;		
 		}
 
-	/** return a reference to the value of the coefficient idx */
+	/** return a reference to the value of the coefficient idx, we should never do that ... */
 	inline double & getValRef(size_t idx)
 		{
 		auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff & coeff){return (coeff._i == idx); } ); 
@@ -135,28 +131,14 @@ public:
 		}
 	*/
 
-	/** scalar product */
+	/** scalar product, callable whatever collected and sorted booleans are */
 	double dot(std::vector<double> const& X) const
 	{
 	double val(0);
-	if (!isCollected()) {std::cout << "warning : cannot dot on an uncollected sparseVect" << std::endl;exit(1);}
-	else
-		{
-		const unsigned int X_dim = X.size();
-		/*
-		std::vector<double> filtered_X;
-		for(auto it=x.begin();it!=x.end();++it) 
-			{ if(it->_i < X_dim ) { filtered_X.push_back( X[it->_i] ); } }
+	
+	auto op = [&X,&val](alg::v_coeff const& coeff){ val += coeff.getVal()*X.at(coeff._i);  }; // could be replaced by accumulate
+	std::for_each(x.begin(),x.end(), op );
 		
-		auto transOp = [](alg::v_coeff const& a, const double b) { return(a.getVal()*b); }; 
-		val = std::transform_reduce(std::execution::par,x.begin(),x.end(),X.begin(),0.0,std::plus<>(), transOp); //std::multiplies<>() );
-		*/
-		
-		auto op = [&X,X_dim,&val](alg::v_coeff const& coeff){ if(coeff._i < X_dim ) { val += coeff.getVal()*X.at(coeff._i); } };
-		std::for_each(x.begin(),x.end(), op );
-		
-		//for(auto it=x.begin();it!=x.end();++it) { if(it->_i < X_dim ) { val += it->getVal()*X[it->_i]; } }
-		}	
 	return val;
 	}
 
