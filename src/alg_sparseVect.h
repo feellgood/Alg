@@ -18,11 +18,25 @@ It is also possible to erase v_coeffs with value zero calling kill_zero, it may 
 
 namespace alg
 {
+/** 
+\class SparseVect
+virtual sparse vector class
+*/
+class SparseVect
+{
+public:
+	virtual void push_back(const size_t idx,const double c) = 0;
+};
+
+
+
 /**
 \class sparseVect
 sparse vector : it is a container for v_coeff
 */
-class sparseVect
+
+//class sparseVect
+class sparseVect : public SparseVect
 {
 public:
 	/** dummy constructor */
