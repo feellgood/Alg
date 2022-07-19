@@ -75,10 +75,10 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 }; // end class w_sparseMat
 
 
-	/** \class sparseMat
+/** \class sparseMat
 read and write sparse matrix	 
 	The constructor is buiding from a write sparse matrix the data to access efficiently the coefficients values
-       	*/
+*/
 class sparseMat
 {
 public:
@@ -123,9 +123,6 @@ public:
 
 	/** getter for a coefficient value */
 	inline double operator() (const size_t &i, const size_t &j) const { return m[i].getVal(j); }
-
-	/** setter for a coefficient value */
-	inline void setVal (const size_t &i, const size_t &j, const double val) { return m[i].setVal(j, val); }
 
 	/** call collect method for all sparse vectors  */
 	inline void collect(void) { std::for_each(std::execution::par_unseq,m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} ); }

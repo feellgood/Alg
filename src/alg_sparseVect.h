@@ -121,6 +121,7 @@ public:
 		}
 
 	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, call collect() method before if needed */
+	/*
 	inline void setVal(const size_t idx,const double val)
 		{
 		if (collected)
@@ -129,6 +130,7 @@ public:
 			if (it != x.end()) it->setVal(val);
 			}
 		}
+	*/
 
 	/** scalar product */
 	double dot(std::vector<double> const& X) const
