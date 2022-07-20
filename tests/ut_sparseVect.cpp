@@ -169,5 +169,23 @@ BOOST_TEST(result[3] == (double)-1.0);
 BOOST_TEST(result[4] == (double)0.0);
 }
 
+BOOST_AUTO_TEST_CASE(MapSparseVect)
+{
+alg::MapSparseVect x;
+x.push_back(1, 0.125);
+x.push_back(2, 2.25);
+x.push_back(5, 48);
+BOOST_CHECK(x.getVal(0) == 0);
+BOOST_CHECK(x.getVal(1) == 0.125);
+BOOST_CHECK(x.getVal(2) == 2.25);
+BOOST_CHECK(x.getVal(3) == 0);
+BOOST_CHECK(x.getVal(4) == 0);
+BOOST_CHECK(x.getVal(5) == 48);
+BOOST_CHECK(x.getVal(6) == 0);
+
+std::vector<double> y{-7, 10, -1, 9, -11, 0.5};
+BOOST_CHECK(x.dot(y) == 23);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

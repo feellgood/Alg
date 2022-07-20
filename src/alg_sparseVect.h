@@ -12,6 +12,7 @@ It is also possible to erase v_coeffs with value zero calling kill_zero, it may 
 
 #include <execution>
 #include <vector>
+#include <map>
 #include <iostream> 
 
 #include "alg_coeff.h"
@@ -177,6 +178,34 @@ bool sorted;
 /** if true the coeffs have been collected */
 bool collected;
 }; // end class sparseVect
+
+/**
+\class MapSparseVect
+Simplistic std::map-based SparseVect implementation.
+*/
+class MapSparseVect : public SparseVect, private std::map<size_t, double>
+{
+public:
+	/** Add val at index i. */
+	void push_back(size_t i, double val) { (*this)[i] += val; }
+
+	/** Return the coefficient at index i. */
+	double getVal(size_t i) const
+		{
+		auto it = find(i);
+		return it==end() ? 0 : it->second;
+		}
+
+	/** Return the dot product of this vector with vector x. */
+	double dot(const std::vector<double> &x) const
+		{
+		double sum = 0;
+		std::for_each(begin(), end(), [&x, &sum](const auto &pair) {
+			sum += pair.second * x[pair.first];
+		});
+		return sum;
+		}
+}; // end class MapSparseVect
 
 /** scalar product of a sparse vector and a dense vector */
 inline double dot(sparseVect const& X,const std::vector<double> & Y) { return X.dot(Y); }
