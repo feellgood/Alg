@@ -20,17 +20,17 @@ namespace alg
 \class SparseMat
 */
 
-template <typename T>
+template <typename T,typename T_elem>
 class SparseMat
 {
 /** constructor, N is the number of line of the sparse matrix */
 SparseMat(const size_t _N):N(_N) {M.resize(N);}
 
 /** insert the coefficient of index (i,j) */
-virtual void push_back(const size_t i, const size_t j, const double c) = 0;
+virtual void push_back(const size_t i, const size_t j, const T_elem c) = 0;
 
 /** getter for a coefficient value */
-virtual double operator() (const size_t i, const size_t j) const = 0;//{ return M[i].getVal(j); }
+virtual T_elem operator() (const size_t i, const size_t j) const = 0;//{ return M[i].getVal(j); }
 
 private:
 	/** number of lines */
