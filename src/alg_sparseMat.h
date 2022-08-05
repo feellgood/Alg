@@ -17,6 +17,32 @@ namespace alg
 {
 
 /**
+\class SparseMat
+*/
+
+template <typename T>
+class SparseMat
+{
+/** constructor, N is the number of line of the sparse matrix */
+SparseMat(const size_t _N):N(_N) {M.resize(N);}
+
+/** insert the coefficient of index (i,j) */
+virtual void push_back(const size_t i, const size_t j, const double c) = 0;
+
+/** getter for a coefficient value */
+virtual double operator() (const size_t i, const size_t j) const = 0;//{ return M[i].getVal(j); }
+
+private:
+	/** number of lines */
+	const size_t N;
+	
+	/** matrix coefficients */
+	std::vector<T> M;
+};
+
+
+
+/**
 \class w_sparseMat
 write sparse Matrix, it is a container for objects m_coeff. 
 If some m_coeff have the same indices, they will be summed to build the real matrix coefficient using rebuild member function.
