@@ -14,6 +14,7 @@ It is also possible to erase v_coeffs with value zero calling kill_zero, it may 
 #include <vector>
 #include <map>
 #include <iostream> 
+#include <iomanip>
 
 #include "alg_coeff.h"
 
@@ -113,37 +114,19 @@ public:
 		return val;		
 		}
 
-	/** return a reference to the value of the coefficient idx, we should never do that ... */
-	/*
-	inline double & getValRef(size_t idx)
-		{
-		auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff & coeff){return (coeff._i == idx); } ); 
-		return it->valRef();// carefull might be out of bounds when it == x.end()	
-		}
-	*/
-
-	/** setter for the value of a coefficient of index idx, all coeffs must have a unique idx, call collect() method before if needed */
-	/*
-	inline void setVal(const size_t idx,const double val)
-		{
-		if (collected)
-			{
-			auto it = std::find_if(x.begin(),x.end(),[&idx](alg::v_coeff & coeff){return (coeff._i == idx); } );
-			if (it != x.end()) it->setVal(val);
-			}
-		}
-	*/
-
 	/** scalar product, callable whatever collected and sorted booleans are */
 	double dot(std::vector<double> const& X) const
 	{
-	double val(0);
+	std::function<double(alg::v_coeff const&)> op = [&X](alg::v_coeff const& coeff) 
+		{ return (double)(coeff.getVal()*X[coeff._i]); };
 	
-	auto op = [&X,&val](alg::v_coeff const& coeff){ val += coeff.getVal()*X.at(coeff._i);  }; // could be replaced by accumulate
-	std::for_each(x.begin(),x.end(), op );
-		
-	return val;
+	return std::transform_reduce(std::execution::par_unseq,x.begin(),x.end(),(double)0,std::plus{},op ); 
+	// carefull : init value must be forced to double, if not reduce may cast to int
 	}
+
+	/** printing function */
+	inline void print(void) const
+	{ std::cout<<'{'; std::for_each(x.begin(),x.end(), [](const v_coeff &c){ std::cout << '{' << c._i << ':' << c.getVal() <<'}';}); std::cout <<'}'<<std::endl; }
 
 	/** printing function */
 	inline void print(std::ostream & flux) const

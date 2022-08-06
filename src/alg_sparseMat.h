@@ -18,23 +18,39 @@ namespace alg
 
 /**
 \class SparseMat
+class T must have print() method and dot method
 */
 
 template <typename T,typename T_elem>
 class SparseMat
 {
-/** constructor, N is the number of line of the sparse matrix */
-SparseMat(const size_t _N):N(_N) {M.resize(N);}
+public:
+	/** insert the coefficient of index (i,j) */
+	virtual void push_back(const size_t i, const size_t j, const T_elem c) = 0;
 
-/** insert the coefficient of index (i,j) */
-virtual void push_back(const size_t i, const size_t j, const T_elem c) = 0;
+	/** getter for a coefficient value */
+	virtual T_elem operator() (const size_t i, const size_t j) const = 0;//{ return M[i].getVal(j); }
 
-/** getter for a coefficient value */
-virtual T_elem operator() (const size_t i, const size_t j) const = 0;//{ return M[i].getVal(j); }
+	/** returns dimension N*/
+	size_t getDim(void) const {return N;}
 
-private:
+
+	/** printing function */
+	void print(void) const
+		{std::for_each(M.begin(),M.end(),[](T const& _v) {_v.print();} );}
+		//{ std::for_each(M.begin(),M.end(),[](T const& _v) {std::cout << _v;} ); }
+
+	/** printing function */
+	void print(std::ostream & flux) const
+		{ std::for_each(M.begin(),M.end(),[&flux](T const& _v) {_v.print(flux);} ); }
+		
+	/** matrix vector multiplication : Y = M * X */
+	inline void mult(std::vector<T_elem> const& X,std::vector<T_elem> &Y) const
+		{ std::transform(std::execution::par_unseq,M.begin(),M.end(),Y.begin(),[&X] (T const& _v) { return _v.dot(X); } ); }
+
+protected:
 	/** number of lines */
-	const size_t N;
+	size_t N;
 	
 	/** matrix coefficients */
 	std::vector<T> M;
@@ -49,7 +65,7 @@ If some m_coeff have the same indices, they will be summed to build the real mat
 */
 class w_sparseMat
 {
-	friend class sparseMat;
+	friend class r_sparseMat;
 
 public:
 	/** constructor */
@@ -61,18 +77,24 @@ public:
 	/** inserter with direct values of a coefficient */
 	inline void push_back(const size_t i,const size_t j, const double val) {C.push_back(alg::m_coeff(i,j,val));}
 	
-	/** getter for the number of lines */
-	inline size_t getDim(void) const {return N;}
-
 	/** sort the coefficients in lexicographic order and refresh collected and sorted booleans */
 	inline void rebuild(void) 
 		{ 
 		std::sort(std::execution::par_unseq,C.begin(),C.end());
 	       	sorted = true;	
-		std::vector<m_coeff>::iterator it = std::adjacent_find(C.begin(),C.end() );		
+		auto it = std::adjacent_find(C.begin(),C.end() ); //std::vector<m_coeff>::iterator it = std::adjacent_find(M.begin(),M.end() );		
 		if (it == C.end()) { collected = true; } 
 		else { collected = false; }		
 		}
+
+/** returns dimension N*/
+	size_t getDim(void) const {return N;}
+
+	/** setter for sorted */
+	inline void setSorted(bool b) {sorted = b;}
+
+	/** setter for collected */
+	inline void setCollected(bool b) {collected = b;}
 
 	/** getter for sorted */
 	inline bool isSorted(void) const {return sorted;}
@@ -105,65 +127,48 @@ container for the sparse matrix coefficient, C.size() might be different from N,
 read sparse matrix	 
 	The constructor is buiding from a write sparse matrix the data to access efficiently the coefficients values
 */
-class sparseMat
+class r_sparseMat : public SparseMat<sparseVect,double>
 {
 public:
 	/** constructor */
-	inline sparseMat(const size_t dim):N(dim)
-		{ m.resize(N); }// N is the number of lines
+	r_sparseMat(const size_t dim) { N = dim; M.resize(dim); }// dim is the number of lines
 
-	/** constructor from write sparse matrix */
-	inline sparseMat(w_sparseMat &A):N(A.getDim())
+	/** constructor : build coefficients from write sparse matrix */
+	r_sparseMat(w_sparseMat &A)
 		{
-		m.resize(N);// N is the number of lines
+		N = A.getDim();
+		M.resize(N);// N is the number of lines
 		
 		if (!A.C.empty())
 			{
 			if (!A.isSorted()) { A.rebuild(); }
-			for(std::vector<m_coeff>::iterator it = A.C.begin(); it != A.C.end() ; ++it)
-				{ if (it->_i < N) m[it->_i].push_back(it->_j,it->getVal()); }
+			for(auto it = A.C.begin(); it != A.C.end() ; ++it)
+				{ if (it->_i < N) M[it->_i].push_back(it->_j,it->getVal()); }
 			
 			collect();
 			}
 		}
 
 /** inserter with direct values of a coefficient */
-	inline void push_back(const size_t i,const size_t j, const double val) {m[i].push_back(j,val);}
-
-	/** printing function */
-	inline void print(void) const
-		{ std::for_each(m.begin(),m.end(),[](sparseVect const& _v) {std::cout << _v;} ); }
-
-/** printing function */
-	inline void print(std::ostream & flux) const
-	{ std::for_each(m.begin(),m.end(),[&flux](sparseVect const& _v) {_v.print(flux);} ); }
-
-	/** getter for the number of lines */
-	inline size_t getDim(void) const {return N;}
+	inline void push_back(const size_t i,const size_t j, const double val) {M[i].push_back(j,val);}
 
 /** return true if the coefficient exists */
-	inline bool exist(const size_t &i, const size_t &j) const { return ( (i<N)&&(m[i].exist(j)) ); }
+	inline bool exist(const size_t &i, const size_t &j) const { return ( (i<N)&&(M[i].exist(j)) ); }
 
 	/** getter for an innner sparse vector */
-	inline alg::sparseVect & operator() (const size_t & i) {return m[i];}
+	inline alg::sparseVect & operator() (const size_t & i) {return M[i];}
 
 	/** getter for a coefficient value */
-	inline double operator() (const size_t &i, const size_t &j) const { return m[i].getVal(j); }
+	inline double operator() (const size_t i, const size_t j) const { return M[i].getVal(j); }
 
 	/** call collect method for all sparse vectors  */
-	inline void collect(void) { std::for_each(std::execution::par_unseq,m.begin(),m.end(),[](sparseVect & _v) {_v.collect();} ); }
+	inline void collect(void) { std::for_each(std::execution::par_unseq,M.begin(),M.end(),[](sparseVect & _v) {_v.collect();} ); }
 
-	/** call collect method for sparse vector of index i  */
-	inline void collect(const size_t &i) { m[i].collect(); }
-
-	/** matrix vector multiplication : Y = this.X */
-	inline void mult(std::vector<double> const& X,std::vector<double> &Y) const
-		{ std::transform(std::execution::par_unseq,m.begin(),m.end(),Y.begin(),[&X] (alg::sparseVect const&_v) { return _v.dot(X); } ); }
 
 /** matrix vector multiplication : Y = this.X according mask b */
 	inline void maskedMult(std::vector<bool> const &b, std::vector<double> const& X, std::vector<double> &Y) const
 		{
-		std::transform(std::execution::par_unseq,m.begin(),m.end(),b.begin(),Y.begin(),
+		std::transform(std::execution::par_unseq,M.begin(),M.end(),b.begin(),Y.begin(),
 		[&X] (alg::sparseVect const&_v,const bool _b) { return( _b ? _v.dot(X) : 0.0 ); } 
 		); 
 		}
@@ -171,33 +176,19 @@ public:
 
 /** build diagonal preconditionner */
 void buildDiagPrecond(std::vector<double> &DP) const
-	{ for(size_t i=0;i<N;i++) { DP[i] = 1.0/(m[i].getVal(i)); } }
+	{ for(size_t i=0;i<N;i++) { DP[i] = 1.0/(M[i].getVal(i)); } }
 
 /** build diagonal preconditionner respecting mask b */
 void buildDiagPrecond(std::vector<bool> const& b,std::vector<double> &DP) const
-	{ for(size_t i=0;i<N;i++) { DP[i] = (b[i] ? 1.0/(m[i].getVal(i)) : 0.0 ); } }
+	{ for(size_t i=0;i<N;i++) { DP[i] = (b[i] ? 1.0/(M[i].getVal(i)) : 0.0 ); } }
 
-private:
-/** dimension of the sparse matrix (nb of lines) */
-	const size_t N;
-
-	/** coefficient container */
-	std::vector<sparseVect> m;
 }; // end class r_sparseMat
 
-/** operator<< for sparseMat */
-inline std::ostream & operator<<(std::ostream & flux, sparseMat const& m) {m.print(flux); return flux;}
+/** operator<< for r_sparseMat */
+inline std::ostream & operator<<(std::ostream & flux, r_sparseMat const& m) {m.print(flux); return flux;}
 
 /** operator<< for w_sparseMat */
 inline std::ostream & operator<<(std::ostream & flux, w_sparseMat const& m) {m.print(flux); return flux;}
-
-/** Y = A*X with sparseMat A */
-inline void mult(alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
-{
-const size_t _size = X.size();
-Y.resize(_size);
-if (A.getDim() == _size) A.mult(X,Y);
-}
 
 } // end namespace alg
 

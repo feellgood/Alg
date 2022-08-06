@@ -8,7 +8,7 @@ namespace alg
 
 /** biconjugate gradient and diagonal preconditionner */
 
-double bicg(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
+double bicg(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
 
 }//end namespace alg
 

@@ -7,10 +7,10 @@ namespace alg
 {
 
 /** LU solver */
-void lu_solve(alg::sparseMat& LU, const std::vector<double> & b, std::vector<double> & x);
+void lu_solve(alg::r_sparseMat& LU, const std::vector<double> & b, std::vector<double> & x);
 
 /** ILU algo, in place */
-void ilu(alg::sparseMat& A);
+void ilu(alg::r_sparseMat& A);
 
 }//end namespace alg
 

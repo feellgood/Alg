@@ -1,6 +1,6 @@
 #include "alg_cg.h"
 
-double alg::cg(alg::sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter) 
+double alg::cg(alg::r_sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();
@@ -24,7 +24,7 @@ while (!iter.finished_vect(r)) {
 	        alg::scaled(rho/rho_1,p); // p *= (rho/rho1)
 		alg::add(z,p);// p += z	; donc  p = z + (rho/rho_1)*p        
 		}
-      alg::mult(A, p, q);
+      A.mult(p,q);// q = A * p
           
 	double a=rho/alg::dot(q,p); //a = rho / vect_sp(q, p);	
 	alg::scaled_add(p, +a, x); //add(scaled(p, +a), x);

@@ -9,7 +9,7 @@ namespace alg
 
 /** conjugate gradient with ILU preconditioner, returns residu */
 
-double cg_ilu(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
+double cg_ilu(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
 
 }//end namespace alg
 

@@ -45,12 +45,12 @@ Vd[NOD-1]=1.0;
 // valeurs de dirichlet inserees dans le vecteur solution
 //std::for_each(ld.begin(),ld.end(),[&Xw,&Vd] (size_t _i){ Xw[_i] = Vd[_i]; } );
 
-alg::sparseMat Kr(Kw);
+alg::r_sparseMat Kr(Kw);
 
 std::vector<double> Lr(NOD,0.0);
 Lr.assign(Lw.begin(),Lw.end());
 
-alg::mult(Kr,Xw,Lw);
+Kr.mult(Xw,Lw);
 
 alg::scaled(Lw,-1.0,Lr);//Lr = -Lw
 

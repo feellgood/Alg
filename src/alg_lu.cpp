@@ -1,6 +1,6 @@
 #include "alg_lu.h"
 
-void alg::lu_solve(alg::sparseMat& LU, const std::vector<double> & b, std::vector<double> & x)
+void alg::lu_solve(alg::r_sparseMat& LU, const std::vector<double> & b, std::vector<double> & x)
 {
 const size_t N=LU.getDim();
 x.clear();
@@ -22,7 +22,7 @@ for (size_t i=N; i-- >0;) { // iterate from NOD-1 downto 0
 }
 
 
-void alg::ilu(alg::sparseMat& A)
+void alg::ilu(alg::r_sparseMat& A)
 {
 A.collect();  //  coefficients are sorted in lexicographic order
 

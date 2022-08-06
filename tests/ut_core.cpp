@@ -32,7 +32,7 @@ A.push_back(4,4,159);
 A.push_back(4,0,2.0);
 std::cout << "A=" << A << std::endl;
 
-alg::sparseMat r_A(A);
+alg::r_sparseMat r_A(A);
 
 std::vector<double> x {1,2,3,2,1};
 std::vector<double> b {1,0,-3,1,2};
@@ -40,11 +40,11 @@ std::vector<double> b {1,0,-3,1,2};
 std::vector<double> v_temp(DIM),r(DIM);
 
 r.assign(b.begin(),b.end());// r = b; 
-alg::mult(r_A,x,v_temp);// v_temp = A x;
+r_A.mult(x,v_temp);// v_temp = A x;
 alg::sub(v_temp,r);// r -= v_temp; donc r = b - A x;
 
 std::vector<double> r2(DIM);
-LinComb<false>(A,x,b,r2,std::minus<double>()); // r = b - A x
+LinComb<false>(r_A,x,b,r2,std::minus<double>()); // r = b - A x
 for(size_t i=0;i<DIM;i++) BOOST_TEST(r2[i] == r[i]);
 }
 
@@ -81,18 +81,19 @@ A.push_back(4,2,-91);
 A.push_back(4,0,2.0);
 A.push_back(5,5,123);
 A.push_back(5,4,23);
+A.rebuild();
 std::cout << "A=" << A << std::endl;
 
-alg::sparseMat r_A(A);
+alg::r_sparseMat r_A(A);
 
 std::vector<double> x {1,2,3,20,-1,-45};
-std::vector<double> y;
+std::vector<double> y(DIM);
 std::vector<size_t> idx {1,3,4};
 std::vector<bool> mask;
 
 alg::buildMask(DIM,idx,mask);
 
-alg::mult(r_A,x,y);// y = A x;
+r_A.mult(x,y);// y = A x;
 alg::zeroFill(idx,y);
 
 std::vector<double> y2(DIM);

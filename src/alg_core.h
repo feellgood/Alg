@@ -70,7 +70,7 @@ inline double norm(const std::vector<double> & X)
 
 
 /** Y = A*X with sparseMat A and mask b */
-inline void maskedMult(std::vector<bool> const &b, alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
+inline void maskedMult(std::vector<bool> const &b, alg::r_sparseMat const& A,std::vector<double> const& X,std::vector<double> &Y)
 {
 const size_t _size = X.size();
 Y.resize(_size);

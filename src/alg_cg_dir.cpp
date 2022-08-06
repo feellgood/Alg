@@ -1,6 +1,6 @@
 #include "alg_cg_dir.h"
 
-double alg::cg_dir(alg::sparseMat& A, std::vector<double> & x,const std::vector<double> & rhs, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter) 
+double alg::cg_dir(alg::r_sparseMat& A, std::vector<double> & x,const std::vector<double> & rhs, const std::vector<double> & xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho, rho_1(0.0);
 const size_t DIM = x.size();

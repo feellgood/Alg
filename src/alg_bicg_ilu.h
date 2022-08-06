@@ -9,7 +9,7 @@ namespace alg
 
 /** biconjugate gradient with ILU preconditioner, returns residu */
 
-double bicg_ilu(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
+double bicg_ilu(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter);
 
 }//end namespace alg
 

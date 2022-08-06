@@ -1,6 +1,6 @@
 #include "alg_bicg_ilu_dir.h"
 
-double alg::bicg_ilu_dir(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
+double alg::bicg_ilu_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();
@@ -9,18 +9,18 @@ if (rhs.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
 std::vector<double> p(DIM), phat(DIM), shat(DIM), r(DIM), rt(DIM), s(DIM), t(DIM), v(DIM), b(DIM);    
 b.assign(rhs.begin(), rhs.end());// b = rhs;
 
-alg::mult(A, xd, v);
+A.mult(xd, v); // v = A * xd
 alg::sub(v, b);      // b = b - A xd
 zeroFill(ld,b);
 iter.set_rhsnorm(alg::norm(b));
 
-sparseMat LU = A;
+r_sparseMat LU = A;
 ilu(LU);  // approximated LU decomposition  
 
 iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
-alg::mult(A, x, v);         // v = A x;
+A.mult(x, v);         // v = A x;
 alg::sub(v, r);             // r -= v; donc r = b - A x;
 
 zeroFill(ld,r);
@@ -41,7 +41,7 @@ while (!iter.finished_vect(r)) {
 
       lu_solve(LU, p, phat);   // phat = LU \ p
       zeroFill(ld,phat);
-      alg::mult(A, phat, v);   //  v = A phat;
+      A.mult(phat, v);   //  v = A phat;
       zeroFill(ld,v);
       
 	alpha=rho_1/alg::dot(v, rt);    // alpha = rho_1 /(v'*rtilde);
@@ -55,7 +55,7 @@ while (!iter.finished_vect(r)) {
 
       lu_solve(LU, s, shat);   // shat = LU \ s
       zeroFill(ld,shat);
-      alg::mult(A, shat, t);               //  t = A shat;
+      A.mult(shat, t);               //  t = A shat;
       zeroFill(ld,t);
       
       omega = alg::dot(t, s)/alg::dot(t,t); // omega = (t'* s) / (t'*t);

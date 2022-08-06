@@ -13,11 +13,6 @@ std::for_each(v.begin(),v.end(), [&flux](const double& x) { flux << x << " "; })
 return flux;
 }
 
-inline std::ostream & operator<<(std::ostream & flux, alg::sparseMat const& m) {
-m.print(flux);
-return flux;
-}
-
 void solve(Fem &fem, const int MAXITER)
 {
 typedef map <pair<string,int>,double> mapType;
@@ -26,7 +21,7 @@ const size_t NOD = fem.NOD;
 const int TRI = fem.TRI;
 const int SEG = fem.SEG;
 
-alg::sparseMat K(NOD);
+alg::w_sparseMat K(NOD);
 std::vector<double> Lw(NOD, 0.0);
 std::vector<double> Xw(NOD);
 
@@ -59,7 +54,8 @@ std::cout << boost::format("%5t assembling %50T. ") << micros.count() << " micro
 t1 = std::chrono::high_resolution_clock::now();
 
 //alg::sparseMat Kr(Kw);
-K.collect();
+alg::r_sparseMat Kr(K);
+//K.collect();
 
 std::vector<size_t> ld;
 std::vector<double> Vd(NOD, 0.);
@@ -102,7 +98,7 @@ for (int i=0; i<NOD; i++){
 std::vector<double> Lr(NOD,0.0);
 Lr.assign(Lw.begin(),Lw.end());
 
-alg::mult(K, Xw, Lw);
+Kr.mult(Xw,Lw);//alg::mult(K, Xw, Lw);
 alg::scaled(Lw, -1.0, Lr); //Lr = -Lw
 
 t2 = std::chrono::high_resolution_clock::now();
@@ -115,7 +111,7 @@ t1 = std::chrono::high_resolution_clock::now();
 
 Xw.clear();
 Xw.resize(NOD);
-double res = alg::cg_dir(K,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
+double res = alg::cg_dir(Kr,Xw,Lr,Vd,ld,iter); // Conjugate gradient with dirichlet conditions and diagonal preconditionner
 
 t2 = std::chrono::high_resolution_clock::now();
 micros = t2-t1;

@@ -138,12 +138,13 @@ std::cout << "********** end test sparseVect.collect " << std::endl;
 
 BOOST_AUTO_TEST_CASE(p_scal,* boost::unit_test::tolerance(1e-15))
 {
-	std::vector<double> x = {1,-2,3.14,4,5};
+	std::vector<double> x = {1.0001,-2,3.14,4,5,10};
 	alg::sparseVect v;
 
 	v.push_back(0,1.0);
 	v.push_back(2,0.5);
 	v.push_back(3,-0.25);
+	v.push_back(5,1.1);
 
 v.sort();
 v.collect();// to set Collected flag to true
@@ -151,8 +152,8 @@ v.collect();// to set Collected flag to true
 std::cout << v << std::endl;
 
 double val = alg::dot(v,x);
-std::cout << "val (should be 1.57)=" << val << std::endl;
-BOOST_TEST(val == (double)1.57);
+std::cout << "val (should be 12.5701)=" << val << std::endl;
+BOOST_TEST(val == (double)12.5701);
 }
 
 BOOST_AUTO_TEST_CASE(p_direct,* boost::unit_test::tolerance(1e-15))

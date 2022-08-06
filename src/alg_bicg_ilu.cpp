@@ -1,6 +1,6 @@
 #include "alg_bicg_ilu.h"
 
-double alg::bicg_ilu(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
+double alg::bicg_ilu(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & b, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();
@@ -8,13 +8,13 @@ if (b.size()!=DIM){std::cout << "rhs size mismatch" << std::endl; exit(1);}
 
 std::vector<double> p(DIM), phat(DIM), shat(DIM), r(DIM), rt(DIM), s(DIM), t(DIM), v(DIM);    
 
-sparseMat LU = A;
+r_sparseMat LU = A;
 ilu(LU);  // approximated LU decomposition  
 
 iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
-alg::mult(A, x, v);         // v = A x;
+A.mult(x, v);         // v = A x;
 alg::sub(v, r);             // r -= v; donc r = b - A x;
 
 rt.assign(r.begin(),r.end()); // copy(r, rt);
@@ -33,7 +33,7 @@ while (!iter.finished_vect(r)) {
 		}
 
       lu_solve(LU, p, phat);   // phat = LU \ p
-      alg::mult(A, phat, v);   //  v = A phat;
+      A.mult(phat, v);   //  v = A phat;
      
 	  alpha=rho_1/alg::dot(v, rt);    // alpha = rho_1 /(v'*rtilde);
       s.assign(r.begin(), r.end());   // s = r
@@ -45,7 +45,7 @@ while (!iter.finished_vect(r)) {
          }
 
       lu_solve(LU, s, shat);   // shat = LU \ s
-      alg::mult(A, shat, t);               //  t = A shat;
+      A.mult(shat, t);               //  t = A shat;
 
       omega = alg::dot(t, s)/alg::dot(t,t); // omega = (t'* s) / (t'*t);
       alg::scaled_add(phat, alpha, x); // x = x + alpha phat;

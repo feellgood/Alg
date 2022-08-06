@@ -9,7 +9,7 @@
 
 /** if (T == true) Y = Op(B,A*X) else Y = Op(A*X,B) with sparseMat A, Operator Op will act on the result of A*X and B component to component */
 template<bool T>
-void LinComb(alg::sparseMat const& A,std::vector<double> const& X,std::vector<double> const&B,std::vector<double> &Y,const std::function<double(double,double)> Op)
+void LinComb(alg::r_sparseMat const& A,std::vector<double> const& X,std::vector<double> const&B,std::vector<double> &Y,const std::function<double(double,double)> Op)
 {
 const size_t _size = X.size();
 Y.resize(_size);
@@ -26,7 +26,7 @@ namespace alg
 
 /** conjugate gradient with diagonal preconditioner, returns residu */
 
-double cg(alg::sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter);
+double cg(alg::r_sparseMat& A, std::vector<double> & x,const std::vector<double> & b, alg::iteration &iter);
 
 }//end namespace alg
 

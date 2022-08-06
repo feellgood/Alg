@@ -1,6 +1,6 @@
 #include "alg_bicg_dir.h"
 
-double alg::bicg_dir(alg::sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
+double alg::bicg_dir(alg::r_sparseMat& A, std::vector<double> & x, const std::vector<double> & rhs, const std::vector<double>& xd, const std::vector<size_t>& ld, alg::iteration &iter) 
 {
 double rho_1(0.0), rho_2(0.0), alpha(0.0), beta(0.0), omega(0.0);
 const size_t DIM = x.size();
@@ -12,7 +12,7 @@ b.assign(rhs.begin(),rhs.end());// b = rhs;
 // le preconditionneur diagonal est une matrice diagonale contenant les inverses des coeffs de diag(A), ici on va stocker les coefficients dans un std::vector
 A.buildDiagPrecond(diag_precond);
 
-alg::mult(A, xd, v);
+A.mult(xd, v);// v = A * Xd
 alg::sub(v, b);      // b = b - A xd
 
 zeroFill(ld,b);
@@ -20,7 +20,7 @@ zeroFill(ld,diag_precond);
 iter.set_rhsnorm(alg::norm(b));
 	
 r.assign(b.begin(),b.end());// r = b;
-alg::mult(A, x, v);         // v = A x;
+A.mult(x, v);         // v = A x;
 alg::sub(v, r);             // r -= v; donc r = b - A x;
 
 zeroFill(ld,r);
@@ -42,7 +42,7 @@ while (!iter.finished_vect(r)) {
 		}
 
       alg::p_direct(diag_precond, p, phat); // phat = M p;
-      alg::mult(A, phat, v);                //  v = A phat;
+      A.mult(phat, v);                //  v = A phat;
       zeroFill(ld,v);
       alpha=rho_1/alg::dot(v, rt); // alpha = rho_1 /(v'*rtilde);
       s.assign(r.begin(), r.end());   // s = r
@@ -54,7 +54,7 @@ while (!iter.finished_vect(r)) {
          }
 
       alg::p_direct(diag_precond, s, shat);// shat = M s;
-      alg::mult(A, shat, t);               //  t = A shat;
+      A.mult(shat, t);               //  t = A shat;
 	zeroFill(ld,t);
       omega = alg::dot(t, s)/alg::dot(t,t); // omega = (t'* s) / (t'*t);
       alg::scaled_add(phat, alpha, x); // x = x + alpha phat;
